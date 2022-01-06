@@ -1,8 +1,8 @@
 import loadable from '@loadable/component';
 import { Route, Routes } from "react-router-dom";
 
-const LogIn = loadable(() => import('./pages/LogIn'));
-const SignUp = loadable(() => import('./pages/SignUp'));
+const LogIn = loadable(() => import('./pages/LogInPage'));
+const SignUp = loadable(() => import('./pages/SignUpPage'));
 
 
 function App() {

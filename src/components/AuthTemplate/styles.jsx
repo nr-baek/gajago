@@ -1,0 +1,62 @@
+import styled from "@emotion/styled";
+import authBg from "../../assets/images/bgImg.jpg";
+
+export const AuthTemplateBlock = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: #dfe4ff;
+  background-image: url(${authBg});
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const TemplateBox = styled.div`
+  width: 800px;
+  height: 500px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+  background: inherit;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+`;
+
+export const TemplateLeftBox = styled.div`
+  width: 400px;
+  background: linear-gradient(45deg, #8a60fde2, #ac9dfff0);
+  background-size: cover;
+  padding: 2rem;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+
+  .hiMsg {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    margin: 10px 0;
+  }
+  .goMsg {
+    font-size: 1.1rem;
+  }
+  .gajago {
+    margin-top: 150px;
+    font-size: 15px;
+  }
+  .logo {
+    font-size: 8rem;
+    margin: 2rem;
+  }
+`;
+
+export const TemplateRight = styled.div`
+  width: 400px;
+  height: 100%;
+  background: #fff;
+`;
