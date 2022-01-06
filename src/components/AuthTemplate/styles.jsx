@@ -59,4 +59,39 @@ export const TemplateRight = styled.div`
   width: 400px;
   height: 100%;
   background: #fff;
+  box-sizing: border-box;
+  padding: 3rem;
+
+  h1 {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #444;
+  }
+
+  h1.login {
+    margin: 0 0 35px 0;
+  }
+
+  h1.signUp {
+    margin: 0;
+  }
+
+  input {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.7rem;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  form {
+    overflow: hidden;
+  }
+
+  .label {
+    display: block;
+    color: #4e4d4d;
+    margin-top: 1rem;
+  }
 `;
