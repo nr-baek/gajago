@@ -1,11 +1,11 @@
 import React from "react";
-import { SignUpButton } from "./styles";
+import { StyledButton } from "../LogIn/styles";
 
 const SignUp = () => {
   return (
     <>
       <form>
-        <h1 className="signUp">Sign Up</h1>
+        <h1 className="signUp">회원가입</h1>
         <label className="label">
           Email <input name="email" autoComplete="off" required />
         </label>
@@ -20,7 +20,7 @@ const SignUp = () => {
           Password Confirm
           <input name="passwordConfirm" type="password" required />
         </label>
-        <SignUpButton>Sign up</SignUpButton>
+        <StyledButton>SIGN UP</StyledButton>
       </form>
     </>
   );
