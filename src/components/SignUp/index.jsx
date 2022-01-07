@@ -1,27 +1,13 @@
 import React, { useCallback, useState } from 'react';
+import useInput from '../../hooks/useInput';
 import { ErrorMessage, StyledButton } from '../LogIn/styles';
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [nickname, setNickname] = useState('');
+  const [email, onChangeEmail] = useInput('');
+  const [nickname, onChangeNickname] = useInput('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [mismatchError, setMismatchError] = useState(true);
-  const [emailError, setEmailError] = useState(true);
-
-  const checkEmail = (email) => {
-    var reg = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-    return !reg.test(email);
-  };
-
-  const onChangeEmail = useCallback((e) => {
-    setEmail(e.target.value);
-    setEmailError(checkEmail(e.target.value));
-  }, []);
-
-  const onChangeNickname = useCallback((e) => {
-    setNickname(e.target.value);
-  }, []);
 
   const onChangePassword = useCallback(
     (e) => {
@@ -73,7 +59,6 @@ const SignUp = () => {
       </label>
       <ErrorMessage>
         {(!(email && nickname && password && passwordConfirm) && <span>빈칸을 모두 입력해주세요.</span>) ||
-          (emailError && <span>이메일 형식이 잘못되었습니다.</span>) ||
           (mismatchError && <span>비밀번호가 일치하지 않습니다.</span>)}
       </ErrorMessage>
       <StyledButton>SIGN UP</StyledButton>
