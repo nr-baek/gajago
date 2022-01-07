@@ -1,18 +1,30 @@
 import React, { useCallback, useState } from 'react';
 import useInput from '../../hooks/useInput';
 import { ErrorMessage, StyledButton } from '../LogIn/styles';
+import '../../firebase';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import md5 from 'md5';
 
 const SignUp = () => {
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+
   const [mismatchError, setMismatchError] = useState(true);
+  const [pwMinLengthError, setPwMinLengthError] = useState(false);
+  const [signUpError, setSignUpError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const onChangePassword = useCallback(
     (e) => {
       setPassword(e.target.value);
       setMismatchError(e.target.value !== passwordConfirm);
+      if (e.target.value.length < 6) {
+        setPwMinLengthError(true);
+      } else {
+        setPwMinLengthError(false);
+      }
     },
     [passwordConfirm],
   );
@@ -26,15 +38,34 @@ const SignUp = () => {
   );
 
   const onSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
-      if (!nickname || !nickname.trim()) {
+      const emptyCheckOk = email && nickname.trim() && password && passwordConfirm;
+      if (!emptyCheckOk || mismatchError) {
         return;
       }
+      try {
+        setLoading(true);
+        const auth = getAuth();
+        const createdUser = await createUserWithEmailAndPassword(auth, email, password);
+        console.log(createdUser);
 
-      const emptyCheckOk = email && nickname && password && passwordConfirm;
-      if (emptyCheckOk && !mismatchError) {
-        console.log('서버 전송~', email, nickname, password);
+        await updateProfile(auth.currentUser, {
+          displayName: nickname,
+          photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`,
+        });
+
+        setLoading(false);
+      } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+          setSignUpError('이미 가입된 이메일입니다.');
+        } else {
+          setSignUpError(error.code);
+        }
+        setLoading(false);
+        setTimeout(() => {
+          setSignUpError('');
+        }, 5000);
       }
     },
     [email, nickname, password, passwordConfirm, mismatchError],
@@ -59,9 +90,11 @@ const SignUp = () => {
       </label>
       <ErrorMessage>
         {(!(email && nickname && password && passwordConfirm) && <span>빈칸을 모두 입력해주세요.</span>) ||
-          (mismatchError && <span>비밀번호가 일치하지 않습니다.</span>)}
+          (pwMinLengthError && <span>비밀번호는 6자 이상이어야 합니다.</span>) ||
+          (mismatchError && <span>비밀번호가 일치하지 않습니다.</span>) ||
+          (signUpError && <span title={signUpError}>{signUpError}</span>)}
       </ErrorMessage>
-      <StyledButton>SIGN UP</StyledButton>
+      <StyledButton disabled={loading}>SIGN UP</StyledButton>
     </form>
   );
 };
