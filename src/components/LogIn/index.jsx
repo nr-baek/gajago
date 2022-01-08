@@ -1,17 +1,40 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import useInput from '../../hooks/useInput';
-import { StyledButton, SignUpButton, ErrorMessage } from './styles';
+import { StyledButton, SignUpButton, Message } from './styles';
+import '../../firebase';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 const LogIn = () => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const auth = getAuth();
 
   const onSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
-      console.log(email, password);
+      try {
+        setLoading(true);
+        await signInWithEmailAndPassword(auth, email, password);
+
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          setErrorMessage('아이디 혹은 비밀번호가 일치하지 않습니다.');
+        } else {
+          setErrorMessage(error.code);
+        }
+
+        setLoading(false);
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 5000);
+      }
     },
-    [email, password],
+    [auth, email, password],
   );
 
   return (
@@ -19,14 +42,20 @@ const LogIn = () => {
       <form onSubmit={onSubmit}>
         <h1 className="login">로그인</h1>
         <label className="label">
-          email <input type="email" name="email" autoComplete="off" value={email} onChange={onChangeEmail} />
+          email <input type="email" autoComplete="off" value={email} onChange={onChangeEmail} />
         </label>
         <label className="label">
           password
-          <input name="password" type="password" value={password} onChange={onChangePassword} />
+          <input type="password" value={password} onChange={onChangePassword} />
         </label>
-        <ErrorMessage>아이디 또는 비밀번호가 잘못 입력 되었습니다.ㅇㄹㄴ ㅇㅇㅇ</ErrorMessage>
-        <StyledButton>LOGIN</StyledButton>
+        <Message>
+          {errorMessage && (
+            <span className="error" title={errorMessage}>
+              {errorMessage}
+            </span>
+          )}
+        </Message>
+        <StyledButton disabled={!(email && password) || loading}>LOGIN</StyledButton>
       </form>
 
       <SignUpButton>
