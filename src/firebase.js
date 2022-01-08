@@ -17,6 +17,7 @@ const firebaseConfig = {
   messagingSenderId: '958199913922',
   appId: '1:958199913922:web:5d3b1a0f446c323ffcca5b',
   measurementId: 'G-RR0B65403P',
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
 };
 
 // Initialize Firebase

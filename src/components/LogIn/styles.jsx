@@ -13,6 +13,10 @@ export const StyledButton = styled.button`
   &:hover {
     background-color: #7c4dff;
   }
+
+  &[disabled] {
+    background-color: #c0c0c0;
+  }
 `;
 
 export const SignUpButton = styled.button`
@@ -32,16 +36,23 @@ export const SignUpButton = styled.button`
   }
 `;
 
-export const ErrorMessage = styled.div`
+export const Message = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   height: 20px;
   margin-top: 5px;
 
   span {
-    color: #ce0000;
     font-size: 15px;
+    font-weight: bold;
     white-space: nowrap;
     width: 100%;
+  }
+
+  .error {
+    color: #ce0000;
+  }
+  .success {
+    color: #007c00;
   }
 `;
