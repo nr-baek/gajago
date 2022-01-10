@@ -1,7 +1,8 @@
 import React from 'react';
+import MainTemplate from '../../components/MainTemplate';
 
 function MainPage() {
-  return <div>메인페이지</div>;
+  return <MainTemplate></MainTemplate>;
 }
 
 export default MainPage;
