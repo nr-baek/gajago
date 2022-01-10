@@ -9,6 +9,8 @@ import { createStore, applyMiddleware } from 'redux';
 import ReduxThunk from 'redux-thunk';
 import promiseMiddleware from 'redux-promise';
 import Reducer from './redux/reducers';
+import { Global } from '@emotion/react';
+import reset from './Reset';
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore);
 
@@ -20,6 +22,7 @@ ReactDOM.render(
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
       )}
     >
+      <Global styles={reset} />
       <Router>
         <App />
       </Router>
