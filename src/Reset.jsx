@@ -7,6 +7,10 @@ const Reset = css`
     overflow-wrap: break-word;
     box-sizing: border-box;
   }
+  ol,
+  ul {
+    padding: 0;
+  }
   li {
     list-style: none;
   }

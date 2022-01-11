@@ -11,6 +11,7 @@ import promiseMiddleware from 'redux-promise';
 import Reducer from './redux/reducers';
 import { Global } from '@emotion/react';
 import reset from './Reset';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore);
 
