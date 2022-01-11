@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import useInput from '../../hooks/useInput';
 import { StyledButton, SignUpButton, Message } from './styles';
 import '../../firebase';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 const LogIn = () => {
   const [email, onChangeEmail] = useInput('');
@@ -11,6 +12,13 @@ const LogIn = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const auth = getAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    return () => {
+      setLoading(false);
+    };
+  }, []);
 
   const onSubmit = useCallback(
     async (e) => {
@@ -18,8 +26,6 @@ const LogIn = () => {
       try {
         setLoading(true);
         await signInWithEmailAndPassword(auth, email, password);
-
-        setLoading(false);
       } catch (error) {
         console.log(error);
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
@@ -36,6 +42,10 @@ const LogIn = () => {
     },
     [auth, email, password],
   );
+
+  const onClick = useCallback(() => {
+    navigate('/signup');
+  }, [navigate]);
 
   return (
     <>
@@ -58,7 +68,7 @@ const LogIn = () => {
         <StyledButton disabled={!(email && password) || loading}>LOGIN</StyledButton>
       </form>
 
-      <SignUpButton>
+      <SignUpButton onClick={onClick}>
         Don't have an account? <b>Sign up</b>
       </SignUpButton>
     </>

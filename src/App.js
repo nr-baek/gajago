@@ -9,7 +9,7 @@ import SignUpPage from './pages/SignUpPage';
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from './redux/actions/user_action';
+import { clearUser, setUser } from './redux/actions/user_action';
 
 // const LogInPage = loadable(() => import('./pages/LogInPage'));
 // const SignUpPage = loadable(() => import('./pages/SignUpPage'));
@@ -23,14 +23,15 @@ function App() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       console.log('user', user);
-      if (user) {
+      if (user && user.displayName) {
         navigate('/');
         dispatch(setUser(user));
-      } else {
+      } else if (!user) {
         navigate('/login');
+        dispatch(clearUser());
       }
     });
-  }, [navigate, dispatch]);
+  }, []);
 
   return isLoading ? (
     <div>loading..</div>

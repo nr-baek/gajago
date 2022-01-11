@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import useInput from '../../hooks/useInput';
 import { Message, StyledButton } from '../LogIn/styles';
 import '../../firebase';
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signOut } from 'firebase/auth';
 import md5 from 'md5';
 import { getDatabase, ref, set } from 'firebase/database';
 
@@ -49,6 +49,9 @@ const SignUp = () => {
     },
     [password],
   );
+  useEffect(() => {
+    return () => {};
+  }, []);
 
   const onSubmit = useCallback(
     async (e) => {
@@ -58,18 +61,16 @@ const SignUp = () => {
         setLoading(true);
         const auth = getAuth();
         const createdUser = await createUserWithEmailAndPassword(auth, email, password);
-        console.log(createdUser);
 
         await updateProfile(auth.currentUser, {
           displayName: nickname,
           photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`,
         });
 
-        await set(ref(getDatabase(), `users/${createdUser.user.uid}`), {
+        set(ref(getDatabase(), `users/${createdUser.user.uid}`), {
           nickname: createdUser.user.displayName,
           image: createdUser.user.photoURL,
         });
-
         // 모든 input 초기화해주기
         initState();
         setSignUpSuccess(true);
@@ -77,7 +78,8 @@ const SignUp = () => {
         setLoading(false);
         setTimeout(() => {
           setSignUpSuccess(false);
-        }, 4000);
+          signOut(auth);
+        }, 2000);
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
           setSignUpError('이미 가입된 이메일입니다.');
