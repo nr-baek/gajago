@@ -58,6 +58,7 @@ export const LeftBar = styled.div`
     top: 80px;
     &:hover {
       color: #fff;
+      cursor: pointer;
     }
   }
 `;

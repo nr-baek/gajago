@@ -1,4 +1,4 @@
-import { SET_USER } from '../actions/types';
+import { CLEAR_USER, SET_USER } from '../actions/types';
 
 const initialUserState = {
   currentUser: null,
@@ -11,6 +11,12 @@ const user_reducer = (state = initialUserState, action) => {
       return {
         ...state,
         currentUser: { ...action.payload },
+        isLoading: false,
+      };
+    case CLEAR_USER:
+      return {
+        ...state,
+        currentUser: null,
         isLoading: false,
       };
     default:
