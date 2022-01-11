@@ -102,7 +102,7 @@ const SignUp = () => {
         Email <input type="email" autoComplete="off" value={email} onChange={onChangeEmail} />
       </label>
       <label className="label">
-        Nickname <input type="text" autoComplete="off" maxLength="6" value={nickname} onChange={onChangeNickname} />
+        Nickname <input type="text" autoComplete="off" value={nickname} onChange={onChangeNickname} />
       </label>
       <label className="label">
         Password
