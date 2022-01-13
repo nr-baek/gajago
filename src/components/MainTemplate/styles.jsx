@@ -18,7 +18,7 @@ export const Container = styled.div`
   box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.5);
 
   .profile {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     img {
       width: 120px;
       height: 120px;
@@ -31,8 +31,6 @@ export const Container = styled.div`
       color: #ffffff;
       font-size: 20px;
       font-weight: bold;
-      text-align: center;
-      vertical-align: center;
     }
   }
 `;
@@ -41,8 +39,8 @@ export const LeftBar = styled.div`
   width: 200px;
   padding: 20px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
   margin-right: 10px;
   li {
     color: #fff;
@@ -54,12 +52,8 @@ export const LeftBar = styled.div`
     }
   }
 
-  .logoutBtn {
-    top: 80px;
-    &:hover {
-      color: #fff;
-      cursor: pointer;
-    }
+  .logoutBtn:hover {
+    cursor: pointer;
   }
 `;
 
