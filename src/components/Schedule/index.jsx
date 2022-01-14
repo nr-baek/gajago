@@ -6,6 +6,8 @@ import weekOfYear from 'dayjs/plugin/weekOfYear';
 import { StyledCalendar } from './styles';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
+import AddPlanModal from './AddPlanModal';
+
 // dayjs extend
 dayjs.extend(weekday);
 dayjs.extend(isoWeek);
@@ -13,6 +15,10 @@ dayjs.extend(weekOfYear);
 
 const Calendar = () => {
   const [date, setDate] = useState(dayjs());
+  const [show, setShow] = useState(false);
+
+  const handleClose = useCallback(() => setShow(false), []);
+  const handleShow = useCallback(() => setShow(true), []);
 
   const generate = () => {
     const startWeek = date.startOf('month').week();
@@ -53,7 +59,10 @@ const Calendar = () => {
 
   return (
     <StyledCalendar>
-      <h1>Schedule</h1>
+      <div>
+        <h1>Schedule</h1>
+        <button onClick={handleShow}>Add New</button>
+      </div>
       <div className="selectedMonth">
         <LeftOutlined className="changeMonth" onClick={setPrevMonth} />
         <span className="showMonth">
@@ -74,6 +83,7 @@ const Calendar = () => {
         </div>
         {generate()}
       </div>
+      <AddPlanModal show={show} handleClose={handleClose} />
     </StyledCalendar>
   );
 };

@@ -8,6 +8,22 @@ export const StyledCalendar = styled.div`
     font-size: 30px;
     font-weight: bold;
     color: #6840e9;
+    width: 200px;
+    display: inline-block;
+  }
+  button {
+    width: 100px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 11px;
+    padding: 8px 10px;
+    border: 0;
+    color: #fff;
+    background-color: #9b83e7;
+    float: right;
+    &:hover {
+      background-color: #724cec;
+    }
   }
   .selectedMonth {
     width: 300px;
@@ -72,5 +88,61 @@ export const StyledCalendar = styled.div`
     .week > div:first-of-type {
       border-left: none;
     }
+  }
+`;
+
+export const DatePickerForm = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  width: 340px;
+  input {
+    width: 150px;
+    color: #333;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #888;
+    border-radius: 4px;
+  }
+`;
+
+export const SelectForm = styled.div`
+  width: 300px;
+`;
+
+export const PlansBox = styled.ul`
+  margin-left: 15%;
+  max-height: 250px;
+  padding: 0 12px;
+  overflow: auto;
+  li {
+    list-style: inside;
+    list-style-type: decimal;
+    line-height: 23px;
+    vertical-align: top;
+    .delBtn {
+      visibility: hidden;
+      margin-left: 5px;
+      color: #666;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+
+    &:hover .delBtn {
+      visibility: visible;
+    }
+  }
+`;
+
+export const FormFooter = styled.div`
+  border-top: 1px solid #dee2e6;
+  padding-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  p {
+    color: red;
+  }
+  button {
+    margin-left: 10px;
+    height: 38px;
   }
 `;
