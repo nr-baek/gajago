@@ -6,6 +6,9 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import MainPage from './pages/MainPage';
 import LogInPage from './pages/LogInPage';
 import SignUpPage from './pages/SignUpPage';
+import MyTripsPage from './pages/MyTripsPage';
+import ReviewsPage from './pages/ReviewsPage';
+import StoryPage from './pages/StoryPage';
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,6 +43,9 @@ function App() {
       <Route path="/" element={<MainPage />} />
       <Route path="/login" element={<LogInPage />} />
       <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/myTrips" element={<MyTripsPage />} />
+      <Route path="/reviews" element={<ReviewsPage />} />
+      <Route path="/story" element={<StoryPage />} />
     </Routes>
   );
 }
