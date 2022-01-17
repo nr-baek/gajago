@@ -1,7 +1,8 @@
-import { CLEAR_USER, SET_PHOTO_URL, SET_USER } from '../actions/types';
+import { CLEAR_USER, SET_PHOTO_URL, SET_PLAN_DATA, SET_USER } from '../actions/types';
 
 const initialUserState = {
   currentUser: null,
+  planData: null,
   isLoading: true,
 };
 
@@ -17,6 +18,7 @@ const user_reducer = (state = initialUserState, action) => {
       return {
         ...state,
         currentUser: null,
+        planData: null,
         isLoading: false,
       };
     case SET_PHOTO_URL:
@@ -27,6 +29,11 @@ const user_reducer = (state = initialUserState, action) => {
           photoURL: action.payload,
         },
         isLoading: false,
+      };
+    case SET_PLAN_DATA:
+      return {
+        ...state,
+        planData: action.payload,
       };
     default:
       return state;

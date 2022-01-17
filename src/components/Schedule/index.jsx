@@ -7,6 +7,7 @@ import { StyledCalendar } from './styles';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 import AddPlanModal from './AddPlanModal';
+import { useSelector } from 'react-redux';
 
 // dayjs extend
 dayjs.extend(weekday);
@@ -14,13 +15,15 @@ dayjs.extend(isoWeek);
 dayjs.extend(weekOfYear);
 
 const Calendar = () => {
+  const user = useSelector((state) => state.user.currentUser);
   const [date, setDate] = useState(dayjs());
   const [show, setShow] = useState(false);
 
   const handleClose = useCallback(() => setShow(false), []);
   const handleShow = useCallback(() => setShow(true), []);
 
-  const generate = () => {
+  const generate = useCallback((date) => {
+    console.log('generate');
     const startWeek = date.startOf('month').week();
     const endWeek = date.endOf('month').week() === 1 ? 53 : date.clone().endOf('month').week();
     let calendar = [];
@@ -31,14 +34,10 @@ const Calendar = () => {
           {Array(7)
             .fill(0)
             .map((n, i) => {
-              const current = date
-                .clone()
-                .week(week)
-                .startOf('week')
-                .add(n + i, 'day');
+              const current = date.week(week).startOf('week').add(i, 'day');
               const isGrayed = current.format('MM') === date.format('MM') ? '' : 'grayed';
               return (
-                <div className={`box ${isGrayed}`} key={i}>
+                <div className={`box ${isGrayed}`} key={i} data-date={current.format('D')} data-day={7 - i}>
                   <span className={`text`}>{current.format('D')}</span>
                 </div>
               );
@@ -47,15 +46,15 @@ const Calendar = () => {
       );
     }
     return calendar;
-  };
+  }, []);
 
-  const setPrevMonth = () => {
-    setDate(date.subtract(1, 'month'));
-  };
+  const setPrevMonth = useCallback(() => {
+    setDate((date) => date.subtract(1, 'month'));
+  }, []);
 
-  const setAfterMonth = () => {
-    setDate(date.add(1, 'month'));
-  };
+  const setAfterMonth = useCallback(() => {
+    setDate((date) => date.add(1, 'month'));
+  }, []);
 
   return (
     <StyledCalendar>
@@ -81,7 +80,7 @@ const Calendar = () => {
           <span>FRI</span>
           <span>SAT</span>
         </div>
-        {generate()}
+        {generate(date)}
       </div>
       <AddPlanModal show={show} handleClose={handleClose} />
     </StyledCalendar>

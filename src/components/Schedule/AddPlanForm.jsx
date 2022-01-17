@@ -5,17 +5,56 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import useInput from '../../hooks/useInput';
 import { DatePickerForm, FormFooter, PlansBox, SelectForm } from './styles';
+import dayjs from 'dayjs';
+
+import { getDatabase, ref, set, child, get } from 'firebase/database';
+import { useSelector, useDispatch } from 'react-redux';
+import { setPlanData } from '../../redux/actions/user_action';
 
 function AddPlanForm({ handleClose }) {
   const [title, onChangeTitle] = useInput('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [tripType, onChangeTripType] = useState('');
-  const [region, onChangeRegion] = useInput('');
+  const [tripType, onChangeTripType] = useState('alone');
+  const [region, onChangeRegion] = useInput('Seoul');
   const [detailAddress, onChangeDetailAddress] = useInput('');
   const [planInput, onChangePlanInput, setPlanInput] = useInput('');
   const [plans, setPlans] = useState([]);
   const [submitError, setSubmitError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const user = useSelector((state) => state.user.currentUser);
+  const dispatch = useDispatch();
+  const dbRef = ref(getDatabase());
+
+  const getPlansData = async (user) => {
+    try {
+      await get(child(dbRef, `users/${user.uid}/plans`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const planArray = Object.entries(snapshot.val());
+          dispatch(setPlanData(planArray));
+        } else {
+          console.log('No data available');
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const createPlan = () => {
+    const plan = {
+      title,
+      startDate,
+      endDate,
+      tripType,
+      days: dayjs(endDate).diff(startDate, 'day', true) + 1,
+      region,
+      detailAddress,
+      planList: plans,
+    };
+
+    return plan;
+  };
 
   const preventEnterSubmit = useCallback((e) => {
     if (e.code === 'Enter') {
@@ -45,14 +84,23 @@ function AddPlanForm({ handleClose }) {
     setPlans(editPlans);
   };
 
-  const handleSubmit = (e) => {
+  const db = getDatabase();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('title: ', title);
-    console.log('date: ', startDate, endDate);
-    console.log('type: ', tripType);
-    console.log('region: ', region);
-    console.log('detailAddress: ', detailAddress);
-    console.log('plans: ', plans);
+    setLoading(true);
+    const startDateStr = dayjs(startDate).format('YYYY-MM-DD');
+    const days = dayjs(endDate).diff(startDate, 'day', true) + 1;
+
+    try {
+      await set(ref(db, `users/${user.uid}/plans/${startDateStr + '_' + days + '_' + region}`), createPlan());
+      getPlansData(user);
+      setLoading(false);
+      handleClose();
+    } catch (error) {
+      setSubmitError(error.message);
+      setLoading(false);
+    }
   };
 
   return (
@@ -74,7 +122,10 @@ function AddPlanForm({ handleClose }) {
           <DatePickerForm>
             <DatePicker
               selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              onChange={(date) => {
+                setStartDate(date);
+                setEndDate(date);
+              }}
               selectsStart
               startDate={startDate}
               endDate={endDate}
@@ -178,12 +229,14 @@ function AddPlanForm({ handleClose }) {
       )}
       <FormFooter>
         <p>{submitError && submitError}</p>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" type="submit" onSubmit={handleSubmit}>
-          Add Plan
-        </Button>
+        <div>
+          <Button variant="secondary" onClick={handleClose} disabled={loading}>
+            Close
+          </Button>
+          <Button variant="primary" type="submit" onSubmit={handleSubmit}>
+            Add Plan
+          </Button>
+        </div>
       </FormFooter>
     </Form>
   );

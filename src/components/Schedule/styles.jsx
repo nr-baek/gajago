@@ -136,13 +136,15 @@ export const PlansBox = styled.ul`
 export const FormFooter = styled.div`
   border-top: 1px solid #dee2e6;
   padding-top: 10px;
-  display: flex;
-  justify-content: flex-end;
   p {
     color: red;
   }
-  button {
-    margin-left: 10px;
-    height: 38px;
+  div {
+    float: right;
+    width: 180px;
+    button {
+      margin-left: 10px;
+      height: 38px;
+    }
   }
 `;
