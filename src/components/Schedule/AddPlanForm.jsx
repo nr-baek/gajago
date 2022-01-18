@@ -30,7 +30,7 @@ function AddPlanForm({ handleClose }) {
     try {
       await get(child(dbRef, `users/${user.uid}/plans`)).then((snapshot) => {
         if (snapshot.exists()) {
-          const planArray = Object.entries(snapshot.val());
+          const planArray = Object.values(snapshot.val());
           dispatch(setPlanData(planArray));
         } else {
           console.log('No data available');
@@ -44,10 +44,10 @@ function AddPlanForm({ handleClose }) {
   const createPlan = () => {
     const plan = {
       title,
-      startDate,
-      endDate,
+      startDate: dayjs(startDate).format('YYYY-MM-DD'),
+      endDate: dayjs(endDate).format('YYYY-MM-DD'),
       tripType,
-      days: dayjs(endDate).diff(startDate, 'day', true) + 1,
+      days: Math.round(dayjs(endDate).diff(startDate, 'day', true)) + 1,
       region,
       detailAddress,
       planList: plans,
@@ -90,10 +90,9 @@ function AddPlanForm({ handleClose }) {
     e.preventDefault();
     setLoading(true);
     const startDateStr = dayjs(startDate).format('YYYY-MM-DD');
-    const days = dayjs(endDate).diff(startDate, 'day', true) + 1;
 
     try {
-      await set(ref(db, `users/${user.uid}/plans/${startDateStr + '_' + days + '_' + region}`), createPlan());
+      await set(ref(db, `users/${user.uid}/plans/${startDateStr + '_' + region}`), createPlan());
       getPlansData(user);
       setLoading(false);
       handleClose();

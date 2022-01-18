@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 export const StyledCalendar = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 20px 50px;
+  padding: 20px 40px;
   h1 {
     font-size: 30px;
     font-weight: bold;
@@ -15,12 +15,12 @@ export const StyledCalendar = styled.div`
     width: 100px;
     font-size: 15px;
     font-weight: bold;
-    border-radius: 11px;
+    border-radius: 13px;
     padding: 8px 10px;
     border: 0;
     color: #fff;
-    background-color: #9b83e7;
     float: right;
+    background-color: #9b83e7;
     &:hover {
       background-color: #724cec;
     }
@@ -41,18 +41,15 @@ export const StyledCalendar = styled.div`
       font-weight: bold;
       color: #505050;
       .month {
-        font-size: 24px;
+        font-size: 40px;
         color: #7a6bff;
         margin-right: 20px;
-      }
-      .year {
-        cursor: pointer;
       }
     }
   }
   .body {
     width: 100%;
-    margin-top: 15px;
+    margin-top: 13px;
     .days {
       display: flex;
       justify-content: space-around;
@@ -65,9 +62,9 @@ export const StyledCalendar = styled.div`
     .week {
       border-top: 1px solid #ddd;
       display: flex;
-      justify-content: space-around;
+      position: relative;
       .box.grayed {
-        background: repeating-linear-gradient(45deg, #f7f7fc, #f7f7fc 2px, #ffffff 2px, #ffffff 14px);
+        background: repeating-linear-gradient(45deg, #e8e8ff, #efefff 2px, #ffffff 2px, #ffffff 14px);
         color: #999;
       }
       .box {
@@ -75,13 +72,53 @@ export const StyledCalendar = styled.div`
         width: 100%;
         height: 10vh;
         min-height: 65px;
-        vertical-align: bottom;
-        padding: 5px;
-        .text {
+
+        .marKingBar {
+          width: 100%;
+          height: 35%;
+          font-size: 15px;
+          text-shadow: 1px 1px 4px #6d6d6d;
+          padding: 3px 0 3px 5px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: #fff;
+          position: absolute;
+          box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.1);
+          &:hover {
+            box-shadow: 3px 5px 7px rgba(0, 0, 0, 0.3);
+          }
+
+          .title {
+            font-weight: bold;
+            white-space: nowrap;
+            width: 100%;
+          }
+          &.start {
+            border-top-left-radius: 17px;
+            border-bottom-left-radius: 17px;
+          }
+          &.end {
+            border-top-right-radius: 17px;
+            border-bottom-right-radius: 17px;
+          }
+          &.couple {
+            background: linear-gradient(to bottom, #ff8b8b 0%, #f37070 100%);
+          }
+          &.family {
+            background: linear-gradient(to bottom, #fac44e 0%, #d3a541 100%);
+          }
+          &.friends {
+            background: linear-gradient(to bottom, #93c757 0%, #7eb441 100%);
+          }
+          &.alone {
+            background: linear-gradient(to bottom, #9898fd 0%, #5353d1 100%);
+          }
+        }
+        .dateNumber {
           font-size: 0.9rem;
           font-weight: bold;
           display: inline-block;
-          margin-left: 5px;
+          margin: 5px;
         }
       }
     }
