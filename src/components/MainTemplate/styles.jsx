@@ -31,6 +31,9 @@ export const Container = styled.div`
       color: #ffffff;
       font-size: 20px;
       font-weight: bold;
+      &:hover {
+        text-shadow: 0 0 3px #ffffff;
+      }
     }
   }
 `;
@@ -46,14 +49,6 @@ export const LeftBar = styled.div`
     color: #fff;
     width: 100%;
     margin: 20px 0;
-    a {
-      text-decoration-line: none;
-      line-height: 23px;
-    }
-  }
-
-  .logoutBtn:hover {
-    cursor: pointer;
   }
 `;
 
@@ -65,8 +60,10 @@ export const LeftBarBtn = styled.div`
   align-items: center;
   width: 150px;
   padding: 10px 0;
+  cursor: pointer;
   &:hover {
     color: #fff;
+    text-shadow: 0 0 4px #ffffff;
   }
 
   &.active {

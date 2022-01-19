@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
-import authBg from "../../assets/images/bgImg.jpg";
+import styled from '@emotion/styled';
+import authBg from '../../assets/images/bgImg.jpg';
 
 export const AuthTemplateBlock = styled.div`
   position: absolute;
@@ -7,7 +7,7 @@ export const AuthTemplateBlock = styled.div`
   top: 0;
   right: 0;
   bottom: 0;
-  background: #dfe4ff;
+  background: linear-gradient(20deg, #e9b7b7, #e7a8a8, #d8b8f5, #b8cdf5, #bfe6ff, #ffebd9);
   background-image: url(${authBg});
   background-size: cover;
   display: flex;
