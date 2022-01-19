@@ -10,7 +10,7 @@ import AddPlanModal from './AddPlanModal';
 import MarkingBar from './MarkingBar';
 
 import { useSelector } from 'react-redux';
-import { getStartAndEndDateOfDisplay } from './utils';
+import { getStartAndEndDateOfDisplay, makeMarkingInfoObj } from './utils';
 
 // dayjs extend
 dayjs.extend(weekday);
@@ -78,28 +78,8 @@ const Calendar = () => {
   useEffect(() => {
     const [startOfMonth] = getStartAndEndDateOfDisplay(date);
     const displayPlans = filterPlansOfMonth(date);
-    const markingInfoObj = {};
+    const markingInfoObj = makeMarkingInfoObj(startOfMonth, displayPlans);
 
-    if (displayPlans.length) {
-      displayPlans.forEach((plan) => {
-        const { startDate, days } = plan;
-
-        let RemainingDatesOfRender = days;
-        let startDateOfRender = startDate;
-        let firstDayOfWeek = dayjs(startDate).day();
-        let renderDates = 7 - firstDayOfWeek >= RemainingDatesOfRender ? RemainingDatesOfRender : 7 - firstDayOfWeek;
-
-        while (RemainingDatesOfRender > 0) {
-          markingInfoObj[startDateOfRender] = { ...plan, renderDates };
-          if (startDateOfRender === startDate) markingInfoObj[startDateOfRender].start = true;
-          if (startDateOfRender === startOfMonth) markingInfoObj[startDateOfRender].fromPrevMonth = true;
-          RemainingDatesOfRender -= renderDates;
-          if (RemainingDatesOfRender === 0) markingInfoObj[startDateOfRender].end = true;
-          startDateOfRender = dayjs(startDateOfRender).add(renderDates, 'day').format('YYYY-MM-DD');
-          renderDates = 7 > RemainingDatesOfRender ? RemainingDatesOfRender : 7;
-        }
-      });
-    }
     setMarkingInfo(markingInfoObj);
     setIsLoading(false);
   }, [filterPlansOfMonth, date]);

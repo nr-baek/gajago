@@ -12,7 +12,6 @@ const user_reducer = (state = initialUserState, action) => {
       return {
         ...state,
         currentUser: { ...action.payload },
-        isLoading: false,
       };
     case CLEAR_USER:
       return {
@@ -34,6 +33,7 @@ const user_reducer = (state = initialUserState, action) => {
       return {
         ...state,
         planData: action.payload,
+        isLoading: false,
       };
     default:
       return state;
