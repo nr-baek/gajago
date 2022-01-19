@@ -1,5 +1,5 @@
 // import loadable from '@loadable/component';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import './firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, child, get } from 'firebase/database';
@@ -28,10 +28,11 @@ function App() {
     try {
       await get(child(dbRef, `users/${user.uid}/plans`)).then((snapshot) => {
         if (snapshot.exists()) {
-          const planArray = Object.entries(snapshot.val());
+          const planArray = Object.values(snapshot.val());
           dispatch(setPlanData(planArray));
         } else {
           console.log('No data available');
+          dispatch(setPlanData({}));
         }
       });
     } catch (error) {
@@ -59,7 +60,8 @@ function App() {
     <div>loading..</div>
   ) : (
     <Routes>
-      <Route path="/" element={<MainPage />} />
+      <Route path="/" element={<Navigate replace to="/schedule" />} />
+      <Route path="/schedule" element={<MainPage />} />
       <Route path="/login" element={<LogInPage />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/myTrips" element={<MyTripsPage />} />
