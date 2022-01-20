@@ -85,8 +85,14 @@ export const LeftBarBtn = styled.div`
 `;
 
 export const MainContent = styled.div`
-  background-color: #fff;
+  /* background-color: #fff; */
+  background: radial-gradient(#f5ecfd 15%, transparent 16%) 0 0, radial-gradient(#eeeeff 15%, transparent 16%) 8px 8px,
+    radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px,
+    radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
+  background-color: #f9f7ff;
+  background-size: 16px 16px;
   width: 100%;
   height: 100%;
   border-radius: 25px;
+  overflow: hidden;
 `;

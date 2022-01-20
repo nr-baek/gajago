@@ -175,6 +175,7 @@ function AddPlanForm({ handleClose }) {
               <option value="DaeGu">대구광역시</option>
               <option value="InCheon">인천광역시</option>
               <option value="DaeJeon">대전광역시</option>
+              <option value="GwangJu">광주광역시</option>
               <option value="UlSan">울산광역시</option>
               <option value="SeJong">세종특별자치시</option>
               <option value="GyeongGi">경기도</option>
@@ -186,8 +187,7 @@ function AddPlanForm({ handleClose }) {
               <option value="GyeongBuk">경상북도</option>
               <option value="GyeongNam">경상남도</option>
               <option value="JeJu">제주특별자치도</option>
-              <option value="Ulleung">울릉도</option>
-              <option value="Dokdo">독도</option>
+              <option value="overseas">해외</option>
             </Form.Select>
           </SelectForm>
         </Col>

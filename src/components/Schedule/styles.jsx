@@ -64,7 +64,7 @@ export const StyledCalendar = styled.div`
       display: flex;
       position: relative;
       .box.grayed {
-        background: repeating-linear-gradient(45deg, #e8e8ff, #efefff 2px, #ffffff 2px, #ffffff 14px);
+        background: repeating-linear-gradient(45deg, #e7e7f8, #ececf8 2px, #f5f1fa 2px, #f9f5fd 14px);
         color: #999;
       }
       .box {

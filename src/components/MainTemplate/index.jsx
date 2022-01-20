@@ -5,7 +5,7 @@ import Profile from './Profile';
 import { Background, Container, LeftBar, LeftBarBtn, MainContent } from './styles';
 import { getAuth, signOut } from 'firebase/auth';
 
-const CommonTemplate = ({ children }) => {
+const MainTemplate = ({ children }) => {
   const auth = getAuth();
 
   const onClickLogout = useCallback(() => {
@@ -29,4 +29,4 @@ const CommonTemplate = ({ children }) => {
   );
 };
 
-export default CommonTemplate;
+export default MainTemplate;
