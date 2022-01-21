@@ -1,4 +1,7 @@
 import styled from '@emotion/styled';
+import circle from '../../assets/images/penCircle.png';
+import underLine from '../../assets/images/underLine.png';
+import QMark from '../../assets/images/QMark.png';
 
 export const TripBox = styled.div`
   height: 100%;
@@ -66,20 +69,163 @@ export const InfoBoard = styled.div`
 `;
 
 export const PlanMemo = styled.div`
-  box-shadow: 2px 4px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.4);
   width: 49%;
   height: 100%;
+  font-family: 'Yeon Sung', cursive;
   &.prev {
-    background-color: #fdeeff;
+    background-color: #f8ffee;
   }
   &.next {
     background-color: #fffbe8;
   }
 `;
 
+export const PrevPlan = styled.div`
+  height: 100%;
+  font-size: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .recent {
+    color: #6b6868;
+  }
+
+  .daysAndRegion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    p {
+      margin: 0 10px 0 0;
+    }
+    .days {
+      font-size: 35px;
+      color: #7f36f3;
+    }
+    .region {
+      min-width: 72px;
+      height: 40px;
+      padding: 0 7px;
+      font-size: 28px;
+      line-height: 40px;
+      vertical-align: middle;
+      color: #343238;
+      background-color: #fff2c7;
+      position: relative;
+      box-shadow: 3px 1px 2px rgba(0, 0, 0, 0.2);
+      transform: rotateZ(356deg);
+      &::after {
+        content: '';
+        height: 40px;
+        width: 15px;
+        background-color: #ffe600;
+        position: absolute;
+        right: -15px;
+        top: 0;
+        z-index: 1;
+        box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+  .detailAddrMsg {
+    display: flex;
+    max-width: 80%;
+    .detailAddr {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+`;
+
+export const NoPrevPlan = styled.div`
+  color: #555;
+  height: 100%;
+  font-size: 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .pointString {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    .point {
+      font-size: 50px;
+      color: #8645f0;
+      width: 100px;
+      line-height: 90px;
+      vertical-align: center;
+      background-image: url(${circle});
+      background-size: cover;
+      background-position-y: -5px;
+    }
+  }
+`;
+
+export const NextPlan = styled.div`
+  height: 100%;
+  font-size: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .next {
+    color: #6b6868;
+  }
+  .region {
+    color: #6c3cc5;
+  }
+  .tripTitle {
+    width: 93%;
+    .title {
+      text-align: center;
+      overflow: hidden;
+      word-break: keep-all;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+  }
+  .dDay {
+    font-size: 50px;
+    line-height: 50px;
+    color: #ff4800;
+  }
+`;
+
+export const NoNextPlan = styled.div`
+  height: 100%;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  line-height: 40px;
+  background-image: url(${QMark});
+  background-repeat: no-repeat;
+  background-position: 95% 47%;
+  background-size: 35% 35%;
+  .underLine {
+    padding: 0 10px;
+    background-image: url(${underLine});
+    background-position-y: -22px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    .where {
+      color: #741dff;
+      font-size: 50px;
+    }
+  }
+`;
+
 export const TripList = styled.div`
-  background-color: #ebf0ff;
-  box-shadow: 2px 4px 5px rgba(0, 0, 0, 0.3);
+  background-color: #f0ebff;
+  box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.4);
   width: 90%;
   height: 60%;
   margin-bottom: 4.5%;

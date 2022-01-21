@@ -1,12 +1,20 @@
 import React from 'react';
-import { InfoBoard, PlanMemo, TripList } from './styles';
+import { useSelector } from 'react-redux';
+
+import NextTripMemo from './NextTripMemo';
+import PrevTripMemo from './PrevTripMemo';
+import { InfoBoard, TripList } from './styles';
+import { getPrevAndNextTripOfToday } from './utils';
 
 function TripsInfo() {
+  const planArray = useSelector((state) => state.user.planData);
+  const [prevTrip, howManyDaysAgo, nextTrip, dDay] = getPrevAndNextTripOfToday(planArray);
+
   return (
     <InfoBoard>
       <div className="prevAndNextInfo">
-        <PlanMemo className="prev">최근 여행</PlanMemo>
-        <PlanMemo className="next">다음 여행 일정</PlanMemo>
+        <PrevTripMemo prevTrip={prevTrip} howManyDaysAgo={howManyDaysAgo} />
+        <NextTripMemo nextTrip={nextTrip} dDay={dDay} />
       </div>
       <TripList>여행 내역</TripList>
       <div className="nail tl" />
