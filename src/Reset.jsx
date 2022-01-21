@@ -7,6 +7,10 @@ const Reset = css`
     overflow-wrap: break-word;
     box-sizing: border-box;
   }
+  p {
+    margin-bottom: 0;
+  }
+  ,
   ol,
   ul {
     padding: 0;
