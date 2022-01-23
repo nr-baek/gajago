@@ -1,14 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import EmptyTripList from './EmptyTripList';
 
 import NextTripMemo from './NextTripMemo';
 import PrevTripMemo from './PrevTripMemo';
-import { InfoBoard, TripList } from './styles';
-import { getPrevAndNextTripOfToday } from './utils';
+import TripList from './TripList';
+import { InfoBoard, TripListInfo } from './styles';
+import { getPrevAndNextTripOfToday, generateTripsObjectByRegion } from './utils';
 
 function TripsInfo() {
   const planArray = useSelector((state) => state.user.planData);
   const [prevTrip, howManyDaysAgo, nextTrip, dDay] = getPrevAndNextTripOfToday(planArray);
+  const [beforeTripObj, nextTripObj] = generateTripsObjectByRegion(planArray);
 
   return (
     <InfoBoard>
@@ -16,7 +19,9 @@ function TripsInfo() {
         <PrevTripMemo prevTrip={prevTrip} howManyDaysAgo={howManyDaysAgo} />
         <NextTripMemo nextTrip={nextTrip} dDay={dDay} />
       </div>
-      <TripList>여행 내역</TripList>
+      <TripListInfo>
+        {planArray.length ? <TripList beforeTripObj={beforeTripObj} nextTripObj={nextTripObj} /> : <EmptyTripList />}
+      </TripListInfo>
       <div className="nail tl" />
       <div className="nail tr" />
       <div className="nail bl" />

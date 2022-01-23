@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import circle from '../../assets/images/penCircle.png';
 import underLine from '../../assets/images/underLine.png';
 import QMark from '../../assets/images/QMark.png';
+import emptyBg from '../../assets/images/emptyBg.png';
 
 export const TripBox = styled.div`
   height: 100%;
@@ -104,7 +105,7 @@ export const PrevPlan = styled.div`
       color: #7f36f3;
     }
     .region {
-      min-width: 72px;
+      min-width: 80px;
       height: 40px;
       padding: 0 7px;
       font-size: 28px;
@@ -223,12 +224,95 @@ export const NoNextPlan = styled.div`
   }
 `;
 
-export const TripList = styled.div`
-  background-color: #f0ebff;
+export const TripListInfo = styled.div`
+  background-color: #ddd4f5;
   box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.4);
   width: 90%;
   height: 60%;
   margin-bottom: 4.5%;
+  display: flex;
+  justify-content: center;
+  font-family: 'Yeon Sung', cursive;
+
+  .tripList {
+    width: 90%;
+    position: relative;
+    .memoTitle {
+      font-size: 30px;
+      text-align: center;
+    }
+  }
+`;
+
+export const Index = styled.div`
+  font-size: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: right;
+`;
+
+export const Tab = styled.div`
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 0 4px 3px 4px;
+  background-color: #${({ tab }) => (tab ? 'e8f1df' : 'faeddd')};
+  border: 2px dashed #${({ tab }) => (tab ? '93c081' : 'ca932d')};
+  border-bottom: none;
+  cursor: pointer;
+  box-shadow: -5px -5px #${({ tab }) => (tab ? 'e8f1df' : 'faeddd')},
+    5.5px -5px #${({ tab }) => (tab ? 'e8f1df' : 'f5ece1')}, -2px 5px #${({ tab }) => (tab ? 'e8f1df' : 'faeddd')},
+    ${({ tab }) => (tab ? -9 : 9)}px -6px 5px rgba(0, 0, 0, ${({ selected }) => (selected ? 0.2 : 0)});
+
+  z-index: ${({ selected }) => (selected ? 101 : 1)};
+`;
+
+export const StyledList = styled.ul`
+  font-size: 18px;
+  text-align: left;
+  background-color: #${({ indexTab }) => (indexTab ? 'e8f1df' : 'faeddd')};
+  padding: 6px;
+  outline: 6px solid #${({ indexTab }) => (indexTab ? 'e8f1df' : 'faeddd')};
+  box-shadow: -3px -7px 3px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  width: 100%;
+  height: 75%;
+  position: absolute;
+  border: 2px dashed #${({ indexTab }) => (indexTab ? '93c081' : 'ca932d')};
+  li {
+    border-radius: 6px;
+    background-color: #fff;
+    padding: 5px 5px 5px 10px;
+    margin-bottom: 5px;
+    .date {
+      padding-left: 20px;
+      font-size: 13px;
+      color: #585858;
+    }
+  }
+`;
+
+export const EmptyMessage = styled.div`
+  font-family: 'Yeon Sung', cursive;
+  height: 100%;
+  text-align: center;
+  color: #585858;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-image: url(${emptyBg});
+  background-size: cover;
+  .empty {
+    line-height: 140px;
+    font-size: 130px;
+  }
+  .msg {
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 export const Korea = styled.div`
@@ -237,11 +321,27 @@ export const Korea = styled.div`
 
   .region {
     stroke-linejoin: round;
-    stroke: #bba9cf;
+    stroke: #a27fca;
     stroke-width: 4;
     fill: #ffffff;
+    &.once {
+      fill: #dac4fa;
+    }
+    &.twice {
+      fill: #c198ff;
+    }
+    &.threeTimes {
+      fill: #a76cff;
+    }
+    &.fourTimes {
+      fill: #8635ff;
+    }
+    &.fiveTimes {
+      fill: #671ed4;
+    }
+
     &:hover {
-      fill: #4d00b1;
+      fill: #4400ff;
     }
   }
 
@@ -254,6 +354,7 @@ export const Korea = styled.div`
     .progress {
       width: 93%;
       margin-bottom: 5px;
+      background-color: #d7d3e6;
     }
     .trophy {
       position: absolute;

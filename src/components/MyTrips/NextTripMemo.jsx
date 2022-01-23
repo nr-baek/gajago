@@ -37,7 +37,7 @@ function NextTripMemo({ nextTrip, dDay }) {
         <NoNextPlan>
           <p>다음에</p>
           <p className="underLine">
-            <span className="where">어디</span>로<div className="qMark" />
+            <span className="where">어디</span>로<span className="qMark" />
           </p>
           <p>갈까.</p>
         </NoNextPlan>
