@@ -1,13 +1,14 @@
-import { TrophyFilled } from '@ant-design/icons/lib/icons';
+import { CrownTwoTone, TrophyFilled } from '@ant-design/icons/lib/icons';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import React, { useEffect, useState } from 'react';
 import { Korea } from './styles';
 import { useSelector } from 'react-redux';
 import { generateTripsObjectByRegion } from './utils';
 
-function TripMap() {
+function TripMap({ onClickRegion }) {
   const planArray = useSelector((state) => state.user.planData);
   const [visitRate, setVisitRate] = useState(0);
+  const [isTripKing, setIsTripKing] = useState(false);
   const [beforeTripObj] = generateTripsObjectByRegion(planArray);
   const colorOfCount = ['', 'once', 'twice', 'threeTimes', 'fourTimes', 'fiveTimes'];
   const visitedRegionCount = Object.entries(beforeTripObj).filter((regionTrip) => regionTrip[1].length > 0).length;
@@ -17,11 +18,17 @@ function TripMap() {
     setTimeout(() => {
       setVisitRate(VisitRateOfAllRegion);
     }, 200);
+    if (VisitRateOfAllRegion === 100) {
+      setTimeout(() => {
+        setIsTripKing(true);
+      }, 1200);
+    }
   }, [VisitRateOfAllRegion]);
 
   return (
     <Korea>
-      <svg height="590" width="590" viewBox="0 0 1000 1050">
+      <div className="clickSign">Click!</div>
+      <svg id="allRegion" height="590" width="590" viewBox="0 0 1000 1050" onClick={onClickRegion}>
         <g>
           <path
             id="Seoul"
@@ -110,12 +117,27 @@ function TripMap() {
           />
         </g>
       </svg>
+      <div className="achievementMsg">
+        {isTripKing ? (
+          <>
+            <p>트로피를 획득했어요.</p>
+            <p>
+              당신은~ 여행 왕!!
+              <CrownTwoTone className="crown" twoToneColor="#7309ec" />
+            </p>
+          </>
+        ) : (
+          <>
+            <p>지도를 모두 물들여</p>
+            <p>트로피를 획득하세요!</p>
+          </>
+        )}
+      </div>
       <div className="achievement">
         <ProgressBar className="progress">
-          <ProgressBar animated now={visitRate} />
-          {/* <ProgressBar variant="success" now={visitRate} /> */}
+          {isTripKing ? <ProgressBar variant="success" now={visitRate} /> : <ProgressBar animated now={visitRate} />}
         </ProgressBar>
-        <TrophyFilled className="trophy" />
+        <TrophyFilled className={`trophy ${isTripKing && 'tripKing'}`} />
       </div>
     </Korea>
   );

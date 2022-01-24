@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import PostIt from './PostIt';
 import { Index, StyledList, Tab } from './styles';
 import { generateDividedBeforeAfterObj } from './utils';
 
-function TripList({ beforeTripObj, nextTripObj }) {
+function TripList({ currentRegion, beforeTripObj, nextTripObj }) {
   const planArray = useSelector((state) => state.user.planData);
-  const [currentRegion, setCurrentRegion] = useState('allPart');
   const [indexTab, setIndexTab] = useState(0);
-  const { beforeTrip, afterTrip } = generateDividedBeforeAfterObj(planArray);
 
   const generateList = (lists) => {
     const emoji = {
@@ -21,7 +20,7 @@ function TripList({ beforeTripObj, nextTripObj }) {
       const { startDate, endDate, title, tripType } = list;
       return (
         <li key={title}>
-          <div>
+          <div className="title">
             {emoji[tripType]}
             {title}
           </div>
@@ -35,14 +34,30 @@ function TripList({ beforeTripObj, nextTripObj }) {
 
   const checkedGenerateList = (indexTab, lists) => {
     if (lists.length === 0) {
-      return indexTab ? <p>등록된 여행 일정 없음.</p> : <p>다녀온 여행 기록 없음.</p>;
+      return indexTab ? (
+        <p className="noPlanMsg">등록된 여행 일정 없음.</p>
+      ) : (
+        <p className="noPlanMsg">다녀온 여행 기록 없음.</p>
+      );
     }
 
     return generateList(lists);
   };
 
+  const renderTripList = () => {
+    if (currentRegion === 'allRegion') {
+      const { beforeTrip, afterTrip } = generateDividedBeforeAfterObj(planArray);
+      return indexTab === 0 ? checkedGenerateList(indexTab, beforeTrip) : checkedGenerateList(indexTab, afterTrip);
+    } else {
+      return indexTab === 0
+        ? checkedGenerateList(indexTab, beforeTripObj[currentRegion])
+        : checkedGenerateList(indexTab, nextTripObj[currentRegion]);
+    }
+  };
+
   return (
     <div className="tripList">
+      {currentRegion !== 'allRegion' && <PostIt region={currentRegion} />}
       <p className="memoTitle"># 나의 여행 리스트</p>
       <Index>
         <Tab selected={indexTab === 0} onClick={() => setIndexTab(0)} tab={0}>
@@ -52,9 +67,7 @@ function TripList({ beforeTripObj, nextTripObj }) {
           여행예정
         </Tab>
       </Index>
-      <StyledList indexTab={indexTab}>
-        {indexTab === 0 ? checkedGenerateList(indexTab, beforeTrip) : checkedGenerateList(indexTab, afterTrip)}
-      </StyledList>
+      <StyledList indexTab={indexTab}>{renderTripList()}</StyledList>
     </div>
   );
 }

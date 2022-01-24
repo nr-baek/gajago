@@ -8,10 +8,12 @@ import TripList from './TripList';
 import { InfoBoard, TripListInfo } from './styles';
 import { getPrevAndNextTripOfToday, generateTripsObjectByRegion } from './utils';
 
-function TripsInfo() {
+function TripsInfo({ currentRegion }) {
   const planArray = useSelector((state) => state.user.planData);
   const [prevTrip, howManyDaysAgo, nextTrip, dDay] = getPrevAndNextTripOfToday(planArray);
   const [beforeTripObj, nextTripObj] = generateTripsObjectByRegion(planArray);
+
+  console.log(beforeTripObj, nextTripObj);
 
   return (
     <InfoBoard>
@@ -20,7 +22,11 @@ function TripsInfo() {
         <NextTripMemo nextTrip={nextTrip} dDay={dDay} />
       </div>
       <TripListInfo>
-        {planArray.length ? <TripList beforeTripObj={beforeTripObj} nextTripObj={nextTripObj} /> : <EmptyTripList />}
+        {planArray.length ? (
+          <TripList beforeTripObj={beforeTripObj} nextTripObj={nextTripObj} currentRegion={currentRegion} />
+        ) : (
+          <EmptyTripList />
+        )}
       </TripListInfo>
       <div className="nail tl" />
       <div className="nail tr" />

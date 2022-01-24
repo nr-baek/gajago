@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { TripBox } from './styles';
 import TripMap from './TripMap';
 import TripsInfo from './TripsInfo';
 
 function MyTrips() {
+  const [currentRegion, setCurrentRegion] = useState('allRegion');
+
+  const onClickRegion = useCallback((e) => {
+    setCurrentRegion(e.target.id);
+  }, []);
   return (
     <TripBox>
-      <TripsInfo />
-      <TripMap />
+      <TripsInfo currentRegion={currentRegion} />
+      <TripMap onClickRegion={onClickRegion} />
     </TripBox>
   );
 }
