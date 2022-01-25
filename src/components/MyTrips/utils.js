@@ -79,9 +79,9 @@ export const generateTripsObjectByRegion = (planArray = []) => {
   for (let i = 0; i < planArray.length; i++) {
     const plan = planArray[i];
 
-    if (plan.startDate < today) {
+    if (plan.endDate <= today) {
       beforeTripObj[plan.region].push(plan);
-    } else {
+    } else if (plan.startDate >= today) {
       nextTripObj[plan.region].push(plan);
     }
   }
@@ -94,9 +94,9 @@ export const generateDividedBeforeAfterObj = (planArray) => {
   const beforeAfterObj = { beforeTrip: [], afterTrip: [] };
 
   planArray.forEach((plan) => {
-    if (plan.startDate < today) {
+    if (plan.endDate <= today) {
       beforeAfterObj.beforeTrip.push(plan);
-    } else {
+    } else if (plan.startDate >= today) {
       beforeAfterObj.afterTrip.push(plan);
     }
   });
