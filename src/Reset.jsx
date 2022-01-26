@@ -7,6 +7,9 @@ const Reset = css`
     overflow-wrap: break-word;
     box-sizing: border-box;
   }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+  }
   p {
     margin-bottom: 0;
   }

@@ -29,6 +29,7 @@ export const InfoBoard = styled.div`
   align-items: center;
   justify-content: space-between;
   position: relative;
+  word-spacing: -5px;
 
   .prevAndNextInfo {
     width: 90%;
@@ -73,8 +74,8 @@ export const InfoBoard = styled.div`
 
 export const StyledSticker = styled.div`
   height: 40px;
-  padding: 0 7px;
-  font-size: 28px;
+  padding: 0 8px;
+  font-size: 25px;
   line-height: 40px;
   text-align: center;
   vertical-align: middle;
@@ -92,7 +93,8 @@ export const PlanMemo = styled.div`
   box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.4);
   width: 49%;
   height: 100%;
-  font-family: 'Yeon Sung', cursive;
+  font-family: 'Gaegu', cursive;
+  letter-spacing: -1.5px;
   &.prev {
     background-color: #f8ffee;
   }
@@ -122,6 +124,7 @@ export const PrevPlan = styled.div`
     .days {
       font-size: 35px;
       color: #7f36f3;
+      font-weight: 700;
     }
     .region {
       min-width: 85px;
@@ -161,9 +164,9 @@ export const NoPrevPlan = styled.div`
   .pointString {
     display: flex;
     align-items: center;
-    margin: 0;
     .point {
-      font-size: 50px;
+      font-size: 45px;
+      font-weight: 700;
       color: #8645f0;
       width: 100px;
       line-height: 90px;
@@ -201,6 +204,7 @@ export const NextPlan = styled.div`
     }
   }
   .dDay {
+    font-weight: 700;
     font-size: 40px;
     line-height: 50px;
     color: #ff4800;
@@ -218,15 +222,16 @@ export const NoNextPlan = styled.div`
   line-height: 40px;
   background-image: url(${QMark});
   background-repeat: no-repeat;
-  background-position: 95% 47%;
-  background-size: 35% 35%;
+  background-position: 100% 47%;
+  background-size: 30% 30%;
   .underLine {
     padding: 0 10px;
     background-image: url(${underLine});
-    background-position-y: -22px;
+    background-position-y: -35px;
     background-size: 100%;
     background-repeat: no-repeat;
     .where {
+      font-weight: 700;
       color: #741dff;
       font-size: 50px;
     }
@@ -241,7 +246,7 @@ export const TripListInfo = styled.div`
   margin-bottom: 4.5%;
   display: flex;
   justify-content: center;
-  font-family: 'Yeon Sung', cursive;
+  font-family: 'Gaegu', cursive;
 
   .tripList {
     width: 90%;
@@ -250,10 +255,10 @@ export const TripListInfo = styled.div`
     .memoTitle {
       font-size: 30px;
       text-align: center;
-      margin-bottom: 10px;
+      margin: 7px 0;
     }
     .region {
-      width: 30%;
+      min-width: 30%;
       background-color: #f2f4ff;
       position: absolute;
       left: 0;
@@ -280,20 +285,19 @@ export const Index = styled.div`
 export const Tab = styled.div`
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  padding: 0 4px 3px 4px;
+  padding: 0 5px 3px 5px;
   background-color: #${({ tab }) => (tab ? 'e8f1df' : 'faeddd')};
   border: 2px dashed #${({ tab }) => (tab ? '93c081' : 'ca932d')};
   border-bottom: none;
   cursor: pointer;
   box-shadow: -5px -5px #${({ tab }) => (tab ? 'e8f1df' : 'faeddd')},
-    5.5px -5px #${({ tab }) => (tab ? 'e8f1df' : 'f5ece1')}, -2px 2px #${({ tab }) => (tab ? 'e8f1df' : 'faeddd')},
+    6px -5px #${({ tab }) => (tab ? 'e8f1df' : 'f5ece1')}, -2px 2px #${({ tab }) => (tab ? 'e8f1df' : 'faeddd')},
     ${({ tab }) => (tab ? -9 : 9)}px -6px 5px rgba(0, 0, 0, ${({ selected }) => (selected ? 0.2 : 0)});
 
   z-index: ${({ selected }) => (selected ? 101 : 1)};
 `;
 
 export const StyledList = styled.ul`
-  font-size: 18px;
   text-align: left;
   background-color: #${({ indexTab }) => (indexTab ? 'e8f1df' : 'faeddd')};
   padding: 8px;
@@ -312,23 +316,25 @@ export const StyledList = styled.ul`
     margin-bottom: 5px;
     border-bottom: 2px solid #dfe0cd;
     .title {
+      font-size: 20px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
     .date {
       padding-left: 20px;
-      font-size: 13px;
+      font-size: 15px;
       color: #585858;
     }
   }
   .noPlanMsg {
+    font-size: 20px;
     text-align: center;
   }
 `;
 
 export const EmptyMessage = styled.div`
-  font-family: 'Yeon Sung', cursive;
+  font-family: 'Gaegu', cursive;
   height: 100%;
   text-align: center;
   color: #585858;
@@ -354,11 +360,12 @@ export const EmptyMessage = styled.div`
 export const Korea = styled.div`
   width: 400px;
   overflow: hidden;
-  font-family: 'Yeon Sung', cursive;
+  font-family: 'Gaegu', cursive;
   position: relative;
   color: #7309ec;
   .clickSign {
     text-align: right;
+    font-weight: 700;
     font-size: 30px;
     width: 90px;
     height: 90px;
@@ -372,13 +379,15 @@ export const Korea = styled.div`
   .achievementMsg {
     text-align: left;
     height: 60px;
-    width: 200px;
+    width: 230px;
     position: absolute;
-    font-size: 20px;
-    right: 5px;
+    font-size: 22px;
+    right: 20px;
     bottom: 50px;
     background-image: url(${trophyArrow});
     background-size: contain;
+    background-position-x: 45px;
+    background-repeat: no-repeat;
     .crown {
       vertical-align: top;
       font-size: 25px;

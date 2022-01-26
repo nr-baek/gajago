@@ -31,7 +31,7 @@ function NextTripMemo({ nextTrip, dDay }) {
           <p className="tripTitle">
             <span className="title">{nextTrip.title}</span>
           </p>
-          <p className="dDay">D - {dDay === 0 ? 'Day' : dDay}</p>
+          <p className="dDay">D-{dDay === 0 ? 'Day' : dDay}</p>
         </NextPlan>
       ) : (
         <NoNextPlan>
