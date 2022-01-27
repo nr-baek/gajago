@@ -1,6 +1,7 @@
 import { EditOutlined } from '@ant-design/icons/lib/icons';
 import React from 'react';
 import { Form } from 'react-bootstrap';
+import AddReviewModal from './AddReviewModal';
 import ReviewList from './ReviewList';
 import { AddReviewBtn, ReviewContainer } from './styles';
 
@@ -36,6 +37,7 @@ function Reviews() {
         <EditOutlined /> 후기 작성
       </AddReviewBtn>
       <ReviewList />
+      <AddReviewModal show={true} />
     </ReviewContainer>
   );
 }
