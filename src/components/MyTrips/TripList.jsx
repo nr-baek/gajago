@@ -19,7 +19,7 @@ function TripList({ currentRegion, beforeTripObj, nextTripObj }) {
     return lists.map((list) => {
       const { startDate, endDate, title, tripType } = list;
       return (
-        <li key={title}>
+        <li key={title + startDate}>
           <div className="title">
             {emoji[tripType]}
             {title}
