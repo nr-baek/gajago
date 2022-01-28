@@ -1,11 +1,16 @@
 import { EditOutlined } from '@ant-design/icons/lib/icons';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import AddReviewModal from './AddReviewModal';
 import ReviewList from './ReviewList';
 import { AddReviewBtn, ReviewContainer } from './styles';
 
 function Reviews() {
+  const [show, setShow] = useState(false);
+
+  const handleClose = useCallback(() => setShow(false), []);
+  const handleShow = useCallback(() => setShow(true), []);
+
   return (
     <ReviewContainer>
       <h1>나의 여행후기</h1>
@@ -33,11 +38,11 @@ function Reviews() {
           <option value="overseas">해외</option>
         </Form.Select>
       </div>
-      <AddReviewBtn>
+      <AddReviewBtn onClick={handleShow}>
         <EditOutlined /> 후기 작성
       </AddReviewBtn>
       <ReviewList />
-      <AddReviewModal show={true} />
+      <AddReviewModal show={show} handleClose={handleClose} />
     </ReviewContainer>
   );
 }

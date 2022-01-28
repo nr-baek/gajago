@@ -108,3 +108,70 @@ export const StyledReview = styled.li`
     }
   }
 `;
+
+export const StyledListContainer = styled.div`
+  width: 100%;
+  height: 100%;
+
+  .noReviewMsg {
+    text-align: center;
+    padding: 10px 0 30px 0;
+    color: #555;
+  }
+
+  ul {
+    width: 92%;
+    margin: 0 auto;
+    padding-bottom: 10px;
+    font-size: 18px;
+    li {
+      height: 43px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: #333;
+      cursor: pointer;
+      .title {
+        padding-left: 10px;
+        line-height: 18px;
+        vertical-align: baseline;
+        width: 70%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .date {
+        font-size: 15px;
+        padding-left: 10px;
+      }
+      &:hover,
+      &.select {
+        color: #391c8a;
+        background-color: #f3f3ff;
+      }
+    }
+  }
+
+  div.bottom {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    p {
+      margin-right: 20px;
+    }
+    button {
+      float: right;
+      padding: 8px 20px;
+      border: 0;
+      border-radius: 5px;
+      background-color: #0d6efd;
+      color: #fff;
+
+      &:hover {
+        background-color: #0a5edb;
+      }
+    }
+  }
+`;

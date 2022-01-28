@@ -1,17 +1,36 @@
 import { FrownTwoTone, MehTwoTone, SmileTwoTone } from '@ant-design/icons';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { FormFooter } from '../Schedule/styles';
 
-function AddReviewForm() {
+function AddReviewForm({ resetTripInfo, QNAHandleClose }) {
+  const [validated, setValidated] = useState(false);
+
+  const handleSubmit = (event) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    setValidated(true);
+  };
+
+  useEffect(() => {
+    return () => {
+      resetTripInfo();
+    };
+  }, [resetTripInfo]);
+
   return (
-    <Form>
+    <Form noValidate validated={validated} onSubmit={handleSubmit}>
       <Form.Group as={Row} className="mb-3" controlId="tripTitle">
         <Form.Label column sm={2}>
           후기 제목
         </Form.Label>
         <Col sm={10}>
           <Form.Control type="text" required />
+          <Form.Control.Feedback type="invalid">여행 후기의 제목을 입력해주세요.</Form.Control.Feedback>
         </Col>
       </Form.Group>
       <fieldset>
@@ -23,6 +42,7 @@ function AddReviewForm() {
             <Form.Check
               type="radio"
               inline="true"
+              required
               label={
                 <SmileTwoTone
                   style={{
@@ -31,8 +51,8 @@ function AddReviewForm() {
                   twoToneColor="#26b820"
                 />
               }
-              name="tripTypes"
-              id="alone"
+              name="expression"
+              id="good"
             />
             <Form.Check
               type="radio"
@@ -45,8 +65,8 @@ function AddReviewForm() {
                   twoToneColor="#e4af00"
                 />
               }
-              name="tripTypes"
-              id="family"
+              name="expression"
+              id="soSo"
             />
             <Form.Check
               type="radio"
@@ -59,9 +79,10 @@ function AddReviewForm() {
                   twoToneColor="#e93600"
                 />
               }
-              name="tripTypes"
-              id="friends"
+              name="expression"
+              id="bad"
             />
+            <span>여행 표정을 선택하세요.</span>
           </Col>
         </Form.Group>
       </fieldset>
@@ -80,7 +101,8 @@ function AddReviewForm() {
           여행 후기
         </Form.Label>
         <Col sm={10}>
-          <Form.Control as="textarea" style={{ height: '120px' }} />
+          <Form.Control as="textarea" required style={{ height: '120px' }} />
+          <Form.Control.Feedback type="invalid">후기를 입력해주세요.</Form.Control.Feedback>
         </Col>
       </Form.Group>
 
@@ -101,16 +123,14 @@ function AddReviewForm() {
       <FormFooter>
         {/* <p>{submitError && submitError}</p> */}
         <div>
-          <Button variant="secondary">Close</Button>
+          <Button variant="secondary" onClick={QNAHandleClose}>
+            Close
+          </Button>
           <Button variant="primary" type="submit">
             작성하기
           </Button>
         </div>
       </FormFooter>
-
-      {/* <Button variant="primary" type="submit">
-        Submit
-      </Button> */}
     </Form>
   );
 }
