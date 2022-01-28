@@ -89,7 +89,8 @@ export const StyledCalendar = styled.div`
           }
 
           .title {
-            font-weight: bold;
+            letter-spacing: 0.8px;
+            font-weight: 700;
             white-space: nowrap;
             width: 100%;
           }
