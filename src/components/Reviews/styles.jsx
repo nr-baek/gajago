@@ -20,6 +20,13 @@ export const ReviewContainer = styled.div`
   ul {
     margin-top: 60px;
     border-top: 2px solid #c2c3fa;
+    height: 80%;
+    overflow: auto;
+    .noWrittenReviewMsg {
+      text-align: center;
+      padding: 10px 0 30px 0;
+      color: #555;
+    }
   }
 `;
 
@@ -42,15 +49,18 @@ export const AddReviewBtn = styled.div`
 
 export const StyledReview = styled.li`
   width: 100%;
+  max-height: ${({ selected }) => (selected ? '200%' : '73.5px')};
+  overflow: hidden;
   margin: 10px 0;
   padding: 10px 20px;
-  border: 2px dashed #a0a2fd;
+  border: 2px dashed ${({ selected }) => (selected ? '#3e41f0' : '#b4b5ff')};
   border-radius: 20px;
   background-color: #fff;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  transition: all 0.2s ease;
   .expression {
     width: 35px;
     font-size: 30px;
@@ -80,7 +90,7 @@ export const StyledReview = styled.li`
     }
   }
   .term {
-    width: 27%;
+    width: 30%;
     color: #838383;
   }
   .likes {
@@ -93,19 +103,25 @@ export const StyledReview = styled.li`
   }
 
   .content {
-    display: ${({ selected }) => (selected ? 'block' : 'none')};
+    overflow: hidden;
     width: 95%;
     margin: 10px auto;
     img {
       display: inline-block;
       background-color: pink;
-      width: 300px;
+      width: 400px;
     }
     p {
       margin-top: 10px;
-      font-size: 18px;
+      font-size: 19px;
       font-family: 'Gaegu', cursive;
+      color: #444;
+      font-weight: 700;
     }
+  }
+
+  &:hover {
+    border-color: #3e41f0;
   }
 `;
 
