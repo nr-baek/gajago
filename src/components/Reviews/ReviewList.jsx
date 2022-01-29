@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ReviewOfTrip from './ReviewOfTrip';
-import { generateWrittenReviewArray } from './utils';
+import { generateWrittenReviewArray, generateTripsObjectByRegion } from './utils';
 
-function ReviewList() {
+function ReviewList({ selectedRegion }) {
   const planArray = useSelector((state) => state.user.planData);
   const writtenReviewArray = generateWrittenReviewArray(planArray);
+  const tripsObjectByRegion = generateTripsObjectByRegion(writtenReviewArray);
   const [clickedReview, setClickedReview] = useState(null);
 
   const handleClick = useCallback(
@@ -19,8 +20,8 @@ function ReviewList() {
 
   return (
     <ul>
-      {writtenReviewArray.length ? (
-        writtenReviewArray.map((trip) => {
+      {tripsObjectByRegion[selectedRegion].length ? (
+        tripsObjectByRegion[selectedRegion].map((trip) => {
           const id = trip.title + trip.startDate;
           return (
             <ReviewOfTrip key={id} id={id} trip={trip} selected={id === clickedReview} handleClick={handleClick} />

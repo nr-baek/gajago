@@ -1,12 +1,14 @@
 import { EditOutlined } from '@ant-design/icons/lib/icons';
 import React, { useCallback, useState } from 'react';
 import { Form } from 'react-bootstrap';
+import useInput from '../../hooks/useInput';
 import AddReviewModal from './AddReviewModal';
 import ReviewList from './ReviewList';
 import { AddReviewBtn, ReviewContainer } from './styles';
 
 function Reviews() {
   const [show, setShow] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useInput('allRegion');
 
   const handleClose = useCallback(() => setShow(false), []);
   const handleShow = useCallback(() => setShow(true), []);
@@ -15,8 +17,8 @@ function Reviews() {
     <ReviewContainer>
       <h1>나의 여행후기</h1>
       <div className="select">
-        <Form.Select aria-label="지역 정렬기준" defaultValue="allRegion">
-          <option>지역선택</option>
+        <Form.Select aria-label="지역 정렬기준" onChange={setSelectedRegion}>
+          <option value="allRegion">지역선택</option>
           <option value="allRegion">전국</option>
           <option value="Seoul">서울특별시</option>
           <option value="Busan">부산광역시</option>
@@ -41,7 +43,7 @@ function Reviews() {
       <AddReviewBtn onClick={handleShow}>
         <EditOutlined /> 후기 작성
       </AddReviewBtn>
-      <ReviewList />
+      <ReviewList selectedRegion={selectedRegion} />
       <AddReviewModal show={show} handleClose={handleClose} />
     </ReviewContainer>
   );

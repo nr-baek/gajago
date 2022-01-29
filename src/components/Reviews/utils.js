@@ -28,3 +28,35 @@ export const generateUnWrittenReviewArray = (planArray) => {
 export const generateWrittenReviewArray = (planArray) => {
   return generatePlanArrayToReview(planArray, true);
 };
+
+export const generateTripsObjectByRegion = (tripArray) => {
+  const tripObj = {
+    allRegion: [],
+    Seoul: [],
+    Busan: [],
+    DaeGu: [],
+    InCheon: [],
+    DaeJeon: [],
+    GwangJu: [],
+    UlSan: [],
+    SeJong: [],
+    GyeongGi: [],
+    GangWon: [],
+    ChungBuk: [],
+    ChungNam: [],
+    JeonBuk: [],
+    JeonNam: [],
+    GyeongBuk: [],
+    GyeongNam: [],
+    JeJu: [],
+    overseas: [],
+  };
+
+  tripArray.forEach((trip) => {
+    tripObj[trip.region].push(trip);
+  });
+
+  tripObj.allRegion = [...tripArray];
+
+  return tripObj;
+};
