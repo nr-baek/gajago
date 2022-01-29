@@ -71,10 +71,12 @@ function AddReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose })
             ref(db, `users/${user.uid}/plans/${tripInfo.startDate + '_' + tripInfo.region}/review`),
             createReviewData(downloadURL),
           );
-          await set(
-            ref(db, `reviews/${user.uid}/${tripInfo.startDate + '_' + tripInfo.region}`),
-            createReviewData(downloadURL),
-          );
+          if (openReview) {
+            await set(
+              ref(db, `reviews/${user.uid}/${tripInfo.startDate + '_' + tripInfo.region}`),
+              createReviewData(downloadURL),
+            );
+          }
         } else {
           await set(
             ref(db, `users/${user.uid}/plans/${tripInfo.startDate + '_' + tripInfo.region}/review`),
