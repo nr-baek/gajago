@@ -9,7 +9,8 @@ import dayjs from 'dayjs';
 
 import { getDatabase, ref, set, child, get } from 'firebase/database';
 import { useSelector, useDispatch } from 'react-redux';
-import { setPlanData } from '../../redux/actions/user_action';
+import { setPlanData, setTrophy } from '../../redux/actions/user_action';
+import { checkTrophy } from './utils';
 
 function AddPlanForm({ handleClose }) {
   const [title, onChangeTitle] = useInput('');
@@ -26,12 +27,22 @@ function AddPlanForm({ handleClose }) {
   const dispatch = useDispatch();
   const dbRef = ref(getDatabase());
 
-  const getPlansData = async (user) => {
+  const checkTrophyState = async (planArray) => {
+    const trophyState = checkTrophy(planArray);
+    console.log(trophyState);
+    if (user.trophy !== trophyState) {
+      await set(ref(db, `users/${user.uid}/trophy`), trophyState);
+      await dispatch(setTrophy(trophyState));
+    }
+  };
+
+  const setPlanDataAndTrophy = async (user) => {
     try {
       await get(child(dbRef, `users/${user.uid}/plans`)).then((snapshot) => {
         if (snapshot.exists()) {
           const planArray = Object.values(snapshot.val());
           dispatch(setPlanData(planArray));
+          checkTrophyState(planArray);
         } else {
           console.log('No data available');
         }
@@ -93,7 +104,7 @@ function AddPlanForm({ handleClose }) {
 
     try {
       await set(ref(db, `users/${user.uid}/plans/${startDateStr + '_' + region}`), createPlan());
-      getPlansData(user);
+      await setPlanDataAndTrophy(user);
       setLoading(false);
       handleClose();
     } catch (error) {

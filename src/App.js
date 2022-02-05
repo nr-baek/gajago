@@ -13,7 +13,7 @@ import StoryPage from './pages/StoryPage';
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearUser, setPlanData, setUser } from './redux/actions/user_action';
+import { clearUser, setPlanData, setTrophy, setUser } from './redux/actions/user_action';
 
 // const LogInPage = loadable(() => import('./pages/LogInPage'));
 // const SignUpPage = loadable(() => import('./pages/SignUpPage'));
@@ -24,15 +24,17 @@ function App() {
   const dispatch = useDispatch();
   const dbRef = ref(getDatabase());
 
-  const getPlansData = async (user) => {
+  const setPlanDataAndTrophy = async (user) => {
     try {
-      await get(child(dbRef, `users/${user.uid}/plans`)).then((snapshot) => {
+      await get(child(dbRef, `users/${user.uid}`)).then((snapshot) => {
         if (snapshot.exists()) {
-          const planArray = Object.values(snapshot.val());
+          const plans = snapshot.val().plans;
+          const trophy = snapshot.val().trophy;
+          const planArray = plans ? Object.values(plans) : [];
           dispatch(setPlanData(planArray));
+          dispatch(setTrophy(trophy));
         } else {
           console.log('No data available');
-          dispatch(setPlanData({}));
         }
       });
     } catch (error) {
@@ -47,7 +49,7 @@ function App() {
       console.log('user', user);
       if (user && user.displayName) {
         dispatch(setUser(user));
-        getPlansData(user);
+        setPlanDataAndTrophy(user);
         navigate('/');
       } else if (!user) {
         navigate('/login');

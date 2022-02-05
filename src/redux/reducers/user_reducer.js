@@ -1,8 +1,9 @@
-import { CLEAR_USER, SET_PHOTO_URL, SET_PLAN_DATA, SET_USER } from '../actions/types';
+import { CLEAR_USER, SET_PHOTO_URL, SET_PLAN_DATA, SET_USER, SET_TROPHY } from '../actions/types';
 
 const initialUserState = {
   currentUser: null,
-  planData: null,
+  planData: [],
+  trophy: false,
   isLoading: true,
 };
 
@@ -17,7 +18,7 @@ const user_reducer = (state = initialUserState, action) => {
       return {
         ...state,
         currentUser: null,
-        planData: null,
+        planData: [],
         isLoading: false,
       };
     case SET_PHOTO_URL:
@@ -33,6 +34,11 @@ const user_reducer = (state = initialUserState, action) => {
       return {
         ...state,
         planData: action.payload,
+      };
+    case SET_TROPHY:
+      return {
+        ...state,
+        trophy: action.payload,
         isLoading: false,
       };
     default:

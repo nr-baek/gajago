@@ -35,3 +35,25 @@ export const makeMarkingInfoObj = (startOfMonth, displayPlans = []) => {
 
   return markingInfoObj;
 };
+
+export const checkTrophy = (planArray) => {
+  const today = dayjs(new Date()).format('YYYY-MM-DD');
+  const beforeTripObj = {};
+
+  for (let i = 0; i < planArray.length; i++) {
+    const plan = planArray[i];
+
+    if (plan.endDate <= today) {
+      if (plan.region === 'overseas') {
+        continue;
+      }
+      beforeTripObj[plan.region] = 1;
+    } else {
+      break;
+    }
+  }
+
+  const regionCount = Object.values(beforeTripObj).length;
+
+  return regionCount === 17;
+};

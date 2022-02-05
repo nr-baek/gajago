@@ -26,6 +26,13 @@ export const Container = styled.div`
       border-radius: 50%;
       margin: 20px auto;
     }
+    .trophy {
+      color: #f3db00;
+      font-size: 25px;
+      line-height: 23px;
+      vertical-align: top;
+      padding-right: 5px;
+    }
 
     .nickname {
       color: #ffffff;
