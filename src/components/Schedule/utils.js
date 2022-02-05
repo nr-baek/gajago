@@ -36,7 +36,7 @@ export const makeMarkingInfoObj = (startOfMonth, displayPlans = []) => {
   return markingInfoObj;
 };
 
-export const checkTrophy = (planArray) => {
+export const checkTrophyInfo = (planArray) => {
   const today = dayjs(new Date()).format('YYYY-MM-DD');
   const beforeTripObj = {};
 
@@ -47,13 +47,15 @@ export const checkTrophy = (planArray) => {
       if (plan.region === 'overseas') {
         continue;
       }
-      beforeTripObj[plan.region] = 1;
+      beforeTripObj[plan.region] = beforeTripObj[plan.region] ? beforeTripObj[plan.region] + 1 : 1;
     } else {
       break;
     }
   }
 
   const regionCount = Object.values(beforeTripObj).length;
+  const tripCount = Object.values(beforeTripObj).reduce((acc, cur) => acc + cur, 0);
+  const isOwner = regionCount === 17;
 
-  return regionCount === 17;
+  return [isOwner, tripCount];
 };

@@ -13,7 +13,7 @@ import StoryPage from './pages/StoryPage';
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearUser, setPlanData, setTrophy, setUser } from './redux/actions/user_action';
+import { clearUser, setPlanData, setTrophyInfo, setUser } from './redux/actions/user_action';
 
 // const LogInPage = loadable(() => import('./pages/LogInPage'));
 // const SignUpPage = loadable(() => import('./pages/SignUpPage'));
@@ -26,15 +26,19 @@ function App() {
 
   const setPlanDataAndTrophy = async (user) => {
     try {
-      await get(child(dbRef, `users/${user.uid}`)).then((snapshot) => {
+      await get(child(dbRef, `users/${user.uid}/plans`)).then((snapshot) => {
         if (snapshot.exists()) {
-          const plans = snapshot.val().plans;
-          const trophy = snapshot.val().trophy;
+          const plans = snapshot.val();
           const planArray = plans ? Object.values(plans) : [];
           dispatch(setPlanData(planArray));
-          dispatch(setTrophy(trophy));
         } else {
           console.log('No data available');
+          dispatch(setPlanData({}));
+        }
+      });
+      await get(child(dbRef, `trophyOwners/${user.uid}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          dispatch(setTrophyInfo(snapshot.val()));
         }
       });
     } catch (error) {

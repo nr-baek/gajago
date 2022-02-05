@@ -9,8 +9,8 @@ import dayjs from 'dayjs';
 
 import { getDatabase, ref, set, child, get } from 'firebase/database';
 import { useSelector, useDispatch } from 'react-redux';
-import { setPlanData, setTrophy } from '../../redux/actions/user_action';
-import { checkTrophy } from './utils';
+import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
+import { checkTrophyInfo } from './utils';
 
 function AddPlanForm({ handleClose }) {
   const [title, onChangeTitle] = useInput('');
@@ -23,16 +23,27 @@ function AddPlanForm({ handleClose }) {
   const [plans, setPlans] = useState([]);
   const [submitError, setSubmitError] = useState('');
   const [loading, setLoading] = useState(false);
+
   const user = useSelector((state) => state.user.currentUser);
+  const trophyInfo = useSelector((state) => state.user.trophyInfo);
+
   const dispatch = useDispatch();
   const dbRef = ref(getDatabase());
 
   const checkTrophyState = async (planArray) => {
-    const trophyState = checkTrophy(planArray);
-    console.log(trophyState);
-    if (user.trophy !== trophyState) {
-      await set(ref(db, `users/${user.uid}/trophy`), trophyState);
-      await dispatch(setTrophy(trophyState));
+    const [isOwner, tripCount] = checkTrophyInfo(planArray);
+    const infoObj = {
+      isOwner,
+      tripCount,
+      image: user.photoURL,
+      nickname: user.displayName,
+    };
+
+    if (trophyInfo.tripCount !== tripCount) {
+      await dispatch(setTrophyInfo(infoObj));
+      if (isOwner) {
+        await set(ref(db, `trophyOwners/${user.uid}`), infoObj);
+      }
     }
   };
 

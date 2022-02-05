@@ -9,7 +9,7 @@ import { TrophyFilled } from '@ant-design/icons';
 
 const Profile = () => {
   const user = useSelector((state) => state.user.currentUser);
-  const trophy = useSelector((state) => state.user.trophy);
+  const trophy = useSelector((state) => state.user.trophyInfo.isOwner);
   const dispatch = useDispatch();
   const inputOpenImageRef = useRef();
 
