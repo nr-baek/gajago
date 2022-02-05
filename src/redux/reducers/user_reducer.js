@@ -1,9 +1,12 @@
-import { CLEAR_USER, SET_PHOTO_URL, SET_PLAN_DATA, SET_USER, SET_TROPHY } from '../actions/types';
+import { CLEAR_USER, SET_PHOTO_URL, SET_PLAN_DATA, SET_USER, SET_TROPHY_INFO } from '../actions/types';
 
 const initialUserState = {
   currentUser: null,
   planData: [],
-  trophy: false,
+  trophyInfo: {
+    isOwner: false,
+    tripCount: 0,
+  },
   isLoading: true,
 };
 
@@ -35,10 +38,10 @@ const user_reducer = (state = initialUserState, action) => {
         ...state,
         planData: action.payload,
       };
-    case SET_TROPHY:
+    case SET_TROPHY_INFO:
       return {
         ...state,
-        trophy: action.payload,
+        trophyInfo: action.payload ? action.payload : initialUserState.trophyInfo,
         isLoading: false,
       };
     default:

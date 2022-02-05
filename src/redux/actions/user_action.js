@@ -1,4 +1,4 @@
-import { CLEAR_USER, SET_USER, SET_PHOTO_URL, SET_PLAN_DATA, SET_TROPHY } from './types.js';
+import { CLEAR_USER, SET_USER, SET_PHOTO_URL, SET_PLAN_DATA, SET_TROPHY_INFO } from './types.js';
 
 export const setUser = (user) => {
   return {
@@ -27,9 +27,9 @@ export const setPlanData = (planArray) => {
   };
 };
 
-export const setTrophy = (haveTrophy) => {
+export const setTrophyInfo = (trophyInfo) => {
   return {
-    type: SET_TROPHY,
-    payload: haveTrophy,
+    type: SET_TROPHY_INFO,
+    payload: trophyInfo,
   };
 };
