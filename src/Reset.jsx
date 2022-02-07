@@ -21,6 +21,9 @@ const Reset = css`
   li {
     list-style: none;
   }
+  h2 {
+    margin-bottom: 0;
+  }
 `;
 
 export default Reset;
