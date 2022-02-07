@@ -39,6 +39,8 @@ function App() {
       await get(child(dbRef, `trophyOwners/${user.uid}`)).then((snapshot) => {
         if (snapshot.exists()) {
           dispatch(setTrophyInfo(snapshot.val()));
+        } else {
+          dispatch(setTrophyInfo());
         }
       });
     } catch (error) {

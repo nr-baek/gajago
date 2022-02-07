@@ -18,7 +18,7 @@ function TripMap({ onClickRegion }) {
     setTimeout(() => {
       setVisitRate(VisitRateOfAllRegion);
     }, 200);
-    if (VisitRateOfAllRegion === 100) {
+    if (VisitRateOfAllRegion >= 100) {
       setTimeout(() => {
         setIsTripKing(true);
       }, 1200);
