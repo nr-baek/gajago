@@ -2,7 +2,9 @@ import styled from '@emotion/styled';
 
 export const StoryContainer = styled.div`
   width: 95%;
+  height: 100%;
   margin: 0 auto;
+  overflow: auto;
 `;
 
 export const TravelerList = styled.div`
@@ -60,8 +62,9 @@ export const TravelerList = styled.div`
             text-overflow: ellipsis;
 
             .ranking {
+              font-size: 13px;
               font-weight: 700;
-              color: #760dff;
+              color: #8400ff;
             }
           }
           .tripCount {

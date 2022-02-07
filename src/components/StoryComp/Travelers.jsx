@@ -43,7 +43,12 @@ function Travelers() {
                 <img src={owner[1].image} alt={owner[1].nickname} />
                 <div>
                   <span className="nickname">
-                    {idx < 3 && <span className="ranking">{idx + 1}.</span>} {owner[1].nickname}
+                    <span className="ranking">
+                      {idx === 0 && '1st'}
+                      {idx === 1 && '2nd'}
+                      {idx === 2 && '3rd'}
+                    </span>{' '}
+                    {owner[1].nickname}
                   </span>
                   <span className="tripCount">({owner[1].tripCount}회)</span>
                 </div>
