@@ -1,32 +1,52 @@
 import { TrophyTwoTone, CrownTwoTone } from '@ant-design/icons/lib/icons';
 import React, { useCallback, useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
-import { getDatabase, ref, child, get } from 'firebase/database';
+import { getDatabase, ref, get, query, orderByChild } from 'firebase/database';
 import { TravelerList } from './styles';
 
-function Travelers() {
+function Travelers({ usersInfo }) {
   const [trophyOwners, setTrophyOwners] = useState([]);
+  console.log(trophyOwners);
 
-  const dbRef = ref(getDatabase());
+  const db = getDatabase();
+
+  const setImageURL = useCallback(
+    (ownersArr) => {
+      const deepCopyOwners = JSON.parse(JSON.stringify(ownersArr));
+
+      deepCopyOwners.forEach((owner) => {
+        owner.nickname = usersInfo[owner.key].nickname;
+        owner.image = usersInfo[owner.key].image;
+      });
+
+      return deepCopyOwners;
+    },
+    [usersInfo],
+  );
 
   const getTrophyOwners = useCallback(async () => {
-    await get(child(dbRef, `trophyOwners`)).then((snapshot) => {
+    await get(query(ref(db, `trophyOwners`), orderByChild('tripCount'))).then((snapshot) => {
       if (snapshot.exists()) {
-        const owners = snapshot.val();
-        const ownersArray = Object.entries(owners);
-        ownersArray.sort((a, b) => {
-          if (a[1].tripCount > b[1].tripCount) return -1;
-          if (a[1].tripCount === b[1].tripCount) return 0;
-          return 1;
+        const sortedOwnersArr = [];
+
+        snapshot.forEach((child) => {
+          sortedOwnersArr.unshift({
+            key: child.key,
+            ...child.val(),
+          });
         });
-        setTrophyOwners(ownersArray);
+
+        const owners = setImageURL(sortedOwnersArr);
+        setTrophyOwners(owners);
       }
     });
-  }, [dbRef]);
+  }, [db, setImageURL]);
 
   useEffect(() => {
-    getTrophyOwners();
-  }, [getTrophyOwners]);
+    if (usersInfo) {
+      getTrophyOwners();
+    }
+  }, [usersInfo, getTrophyOwners]);
 
   return (
     <TravelerList>
@@ -37,23 +57,25 @@ function Travelers() {
       <section>
         <Scrollbars autoHide>
           <ul>
-            {trophyOwners.map((owner, idx) => (
-              <li key={owner[0]}>
-                {idx === 0 && <CrownTwoTone className="crown" twoToneColor="#ff9d00" />}
-                <img src={owner[1].image} alt={owner[1].nickname} />
-                <div>
-                  <span className="nickname">
-                    <span className="ranking">
-                      {idx === 0 && '1st'}
-                      {idx === 1 && '2nd'}
-                      {idx === 2 && '3rd'}
-                    </span>{' '}
-                    {owner[1].nickname}
-                  </span>
-                  <span className="tripCount">({owner[1].tripCount}회)</span>
-                </div>
-              </li>
-            ))}
+            {trophyOwners.map((owner, idx) => {
+              return (
+                <li key={owner.key}>
+                  {idx === 0 && <CrownTwoTone className="crown" twoToneColor="#ff9d00" />}
+                  <img src={owner.image} alt={owner.nickname} />
+                  <div>
+                    <span className="nickname">
+                      <span className="ranking">
+                        {idx === 0 && '1st'}
+                        {idx === 1 && '2nd'}
+                        {idx === 2 && '3rd'}
+                      </span>{' '}
+                      {owner.nickname}
+                    </span>
+                    <span className="tripCount">({owner.tripCount}회)</span>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </Scrollbars>
       </section>
