@@ -67,7 +67,7 @@ const SignUp = () => {
           photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`,
         });
 
-        set(ref(getDatabase(), `users/${createdUser.user.uid}`), {
+        set(ref(getDatabase(), `userList/${createdUser.user.uid}`), {
           nickname: createdUser.user.displayName,
           image: createdUser.user.photoURL,
         });

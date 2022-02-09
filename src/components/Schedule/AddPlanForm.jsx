@@ -7,7 +7,7 @@ import useInput from '../../hooks/useInput';
 import { DatePickerForm, FormFooter, PlansBox, SelectForm } from './styles';
 import dayjs from 'dayjs';
 
-import { getDatabase, ref, set, child, get } from 'firebase/database';
+import { getDatabase, ref, set, get, push, query, orderByChild } from 'firebase/database';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
 import { checkTrophyInfo } from './utils';
@@ -28,15 +28,12 @@ function AddPlanForm({ handleClose }) {
   const trophyInfo = useSelector((state) => state.user.trophyInfo);
 
   const dispatch = useDispatch();
-  const dbRef = ref(getDatabase());
 
   const checkTrophyState = async (planArray) => {
     const [isOwner, tripCount] = checkTrophyInfo(planArray);
     const infoObj = {
       isOwner,
       tripCount,
-      image: user.photoURL,
-      nickname: user.displayName,
     };
 
     if (trophyInfo.tripCount !== tripCount) {
@@ -49,9 +46,17 @@ function AddPlanForm({ handleClose }) {
 
   const setPlanDataAndTrophy = async (user) => {
     try {
-      await get(child(dbRef, `users/${user.uid}/plans`)).then((snapshot) => {
+      await get(query(ref(db, `users/${user.uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
         if (snapshot.exists()) {
-          const planArray = Object.values(snapshot.val());
+          const planArray = [];
+
+          snapshot.forEach((child) => {
+            planArray.push({
+              key: child.key,
+              ...child.val(),
+            });
+          });
+
           dispatch(setPlanData(planArray));
           checkTrophyState(planArray);
         } else {
@@ -73,6 +78,7 @@ function AddPlanForm({ handleClose }) {
       region,
       detailAddress,
       planList: plans,
+      review: false,
     };
 
     return plan;
@@ -111,10 +117,9 @@ function AddPlanForm({ handleClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const startDateStr = dayjs(startDate).format('YYYY-MM-DD');
 
     try {
-      await set(ref(db, `users/${user.uid}/plans/${startDateStr + '_' + region}`), createPlan());
+      await set(push(ref(db, `users/${user.uid}/plans/`)), createPlan());
       await setPlanDataAndTrophy(user);
       setLoading(false);
       handleClose();

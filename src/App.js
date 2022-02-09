@@ -2,7 +2,7 @@
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import './firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase, ref, child, get } from 'firebase/database';
+import { getDatabase, ref, child, get, query, orderByChild } from 'firebase/database';
 
 import MainPage from './pages/MainPage';
 import LogInPage from './pages/LogInPage';
@@ -24,16 +24,25 @@ function App() {
   const dispatch = useDispatch();
   const dbRef = ref(getDatabase());
 
+  const db = getDatabase();
+
   const setPlanDataAndTrophy = async (user) => {
     try {
-      await get(child(dbRef, `users/${user.uid}/plans`)).then((snapshot) => {
+      await get(query(ref(db, `users/${user.uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
         if (snapshot.exists()) {
-          const plans = snapshot.val();
-          const planArray = plans ? Object.values(plans) : [];
+          let planArray = [];
+
+          snapshot.forEach((child) => {
+            planArray.push({
+              key: child.key,
+              ...child.val(),
+            });
+            return false;
+          });
           dispatch(setPlanData(planArray));
         } else {
           console.log('No data available');
-          dispatch(setPlanData({}));
+          dispatch(setPlanData([]));
         }
       });
       await get(child(dbRef, `trophyOwners/${user.uid}`)).then((snapshot) => {

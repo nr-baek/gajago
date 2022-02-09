@@ -35,7 +35,7 @@ const Profile = () => {
 
         dispatch(setPhotoURL(downloadURL));
 
-        await update(ref(getDatabase(), `users/${user.uid}`), {
+        await update(ref(getDatabase(), `userList/${user.uid}`), {
           image: downloadURL,
         });
       } catch (error) {
