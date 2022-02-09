@@ -19,12 +19,23 @@ export const Container = styled.div`
 
   .profile {
     margin-bottom: 10px;
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .dropDownBox {
+      position: relative;
+      width: 180px;
+      display: flex;
+      justify-content: center;
+    }
     img {
       width: 120px;
       height: 120px;
       background-color: #ebd3ff;
       border-radius: 50%;
       margin: 20px auto;
+      object-fit: cover;
     }
     .trophy {
       color: #f3db00;
@@ -38,6 +49,10 @@ export const Container = styled.div`
       color: #ffffff;
       font-size: 20px;
       font-weight: bold;
+      display: inline-block;
+      word-break: break-all;
+      white-space: pre-line;
+      max-width: 115px;
       &:hover {
         text-shadow: 0 0 3px #ffffff;
       }

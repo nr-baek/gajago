@@ -48,16 +48,18 @@ const Profile = () => {
   return (
     <div className="profile">
       <img src={user && user.photoURL} alt={user && user.displayName} />
-      <Dropdown style={{ textAlign: 'center' }}>
-        <Dropdown.Toggle style={{ background: 'transparent', border: '0px' }} id="dropdown-basic">
-          {trophy && <TrophyFilled className="trophy" />}
-          <span className="nickname">{user && user.displayName}</span>
-        </Dropdown.Toggle>
+      <div className="dropDownBox">
+        <Dropdown>
+          <Dropdown.Toggle style={{ background: 'transparent', border: '0px' }} id="dropdown-basic">
+            {trophy && <TrophyFilled className="trophy" />}
+            <span className="nickname">{user && user.displayName}</span>
+          </Dropdown.Toggle>
 
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={handleOpenImageRef}>프로필 사진 변경</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={handleOpenImageRef}>프로필 사진 변경</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       <input
         onChange={handleUploadImage}
         ref={inputOpenImageRef}
