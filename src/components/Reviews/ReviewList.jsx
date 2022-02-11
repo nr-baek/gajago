@@ -1,14 +1,43 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ReviewOfTrip from './ReviewOfTrip';
-import { generateWrittenReviewArray, generateTripsObjectByRegion } from './utils';
+import { generateTripsObjectByRegion } from './utils';
+import { getDatabase, ref, query, orderByChild, equalTo, onValue, off } from 'firebase/database';
 import { Scrollbars } from 'react-custom-scrollbars-2';
+import { useEffect } from 'react';
 
 function ReviewList({ selectedRegion }) {
-  const planArray = useSelector((state) => state.user.planData);
-  const writtenReviewArray = generateWrittenReviewArray(planArray);
-  const tripsObjectByRegion = generateTripsObjectByRegion(writtenReviewArray);
+  const user = useSelector((state) => state.user.currentUser);
+
+  const [reviews, setReviews] = useState(null);
   const [clickedReview, setClickedReview] = useState(null);
+
+  const db = getDatabase();
+  const reviewRef = ref(db, `reviews`);
+
+  const addReviewsListener = useCallback(() => {
+    onValue(query(reviewRef, orderByChild('uid'), equalTo(user.uid)), (snapshot) => {
+      if (snapshot.exists()) {
+        const reviewList = [];
+
+        snapshot.forEach((child) => {
+          reviewList.push({
+            key: child.key,
+            ...child.val(),
+          });
+        });
+
+        setReviews(generateTripsObjectByRegion(reviewList));
+      }
+    });
+  }, [reviewRef, user.uid]);
+
+  useEffect(() => {
+    addReviewsListener();
+    return () => {
+      off(reviewRef);
+    };
+  }, [addReviewsListener, reviewRef]);
 
   const handleClick = useCallback(
     (e) => {
@@ -22,9 +51,9 @@ function ReviewList({ selectedRegion }) {
   return (
     <ul>
       <Scrollbars autoHide>
-        {tripsObjectByRegion[selectedRegion].length ? (
-          tripsObjectByRegion[selectedRegion].map((trip) => {
-            const id = trip.title + trip.startDate;
+        {reviews && reviews[selectedRegion].length ? (
+          reviews[selectedRegion].map((trip) => {
+            const id = trip.key;
             return (
               <ReviewOfTrip key={id} id={id} trip={trip} selected={id === clickedReview} handleClick={handleClick} />
             );
