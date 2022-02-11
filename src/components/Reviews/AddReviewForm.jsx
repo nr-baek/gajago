@@ -3,7 +3,7 @@ import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../../hooks/useInput';
 import { getStorage, ref as strRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { getDatabase, ref, set, child, get } from 'firebase/database';
+import { getDatabase, ref, get, update } from 'firebase/database';
 import { FrownTwoTone, MehTwoTone, SmileTwoTone } from '@ant-design/icons';
 import { FormFooter } from '../Schedule/styles';
 import { setPlanData } from '../../redux/actions/user_action';
@@ -12,9 +12,10 @@ function AddReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose })
   const user = useSelector((state) => state.user.currentUser);
 
   const [validated, setValidated] = useState(false);
-  const [title, onChangeTitle] = useInput('');
+  const [reviewTitle, onChangeTitle] = useInput('');
   const [expression, setExpression] = useState('');
   const [imgFile, setImgFile] = useState(null);
+  const [photoDesc, onChangePhotoDesc] = useInput('');
   const [submitError, setSubmitError] = useState('');
   const [reviewText, onChangeReviewText] = useInput('');
   const [openReview, setOpenReview] = useState(false);
@@ -23,19 +24,27 @@ function AddReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose })
   const dispatch = useDispatch();
 
   const db = getDatabase();
-  const dbRef = ref(getDatabase());
   const storage = getStorage();
   const storageAddr = `review_image/${user.uid}/${tripInfo.startDate + '_' + tripInfo.region}`;
-  const storageRef = user && strRef(storage, storageAddr);
+  const storageRef = strRef(storage, storageAddr);
 
-  const getPlansData = async (user) => {
+  const setPlanDataAndTrophy = async (user) => {
     try {
-      await get(child(dbRef, `users/${user.uid}/plans`)).then((snapshot) => {
+      await get(ref(db, `users/${user.uid}/plans`)).then((snapshot) => {
         if (snapshot.exists()) {
-          const planArray = Object.values(snapshot.val());
+          let planArray = [];
+
+          snapshot.forEach((child) => {
+            planArray.push({
+              key: child.key,
+              ...child.val(),
+            });
+            return false;
+          });
           dispatch(setPlanData(planArray));
         } else {
           console.log('No data available');
+          dispatch(setPlanData([]));
         }
       });
     } catch (error) {
@@ -45,13 +54,20 @@ function AddReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose })
 
   const createReviewData = (reviewImgURL = '') => {
     const reviewData = {
-      title,
+      reviewTitle,
+      tripTitle: tripInfo.title,
       expression,
       imgUrl: reviewImgURL,
       reviewText,
       openReview,
+      photoDesc,
       likes: 0,
-      nickname: user.displayName,
+      uid: user.uid,
+      region: tripInfo.region,
+      detailAddress: tripInfo.detailAddress,
+      startDate: tripInfo.startDate,
+      endDate: tripInfo.endDate,
+      timeStamp: new Date().toJSON(),
     };
 
     return reviewData;
@@ -63,28 +79,20 @@ function AddReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose })
     if (form.checkValidity() !== false) {
       setLoading(true);
       try {
+        let downloadURL;
         if (imgFile) {
           const metadata = { contentType: imgFile.type };
           await uploadBytes(storageRef, imgFile, metadata);
-          const downloadURL = await getDownloadURL(strRef(storage, storageAddr));
-          await set(
-            ref(db, `users/${user.uid}/plans/${tripInfo.startDate + '_' + tripInfo.region}/review`),
-            createReviewData(downloadURL),
-          );
-          if (openReview) {
-            await set(
-              ref(db, `reviews/${user.uid}/${tripInfo.startDate + '_' + tripInfo.region}`),
-              createReviewData(downloadURL),
-            );
-          }
-        } else {
-          await set(
-            ref(db, `users/${user.uid}/plans/${tripInfo.startDate + '_' + tripInfo.region}/review`),
-            createReviewData(),
-          );
+          downloadURL = await getDownloadURL(strRef(storage, storageAddr));
         }
 
-        getPlansData(user);
+        const updates = {};
+        updates[`users/${user.uid}/plans/${tripInfo.key}/review`] = true;
+        updates[`reviews/${tripInfo.key}`] = createReviewData(downloadURL);
+
+        await update(ref(db), updates);
+
+        setPlanDataAndTrophy(user);
         setLoading(false);
         handleClose();
       } catch (error) {
@@ -118,7 +126,7 @@ function AddReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose })
           후기 제목
         </Form.Label>
         <Col sm={10}>
-          <Form.Control type="text" required value={title} onChange={onChangeTitle} />
+          <Form.Control type="text" required value={reviewTitle} onChange={onChangeTitle} />
           <Form.Control.Feedback type="invalid">여행 후기의 제목을 입력해주세요.</Form.Control.Feedback>
         </Col>
       </Form.Group>
@@ -187,6 +195,25 @@ function AddReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose })
           <Form.Control type="file" onChange={handleFileInput} />
         </Col>
       </Form.Group>
+
+      {imgFile && (
+        <Form.Group as={Row} className="mb-3" controlId="tripTitle">
+          <Form.Label column sm={2}>
+            사진 설명
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Control
+              type="text"
+              required
+              placeholder="60자 이내로 입력해주세요."
+              maxLength="60"
+              value={photoDesc}
+              onChange={onChangePhotoDesc}
+            />
+            <Form.Control.Feedback type="invalid">사진에 대한 설명을 입력해주세요.</Form.Control.Feedback>
+          </Col>
+        </Form.Group>
+      )}
 
       <Form.Group as={Row} className="mb-3" controlId="review">
         <Form.Label column sm={2}>

@@ -41,16 +41,15 @@ function AddReviewModal({ show, handleClose }) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {!tripInfo.title && (
-            <UnWrittenReviewList handleClose={handleClose} selectTripToWriteReview={selectTripToWriteReview} />
-          )}
-          {tripInfo.title && (
+          {tripInfo.title ? (
             <AddReviewForm
               QNAHandleClose={QNAHandleClose}
               tripInfo={tripInfo}
               resetTripInfo={resetTripInfo}
               handleClose={handleClose}
             />
+          ) : (
+            <UnWrittenReviewList handleClose={handleClose} selectTripToWriteReview={selectTripToWriteReview} />
           )}
         </Modal.Body>
       </Modal>

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import photoDescArrow from '../../assets/images/photoDescArrow.png';
 
 export const ReviewContainer = styled.div`
   width: 75%;
@@ -53,14 +54,16 @@ export const StyledReview = styled.li`
   overflow: hidden;
   margin: 10px 0;
   padding: 10px 20px;
-  border: 2px dashed ${({ selected }) => (selected ? '#3e41f0' : '#b4b5ff')};
+  border: 2px ${({ selected }) => (selected ? 'solid' : 'dashed')}
+    ${({ selected }) => (selected ? '#999bff' : '#b4b5ff')};
   border-radius: 20px;
   background-color: #fff;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.2s ease;
+  transition: all 0.4s ease;
+  white-space: pre;
   .expression {
     width: 35px;
     font-size: 30px;
@@ -106,17 +109,42 @@ export const StyledReview = styled.li`
     overflow: hidden;
     width: 95%;
     margin: 10px auto;
-    img {
-      display: inline-block;
-      background-color: pink;
-      width: 400px;
+    font-size: 19px;
+    .photoAndDesc {
+      display: flex;
+      align-items: flex-end;
+      img {
+        display: inline-block;
+        background-color: pink;
+        width: 400px;
+        min-height: 220px;
+      }
+      .photoDesc {
+        background-image: url(${photoDescArrow});
+        background-size: 60px 60px;
+        background-position-x: 10px;
+        background-position-y: 90%;
+        background-repeat: no-repeat;
+        font-family: 'Gaegu', cursive;
+        color: #6e3fee;
+        font-weight: 700;
+        text-align: center;
+        line-height: 23px;
+        word-break: break-all;
+        white-space: pre-line;
+        padding: 0 0 50px 10px;
+        width: 200px;
+      }
     }
     p {
-      margin-top: 10px;
-      font-size: 19px;
+      margin-top: 20px;
       font-family: 'Gaegu', cursive;
       color: #444;
       font-weight: 700;
+      white-space: pre-line;
+      line-height: 30px;
+      text-decoration: underline dotted #bfa8ff;
+      text-underline-position: under;
     }
   }
 
@@ -136,8 +164,11 @@ export const StyledListContainer = styled.div`
   }
 
   ul {
-    width: 92%;
-    margin: 0 auto;
+    overflow: auto;
+    max-height: 550px;
+    overflow-y: auto;
+    width: 96%;
+    margin: 0 0 0 auto;
     padding-bottom: 10px;
     font-size: 18px;
     li {

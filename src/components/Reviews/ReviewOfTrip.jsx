@@ -1,4 +1,4 @@
-import { HeartTwoTone, SmileTwoTone, MehTwoTone, FrownTwoTone } from '@ant-design/icons/lib/icons';
+import { HeartTwoTone, SmileTwoTone, MehTwoTone, FrownTwoTone, CameraOutlined } from '@ant-design/icons/lib/icons';
 import React from 'react';
 import { StyledReview } from './styles';
 
@@ -23,16 +23,17 @@ function ReviewOfTrip({ trip, selected, id, handleClick }) {
     JeJu: '제주도',
     overseas: '해외',
   };
+
   return (
     <StyledReview selected={selected} id={id} onClick={handleClick}>
-      {trip.review.expression === 'good' && <SmileTwoTone className="expression" twoToneColor="#26b820" />}
-      {trip.review.expression === 'soSo' && <MehTwoTone className="expression" twoToneColor="#e4af00" />}
-      {trip.review.expression === 'bad' && <FrownTwoTone className="expression" twoToneColor="#e93600" />}
+      {trip.expression === 'good' && <SmileTwoTone className="expression" twoToneColor="#26b820" />}
+      {trip.expression === 'soSo' && <MehTwoTone className="expression" twoToneColor="#e4af00" />}
+      {trip.expression === 'bad' && <FrownTwoTone className="expression" twoToneColor="#e93600" />}
       <div className="title">
-        <span className="reviewTitle">{trip.review.title}</span>
+        <span className="reviewTitle">{trip.reviewTitle}</span>
         <p className="regionAndTripTitle">
           <span>
-            ({regionObj[trip.region]}) {trip.title}
+            ({regionObj[trip.region]}) {trip.tripTitle}
           </span>
         </p>
       </div>
@@ -40,11 +41,19 @@ function ReviewOfTrip({ trip, selected, id, handleClick }) {
         {trip.startDate} ~ {trip.endDate}
       </div>
       <div className="likes">
-        <HeartTwoTone twoToneColor="#eb2f2f" /> {trip.review.likes}
+        <HeartTwoTone twoToneColor="#eb2f2f" /> {trip.likes}
       </div>
       <div className="content">
-        {trip.review.imgUrl && <img src={trip.review.imgUrl} alt={trip.detailAddress} />}
-        <p>{trip.review.reviewText}</p>
+        {trip.imgUrl && (
+          <div className="photoAndDesc">
+            <img src={trip.imgUrl} alt="여행 후기 사진" />
+            <div className="photoDesc">
+              <CameraOutlined style={{ verticalAlign: 'top' }} />{' '}
+              {trip.photoDesc ? trip.photoDesc : '여행후기 사진 설명'}
+            </div>
+          </div>
+        )}
+        <p>{trip.reviewText}</p>
       </div>
     </StyledReview>
   );
