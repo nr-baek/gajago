@@ -2,7 +2,7 @@
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import './firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase, ref, child, get, query, orderByChild } from 'firebase/database';
+import { getDatabase, ref, child, get } from 'firebase/database';
 
 import MainPage from './pages/MainPage';
 import LogInPage from './pages/LogInPage';
@@ -28,7 +28,7 @@ function App() {
 
   const setPlanDataAndTrophy = async (user) => {
     try {
-      await get(query(ref(db, `users/${user.uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
+      await get(ref(db, `users/${user.uid}/plans`)).then((snapshot) => {
         if (snapshot.exists()) {
           let planArray = [];
 
