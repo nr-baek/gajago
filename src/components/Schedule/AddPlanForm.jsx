@@ -7,7 +7,7 @@ import useInput from '../../hooks/useInput';
 import { DatePickerForm, FormFooter, PlansBox, SelectForm } from './styles';
 import dayjs from 'dayjs';
 
-import { getDatabase, ref, set, get, push, query, orderByChild } from 'firebase/database';
+import { getDatabase, ref, set, get, push, query, orderByChild, child } from 'firebase/database';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
 import { checkTrophyInfo } from './utils';
@@ -119,7 +119,11 @@ function AddPlanForm({ handleClose }) {
     setLoading(true);
 
     try {
-      await set(push(ref(db, `users/${user.uid}/plans/`)), createPlan());
+      const newReviewKey = push(child(ref(db), `users/${user.uid}/plans`)).key;
+      await set(
+        ref(db, `users/${user.uid}/plans/` + dayjs(startDate).format('YYYY-MM-DD') + newReviewKey),
+        createPlan(),
+      );
       await setPlanDataAndTrophy(user);
       setLoading(false);
       handleClose();
