@@ -86,9 +86,13 @@ function AddReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose })
           downloadURL = await getDownloadURL(strRef(storage, storageAddr));
         }
 
+        const reviewData = createReviewData(downloadURL);
         const updates = {};
         updates[`users/${user.uid}/plans/${tripInfo.key}/review`] = true;
-        updates[`reviews/${tripInfo.key}`] = createReviewData(downloadURL);
+        updates[`reviews/user/${user.uid}/${tripInfo.key}`] = reviewData;
+        if (openReview) {
+          updates[`reviews/public/${tripInfo.key}`] = reviewData;
+        }
 
         await update(ref(db), updates);
 
