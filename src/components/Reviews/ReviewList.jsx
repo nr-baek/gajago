@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ReviewOfTrip from './ReviewOfTrip';
 import { generateTripsObjectByRegion } from './utils';
-import { getDatabase, ref, query, orderByChild, equalTo, onValue, off } from 'firebase/database';
+import { getDatabase, ref, onValue, off } from 'firebase/database';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { useEffect } from 'react';
 
@@ -13,13 +13,12 @@ function ReviewList({ selectedRegion }) {
   const [clickedReview, setClickedReview] = useState(null);
 
   const db = getDatabase();
-  const reviewRef = ref(db, `reviews`);
+  const reviewRef = ref(db, `reviews/user/${user.uid}`);
 
   const addReviewsListener = useCallback(() => {
-    onValue(query(reviewRef, orderByChild('uid'), equalTo(user.uid)), (snapshot) => {
+    onValue(reviewRef, (snapshot) => {
       if (snapshot.exists()) {
         const reviewList = [];
-
         snapshot.forEach((child) => {
           reviewList.push({
             key: child.key,
@@ -30,7 +29,7 @@ function ReviewList({ selectedRegion }) {
         setReviews(generateTripsObjectByRegion(reviewList));
       }
     });
-  }, [reviewRef, user.uid]);
+  }, [reviewRef]);
 
   useEffect(() => {
     addReviewsListener();
