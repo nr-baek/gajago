@@ -30,7 +30,7 @@ function StoryComp() {
   return (
     <StoryContainer>
       <Travelers usersInfo={usersInfo} />
-      <Stories usersInfo={usersInfo} />
+      {usersInfo && <Stories usersInfo={usersInfo} />}
     </StoryContainer>
   );
 }

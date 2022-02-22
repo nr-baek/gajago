@@ -13,10 +13,10 @@ const Reset = css`
   p {
     margin-bottom: 0;
   }
-  ,
   ol,
   ul {
     padding: 0;
+    margin-bottom: 0;
   }
   li {
     list-style: none;
