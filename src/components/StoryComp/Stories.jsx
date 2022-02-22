@@ -108,7 +108,7 @@ function Stories({ usersInfo }) {
             <div className="resultList">
               {matchList.length ? (
                 <ul aria-hidden="true" aria-label="submenu">
-                  <p>님네임을 선택해주세요.</p>
+                  <p>닉네임을 선택해주세요.</p>
                   {matchList.map((user, idx) => {
                     return (
                       <li
