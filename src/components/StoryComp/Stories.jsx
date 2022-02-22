@@ -89,7 +89,7 @@ function Stories({ usersInfo }) {
   return (
     <StoriesContainer>
       <div className="top">
-        <h2> Stories</h2>
+        <h2>Stories</h2>
 
         <div className={`searchBox ${listDisplay ? 'focused' : ''}`}>
           {!listDisplay && <SearchOutlined style={{ color: '#5c0bdf' }} />}
