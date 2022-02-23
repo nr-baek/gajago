@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 
 export const StoryContainer = styled.div`
-  width: 95%;
+  width: 100%;
   height: 100%;
   margin: 0 auto;
+  padding: 0 30px;
   overflow: auto;
 `;
 
@@ -20,7 +21,7 @@ export const TravelerList = styled.div`
     }
   }
   section {
-    height: 150px;
+    height: 140px;
     ul {
       display: flex;
       margin: 2px;
@@ -83,7 +84,15 @@ export const StoriesContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-top: 25px;
     width: 100%;
+    position: sticky;
+    top: 0;
+    background: radial-gradient(#f5ecfd 15%, transparent 16%) 0 0, radial-gradient(#eeeeff 15%, transparent 16%) 8px 8px,
+      radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px,
+      radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
+    background-color: #f9f7ff;
+    background-size: 16px 16px;
     h2 {
       font-size: 21px;
       color: #6840e9;
@@ -96,7 +105,6 @@ export const StoriesContainer = styled.div`
       background-color: #fff;
       width: 250px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
       flex-wrap: nowrap;
       padding: 0 7px;
@@ -104,18 +112,27 @@ export const StoriesContainer = styled.div`
       margin-right: 30px;
       position: relative;
       input {
-        width: 90%;
-        height: 33px;
+        width: 220px;
+        height: 35px;
         line-height: 23px;
         font-size: 15px;
         border: 0;
         padding-left: 3px;
+        padding-right: 20px;
         outline: none;
+      }
+      .remove {
+        color: #666;
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        right: -1px;
+        line-height: 30px;
       }
       .resultList {
         width: 252px;
         position: absolute;
-        top: 37px;
+        top: 38px;
         left: -2px;
         background-color: #fff;
         border: 2px solid #a1a1a1;
