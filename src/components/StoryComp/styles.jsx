@@ -157,6 +157,7 @@ export const StoriesContainer = styled.div`
               height: 37px;
               border-radius: 50%;
               margin-right: 5px;
+              object-fit: cover;
             }
 
             span {
