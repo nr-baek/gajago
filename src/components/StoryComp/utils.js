@@ -2,25 +2,44 @@ import { getDatabase, ref, get, query, orderByChild, limitToLast, endBefore } fr
 
 const db = getDatabase();
 
-export const getFirstBatch = async (sortBy) => {
+export const getFirstBatch = async (sortBy, searchUid) => {
   try {
     const posts = [];
     let lastKey = '';
     let lastSortedValue = '';
-    await get(query(ref(db, `reviews/public`), orderByChild(sortBy), limitToLast(4))).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.val());
-        snapshot.forEach((child, idx) => {
-          posts.unshift({
-            key: child.key,
-            ...child.val(),
-          });
-        });
+    if (searchUid) {
+      await get(query(ref(db, `reviews/user/${searchUid}/public`), orderByChild(sortBy), limitToLast(4))).then(
+        (snapshot) => {
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
+            snapshot.forEach((child) => {
+              posts.unshift({
+                key: child.key,
+                ...child.val(),
+              });
+            });
 
-        lastKey = posts[posts.length - 1].key;
-        lastSortedValue = posts[posts.length - 1][sortBy];
-      }
-    });
+            lastKey = posts[posts.length - 1].key;
+            lastSortedValue = posts[posts.length - 1][sortBy];
+          }
+        },
+      );
+    } else {
+      await get(query(ref(db, `reviews/public`), orderByChild(sortBy), limitToLast(4))).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+          snapshot.forEach((child) => {
+            posts.unshift({
+              key: child.key,
+              ...child.val(),
+            });
+          });
+
+          lastKey = posts[posts.length - 1].key;
+          lastSortedValue = posts[posts.length - 1][sortBy];
+        }
+      });
+    }
 
     return { posts, lastKey, lastSortedValue };
   } catch (e) {
@@ -28,26 +47,49 @@ export const getFirstBatch = async (sortBy) => {
   }
 };
 
-export const getNextBatch = async (sortBy, lastSortedValue, lastKey) => {
+export const getNextBatch = async (sortBy, searchUid, lastSortedValue, lastKey) => {
   try {
     const posts = [];
     let nextLastKey = '';
     let nextLastSortedValue = '';
-    await get(
-      query(ref(db, `reviews/public`), orderByChild(sortBy), endBefore(lastSortedValue, lastKey), limitToLast(4)),
-    ).then((snapshot) => {
-      if (snapshot.exists()) {
-        snapshot.forEach((child) => {
-          posts.unshift({
-            key: child.key,
-            ...child.val(),
+    if (searchUid) {
+      await get(
+        query(
+          ref(db, `reviews/user/${searchUid}/public`),
+          orderByChild(sortBy),
+          endBefore(lastSortedValue, lastKey),
+          limitToLast(4),
+        ),
+      ).then((snapshot) => {
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            posts.unshift({
+              key: child.key,
+              ...child.val(),
+            });
           });
-        });
 
-        nextLastKey = posts[posts.length - 1].key;
-        nextLastSortedValue = posts[posts.length - 1][sortBy];
-      }
-    });
+          nextLastKey = posts[posts.length - 1].key;
+          nextLastSortedValue = posts[posts.length - 1][sortBy];
+        }
+      });
+    } else {
+      await get(
+        query(ref(db, `reviews/public`), orderByChild(sortBy), endBefore(lastSortedValue, lastKey), limitToLast(4)),
+      ).then((snapshot) => {
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            posts.unshift({
+              key: child.key,
+              ...child.val(),
+            });
+          });
+
+          nextLastKey = posts[posts.length - 1].key;
+          nextLastSortedValue = posts[posts.length - 1][sortBy];
+        }
+      });
+    }
 
     return { posts, nextLastKey, nextLastSortedValue };
   } catch (e) {
