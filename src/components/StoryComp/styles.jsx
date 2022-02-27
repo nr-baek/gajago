@@ -208,3 +208,60 @@ export const StyledContainer = styled.div`
     }
   }
 `;
+
+export const ColumnsWrapper = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  .storiesColumn {
+    width: 32.5%;
+    display: flex;
+    flex-direction: column;
+  }
+`;
+
+export const Card = styled.div`
+  color: #444;
+  margin-bottom: 12px;
+  .photo {
+    display: block;
+    width: 100%;
+    background-color: green;
+    border-radius: 13px;
+  }
+  .cardBottom {
+    margin-top: 7px;
+    display: flex;
+    justify-content: space-between;
+
+    .userInfo {
+      img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        outline: 1px solid #b6a0ff;
+        background-color: #ebd3ff;
+        object-fit: cover;
+      }
+      span {
+        margin-left: 7px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+    }
+    .likes {
+      display: flex;
+      align-items: center;
+      .heart {
+        padding-top: 2px;
+        margin-right: 5px;
+        color: #ff0000;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+`;
