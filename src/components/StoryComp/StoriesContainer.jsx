@@ -140,7 +140,7 @@ function StoriesContainer({ usersInfo }) {
           )}
         </div>
         <div className="sort">
-          <span className={sortBy === 'latest' ? 'active' : ''} onClick={() => setSortBy('timeStamp')}>
+          <span className={sortBy === 'timeStamp' ? 'active' : ''} onClick={() => setSortBy('timeStamp')}>
             최신순
           </span>
           <span className={sortBy === 'likes' ? 'active' : ''} onClick={() => setSortBy('likes')}>
