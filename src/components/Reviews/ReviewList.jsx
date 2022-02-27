@@ -18,12 +18,22 @@ function ReviewList({ selectedRegion }) {
   const addReviewsListener = useCallback(() => {
     onValue(reviewRef, (snapshot) => {
       if (snapshot.exists()) {
+        let reviewsObj = {};
         const reviewList = [];
+
         snapshot.forEach((child) => {
-          reviewList.push({
-            key: child.key,
-            ...child.val(),
-          });
+          reviewsObj = { ...reviewsObj, ...child.val() };
+        });
+
+        for (let key in reviewsObj) {
+          const reviewInfo = { key: key, ...reviewsObj[key] };
+          reviewList.push(reviewInfo);
+        }
+
+        reviewList.sort((prev, next) => {
+          if (prev.startDate < next.startDate) return 1;
+          if (prev.startDate > next.startDate) return -1;
+          return 0;
         });
 
         setReviews(generateTripsObjectByRegion(reviewList));

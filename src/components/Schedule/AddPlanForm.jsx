@@ -119,11 +119,8 @@ function AddPlanForm({ handleClose }) {
     setLoading(true);
 
     try {
-      const newReviewKey = push(child(ref(db), `users/${user.uid}/plans`)).key;
-      await set(
-        ref(db, `users/${user.uid}/plans/` + dayjs(startDate).format('YYYY-MM-DD') + newReviewKey),
-        createPlan(),
-      );
+      const newPlanKey = push(child(ref(db), `users/${user.uid}/plans`)).key;
+      await set(ref(db, `users/${user.uid}/plans/` + dayjs(startDate).format('YYYY-MM-DD') + newPlanKey), createPlan());
       await setPlanDataAndTrophy(user);
       setLoading(false);
       handleClose();

@@ -3,7 +3,7 @@ import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../../hooks/useInput';
 import { getStorage, ref as strRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { getDatabase, ref, get, update } from 'firebase/database';
+import { getDatabase, ref, get, update, push, child } from 'firebase/database';
 import { FrownTwoTone, MehTwoTone, SmileTwoTone } from '@ant-design/icons';
 import { FormFooter } from '../Schedule/styles';
 import { setPlanData } from '../../redux/actions/user_action';
@@ -56,6 +56,7 @@ function AddReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose })
     const reviewData = {
       reviewTitle,
       tripTitle: tripInfo.title,
+      planKey: tripInfo.key,
       expression,
       imgUrl: reviewImgURL,
       reviewText,
@@ -88,10 +89,13 @@ function AddReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose })
 
         const reviewData = createReviewData(downloadURL);
         const updates = {};
+        const newReviewKey = push(child(ref(db), `reviews/user/${user.uid}`)).key;
         updates[`users/${user.uid}/plans/${tripInfo.key}/review`] = true;
-        updates[`reviews/user/${user.uid}/${tripInfo.key}`] = reviewData;
         if (openReview) {
-          updates[`reviews/public/${tripInfo.key}`] = reviewData;
+          updates[`reviews/public/${newReviewKey}`] = reviewData;
+          updates[`reviews/user/${user.uid}/public/${newReviewKey}`] = reviewData;
+        } else {
+          updates[`reviews/user/${user.uid}/private/${newReviewKey}`] = reviewData;
         }
 
         await update(ref(db), updates);
