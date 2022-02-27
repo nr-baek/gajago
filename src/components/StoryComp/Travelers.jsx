@@ -25,21 +25,25 @@ function Travelers({ usersInfo }) {
   );
 
   const getTrophyOwners = useCallback(async () => {
-    await get(query(ref(db, `trophyOwners`), orderByChild('tripCount'))).then((snapshot) => {
-      if (snapshot.exists()) {
-        const sortedOwnersArr = [];
+    try {
+      await get(query(ref(db, `trophyOwners`), orderByChild('tripCount'))).then((snapshot) => {
+        if (snapshot.exists()) {
+          const sortedOwnersArr = [];
 
-        snapshot.forEach((child) => {
-          sortedOwnersArr.unshift({
-            key: child.key,
-            ...child.val(),
+          snapshot.forEach((child) => {
+            sortedOwnersArr.unshift({
+              key: child.key,
+              ...child.val(),
+            });
           });
-        });
 
-        const owners = setImageURL(sortedOwnersArr);
-        setTrophyOwners(owners);
-      }
-    });
+          const owners = setImageURL(sortedOwnersArr);
+          setTrophyOwners(owners);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }, [db, setImageURL]);
 
   useEffect(() => {
