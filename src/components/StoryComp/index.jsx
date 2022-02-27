@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { getDatabase, child, get, ref } from 'firebase/database';
-import Stories from './Stories';
-import { StoryContainer } from './styles';
+import StoriesContainer from './StoriesContainer';
+import { StoryCompWrapper } from './styles';
 import Travelers from './Travelers';
 import { useCallback } from 'react';
 
@@ -28,10 +28,10 @@ function StoryComp() {
     getUsersInfo();
   }, [getUsersInfo]);
   return (
-    <StoryContainer>
+    <StoryCompWrapper>
       <Travelers usersInfo={usersInfo} />
-      {usersInfo && <Stories usersInfo={usersInfo} />}
-    </StoryContainer>
+      {usersInfo && <StoriesContainer usersInfo={usersInfo} />}
+    </StoryCompWrapper>
   );
 }
 

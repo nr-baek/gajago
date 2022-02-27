@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const StoryContainer = styled.div`
+export const StoryCompWrapper = styled.div`
   width: 100%;
   height: 100%;
   margin: 0 auto;
@@ -79,7 +79,7 @@ export const TravelerList = styled.div`
   }
 `;
 
-export const StoriesContainer = styled.div`
+export const StyledContainer = styled.div`
   .top {
     display: flex;
     align-items: center;
