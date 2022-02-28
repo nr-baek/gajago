@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { getDatabase, child, get, ref } from 'firebase/database';
 import StoriesContainer from './StoriesContainer';
-import { StoryCompWrapper } from './styles';
 import Travelers from './Travelers';
-import { useCallback } from 'react';
+import { StoryCompWrapper } from './styles';
+import { useDispatch } from 'react-redux';
+import { setUsersInfo } from '../../redux/actions/usersInfo_action';
 
 function StoryComp() {
-  const [usersInfo, setUsersInfo] = useState(null);
   const dbRef = ref(getDatabase());
+  const dispatch = useDispatch();
 
   const getUsersInfo = useCallback(async () => {
     try {
       await get(child(dbRef, `userList`)).then((snapshot) => {
         if (snapshot.exists()) {
-          setUsersInfo(snapshot.val());
+          dispatch(setUsersInfo(snapshot.val()));
         } else {
           console.log('No one has a trophy.');
         }
@@ -22,15 +22,15 @@ function StoryComp() {
     } catch (e) {
       console.log(e);
     }
-  }, [dbRef]);
+  }, [dbRef, dispatch]);
 
   useEffect(() => {
     getUsersInfo();
   }, [getUsersInfo]);
   return (
     <StoryCompWrapper>
-      <Travelers usersInfo={usersInfo} />
-      {usersInfo && <StoriesContainer usersInfo={usersInfo} />}
+      <Travelers />
+      <StoriesContainer />
     </StoryCompWrapper>
   );
 }

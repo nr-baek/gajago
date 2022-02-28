@@ -4,7 +4,7 @@ import StoryCard from './StoryCard';
 import { ColumnsWrapper } from './styles';
 import { getFirstBatch, getNextBatch } from './utils';
 
-function Stories({ sortBy, searchUid, usersInfo }) {
+function Stories({ sortBy, searchUid }) {
   const [loading, setLoading] = useState(false);
   const [nextPosts_loading, setNextPostsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
@@ -82,7 +82,7 @@ function Stories({ sortBy, searchUid, usersInfo }) {
         {seperatePosts(posts).map((column, idx) => (
           <div className="storiesColumn" key={idx}>
             {column.map((post) => (
-              <StoryCard postInfo={post} key={post.key} usersInfo={usersInfo} />
+              <StoryCard postInfo={post} key={post.key} />
             ))}
           </div>
         ))}

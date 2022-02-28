@@ -1,9 +1,12 @@
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import React, { useState, useCallback, useRef, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Stories from './Stories';
 import { StyledContainer } from './styles';
 
-function StoriesContainer({ usersInfo }) {
+function StoriesContainer() {
+  const usersInfo = useSelector((state) => state.usersInfo);
+
   const [sortBy, setSortBy] = useState('timeStamp');
   const [searchText, setSearchText] = useState('');
   const [inputFocus, setInputFocus] = useState(false);
@@ -13,7 +16,11 @@ function StoriesContainer({ usersInfo }) {
   const [searchUid, setSearchUid] = useState('');
 
   const $input = useRef();
-  const userInfoList = useMemo(() => Object.entries(usersInfo), [usersInfo]);
+  const userInfoList = useMemo(() => {
+    if (usersInfo) {
+      return Object.entries(usersInfo);
+    }
+  }, [usersInfo]);
 
   const focusInput = useCallback(() => {
     $input.current.focus();

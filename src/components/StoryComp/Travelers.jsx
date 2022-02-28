@@ -3,8 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { getDatabase, ref, get, query, orderByChild } from 'firebase/database';
 import { TravelerList } from './styles';
+import { useSelector } from 'react-redux';
 
-function Travelers({ usersInfo }) {
+function Travelers() {
+  const usersInfo = useSelector((state) => state.usersInfo);
   const [trophyOwners, setTrophyOwners] = useState([]);
   console.log(trophyOwners);
 
