@@ -4,11 +4,11 @@ export const StoryCompWrapper = styled.div`
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  padding: 0 30px;
   overflow: auto;
 `;
 
 export const TravelerList = styled.div`
+  padding: 0 30px;
   h2 {
     font-size: 20px;
     color: #6840e9;
@@ -81,136 +81,146 @@ export const TravelerList = styled.div`
 
 export const StyledContainer = styled.div`
   .top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 25px;
     width: 100%;
     position: sticky;
+    z-index: 9999;
     top: 0;
-    background: radial-gradient(#f5ecfd 15%, transparent 16%) 0 0, radial-gradient(#eeeeff 15%, transparent 16%) 8px 8px,
-      radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px,
-      radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
-    background-color: #f9f7ff;
-    background-size: 16px 16px;
-    h2 {
-      font-size: 21px;
-      color: #6840e9;
-      font-weight: 700;
-      padding: 10px 0;
-    }
-    .searchBox {
-      border-radius: 5px;
-      border: 2px solid #7d5bee;
-      background-color: #fff;
-      width: 250px;
+
+    .wrapper {
+      background: radial-gradient(#f5ecfd 15%, transparent 16%) 0 0,
+        radial-gradient(#eeeeff 15%, transparent 16%) 8px 8px,
+        radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px,
+        radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
+      background-color: #f9f7ff;
+      background-size: 16px 16px;
       display: flex;
       align-items: center;
-      flex-wrap: nowrap;
-      padding: 0 7px;
-      margin-left: auto;
-      margin-right: 30px;
-      position: relative;
-      input {
-        width: 220px;
-        height: 35px;
-        line-height: 23px;
-        font-size: 15px;
-        border: 0;
-        padding-left: 3px;
-        padding-right: 20px;
-        outline: none;
+      justify-content: space-between;
+      padding: 10px 30px;
+      h2 {
+        font-size: 21px;
+        color: #6840e9;
+        font-weight: 700;
+        padding: 10px 0;
       }
-      .remove {
-        color: #666;
-        position: absolute;
-        width: 35px;
-        height: 35px;
-        right: -1px;
-        line-height: 30px;
-      }
-      .resultList {
-        width: 252px;
-        position: absolute;
-        top: 38px;
-        left: -2px;
+      .searchBox {
+        border-radius: 5px;
+        border: 2px solid #7d5bee;
         background-color: #fff;
-        border: 2px solid #a1a1a1;
-        border-top: 0;
-        border-bottom-left-radius: 7px;
-        border-bottom-right-radius: 7px;
-        ul {
-          padding-top: 5px;
-          p {
-            color: #666;
-            padding: 0 7px;
-          }
-          li {
-            padding: 4px;
-            margin-top: 2px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-            img {
-              width: 37px;
-              height: 37px;
-              border-radius: 50%;
-              margin-right: 5px;
-              object-fit: cover;
+        width: 250px;
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        padding: 0 7px;
+        margin-left: auto;
+        margin-right: 30px;
+        position: relative;
+        input {
+          width: 220px;
+          height: 35px;
+          line-height: 23px;
+          font-size: 15px;
+          border: 0;
+          padding-left: 3px;
+          padding-right: 20px;
+          outline: none;
+        }
+        .remove {
+          color: #666;
+          position: absolute;
+          width: 35px;
+          height: 35px;
+          right: -1px;
+          line-height: 30px;
+        }
+        .resultList {
+          width: 252px;
+          position: absolute;
+          top: 38px;
+          left: -2px;
+          background-color: #fff;
+          border: 2px solid #a1a1a1;
+          border-top: 0;
+          border-bottom-left-radius: 7px;
+          border-bottom-right-radius: 7px;
+          ul {
+            padding-top: 5px;
+            p {
+              color: #666;
+              padding: 0 7px;
             }
-
-            span {
-              width: 200px;
+            li {
+              padding: 4px;
+              margin-top: 2px;
+              border-radius: 5px;
+              display: flex;
+              align-items: center;
               overflow: hidden;
-              white-space: nowrap;
-              text-overflow: ellipsis;
-            }
+              img {
+                width: 37px;
+                height: 37px;
+                border-radius: 50%;
+                margin-right: 5px;
+                object-fit: cover;
+              }
 
-            &.select,
-            &:hover {
-              background-color: #efefef;
+              span {
+                width: 200px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              }
+
+              &.select,
+              &:hover {
+                background-color: #efefef;
+              }
             }
+          }
+          .noResultMsg {
+            padding: 10px 5px;
+            color: #666;
           }
         }
-        .noResultMsg {
-          padding: 10px 5px;
-          color: #666;
+
+        &.focused {
+          outline: 2px solid #8065d8;
         }
       }
-
-      &.focused {
-        outline: 2px solid #8065d8;
+      .sort {
+        display: flex;
+        justify-content: space-between;
+        width: 115px;
+        color: #999999;
+        span {
+          cursor: pointer;
+        }
+        .active {
+          color: #444;
+          position: relative;
+          &::after {
+            content: '';
+            height: 5px;
+            width: 5px;
+            background-color: black;
+            border-radius: 50%;
+            position: absolute;
+            left: 45%;
+            bottom: -7px;
+          }
+        }
       }
     }
-    .sort {
-      display: flex;
-      justify-content: space-between;
-      width: 115px;
-      color: #999999;
-      span {
-        cursor: pointer;
-      }
-      .active {
-        color: #444;
-        position: relative;
-        &::after {
-          content: '';
-          height: 5px;
-          width: 5px;
-          background-color: black;
-          border-radius: 50%;
-          position: absolute;
-          left: 45%;
-          bottom: -7px;
-        }
-      }
+    .mask {
+      width: 100%;
+      height: 25px;
+      background: linear-gradient(to top, transparent, #f9f7ff);
     }
   }
 `;
 
 export const ColumnsWrapper = styled.div`
-  margin-top: 10px;
+  padding: 0 30px;
   display: flex;
   justify-content: space-between;
   .storiesColumn {
@@ -222,15 +232,24 @@ export const ColumnsWrapper = styled.div`
 
 export const Card = styled.div`
   color: #444;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 13px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  position: relative;
+  top: 0;
+  left: 0;
   .photo {
     display: block;
     width: 100%;
     background-color: green;
-    border-radius: 13px;
+    /* border-radius: 13px; */
   }
   .cardBottom {
-    margin-top: 7px;
+    margin: 7px 0 5px 0;
+    padding: 0 5px;
     display: flex;
     justify-content: space-between;
 
@@ -263,5 +282,11 @@ export const Card = styled.div`
         cursor: pointer;
       }
     }
+  }
+
+  &:hover {
+    box-shadow: 0px 5px 13px rgba(0, 0, 0, 0.5);
+    top: -4px;
+    left: 2px;
   }
 `;

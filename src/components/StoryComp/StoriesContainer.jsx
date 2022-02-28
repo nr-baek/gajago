@@ -93,60 +93,63 @@ function StoriesContainer({ usersInfo }) {
   return (
     <StyledContainer>
       <div className="top">
-        <h2>Stories</h2>
+        <div className="wrapper">
+          <h2>Stories</h2>
 
-        <div className={`searchBox ${inputFocus ? 'focused' : ''}`}>
-          {!inputFocus && <SearchOutlined style={{ color: '#5c0bdf' }} onClick={focusInput} />}
-          <input
-            type="text"
-            placeholder="닉네임 검색"
-            value={searchText}
-            onChange={onChangeHandler}
-            onFocus={() => setInputFocus(true)}
-            onBlur={() => setInputFocus(false)}
-            onKeyDown={onKeyDownHandler}
-            ref={$input}
-          />
-          {searchText.length > 0 && <CloseOutlined className="remove" onClick={onClickRemoveBtn} />}
-          {inputFocus && searchText && (
-            <div className="resultList">
-              {matchedNicknameList.length ? (
-                <ul aria-hidden="true" aria-label="submenu">
-                  <p>닉네임을 선택해주세요.</p>
-                  {matchedNicknameList.map((user, idx) => {
-                    const uid = user[0];
-                    const userInfo = user[1];
+          <div className={`searchBox ${inputFocus ? 'focused' : ''}`}>
+            {!inputFocus && <SearchOutlined style={{ color: '#5c0bdf' }} onClick={focusInput} />}
+            <input
+              type="text"
+              placeholder="닉네임 검색"
+              value={searchText}
+              onChange={onChangeHandler}
+              onFocus={() => setInputFocus(true)}
+              onBlur={() => setInputFocus(false)}
+              onKeyDown={onKeyDownHandler}
+              ref={$input}
+            />
+            {searchText.length > 0 && <CloseOutlined className="remove" onClick={onClickRemoveBtn} />}
+            {inputFocus && searchText && (
+              <div className="resultList">
+                {matchedNicknameList.length ? (
+                  <ul aria-hidden="true" aria-label="submenu">
+                    <p>닉네임을 선택해주세요.</p>
+                    {matchedNicknameList.map((user, idx) => {
+                      const uid = user[0];
+                      const userInfo = user[1];
 
-                    return (
-                      <li
-                        key={uid}
-                        id={uid}
-                        className={idx === indexOfList ? 'select' : ''}
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                        }}
-                        onClick={onClickListHandler}
-                      >
-                        <img src={userInfo.image} alt={userInfo.nickname} />
-                        <span>{userInfo.nickname}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <p className="noResultMsg">일치하는 닉네임이 없습니다.</p>
-              )}
-            </div>
-          )}
+                      return (
+                        <li
+                          key={uid}
+                          id={uid}
+                          className={idx === indexOfList ? 'select' : ''}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                          }}
+                          onClick={onClickListHandler}
+                        >
+                          <img src={userInfo.image} alt={userInfo.nickname} />
+                          <span>{userInfo.nickname}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <p className="noResultMsg">일치하는 닉네임이 없습니다.</p>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="sort">
+            <span className={sortBy === 'timeStamp' ? 'active' : ''} onClick={() => setSortBy('timeStamp')}>
+              최신순
+            </span>
+            <span className={sortBy === 'likes' ? 'active' : ''} onClick={() => setSortBy('likes')}>
+              좋아요순
+            </span>
+          </div>
         </div>
-        <div className="sort">
-          <span className={sortBy === 'timeStamp' ? 'active' : ''} onClick={() => setSortBy('timeStamp')}>
-            최신순
-          </span>
-          <span className={sortBy === 'likes' ? 'active' : ''} onClick={() => setSortBy('likes')}>
-            좋아요순
-          </span>
-        </div>
+        <div className="mask" />
       </div>
       <Stories sortBy={sortBy} searchUid={searchUid} />
     </StyledContainer>
