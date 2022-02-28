@@ -54,8 +54,7 @@ export const StyledReview = styled.li`
   overflow: hidden;
   margin: 10px 0;
   padding: 10px 20px;
-  border: 2px ${({ selected }) => (selected ? 'solid' : 'dashed')}
-    ${({ selected }) => (selected ? '#999bff' : '#b4b5ff')};
+  border: 2px ${({ selected }) => (selected ? 'solid #999bff' : 'dashed #b4b5ff')};
   border-radius: 20px;
   background-color: #fff;
   display: flex;
