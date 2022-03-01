@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { StyledModalContent } from './styles';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { CameraOutlined, EnvironmentOutlined, HeartOutlined, CalendarOutlined } from '@ant-design/icons';
+import { CameraOutlined, EnvironmentOutlined, HeartOutlined, CalendarOutlined, HeartFilled } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+import { getDatabase, ref, update } from 'firebase/database';
 
-function ModalContent({ postInfo, usersInfo }) {
+function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTempLikes }) {
   dayjs.extend(relativeTime);
+
+  const { startDate, endDate, photoDesc, reviewText, timeStamp, imgUrl, detailAddress, region, key } = postInfo;
+  const { nickname, image } = usersInfo[postInfo.uid];
+
+  const user = useSelector((state) => state.user.currentUser);
+  const db = getDatabase();
+
   const regionObj = {
     Seoul: '서울특별시',
     Busan: '부산광역시',
@@ -27,42 +36,71 @@ function ModalContent({ postInfo, usersInfo }) {
     overseas: '해외',
   };
 
+  const onClickLikesBtn = useCallback(
+    async (isChecked, postInfo) => {
+      try {
+        const { key, uid } = postInfo;
+        const updates = {};
+
+        if (isChecked) {
+          updates[`users/${user.uid}/checkedLikes/${key}`] = false;
+          updates[`reviews/public/${key}/likes`] = tempLikes - 1;
+          updates[`reviews/user/${uid}/public/${key}/likes`] = tempLikes - 1;
+        } else {
+          updates[`users/${user.uid}/checkedLikes/${postInfo.key}`] = true;
+          updates[`reviews/public/${key}/likes`] = tempLikes + 1;
+          updates[`reviews/user/${uid}/public/${key}/likes`] = tempLikes + 1;
+        }
+        await update(ref(db), updates);
+        editTempLikes(isChecked);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [db, user.uid, editTempLikes, tempLikes],
+  );
+
   return (
     <StyledModalContent>
       <div className="contentHeader">
         <div className="userInfo">
-          <img src={usersInfo[postInfo.uid].image} alt={usersInfo[postInfo.uid].nickname} />
-          <span>{usersInfo[postInfo.uid].nickname}</span>
-          <span className="time">{dayjs().to(dayjs(postInfo.timeStamp))}</span>
+          <img src={image} alt={nickname} />
+          <span>{nickname}</span>
+          <span className="time">{dayjs().to(dayjs(timeStamp))}</span>
         </div>
-        <div className="likes">
-          <HeartOutlined className="heart" />
-          {postInfo.likes}
+        <div
+          className="likes"
+          onClick={() => {
+            onClickLikesBtn(checkedLikesObj[key], postInfo);
+          }}
+        >
+          {checkedLikesObj[key] ? <HeartFilled className="heart" /> : <HeartOutlined className="heart" />}
+          {tempLikes}
         </div>
       </div>
       <div className="travelInfo">
         <p>
           <CalendarOutlined className="icon" style={{ fontSize: '20px', color: '#5d09bd', marginRight: '5px' }} />{' '}
           <span>
-            {postInfo.startDate === postInfo.endDate
-              ? dayjs(postInfo.endDate).format('YYYY.MM.DD')
-              : dayjs(postInfo.startDate).format('YYYY.MM.DD') + '~' + dayjs(postInfo.endDate).format('YYYY.MM.DD')}
+            {startDate === endDate
+              ? dayjs(endDate).format('YYYY.MM.DD')
+              : dayjs(startDate).format('YYYY.MM.DD') + ' ~ ' + dayjs(endDate).format('YYYY.MM.DD')}
           </span>
         </p>
         <p>
           <EnvironmentOutlined className="icon" style={{ fontSize: '20px', color: '#5d09bd', marginRight: '5px' }} />{' '}
-          <span>{regionObj[postInfo.region] + ' ' + postInfo.detailAddress}</span>
+          <span>{regionObj[region] + ' ' + detailAddress}</span>
         </p>
       </div>
       <div className="photoAndDesc">
-        <img className="photo" src={postInfo.imgUrl} alt={postInfo.photoDesc} />
+        <img className="photo" src={imgUrl} alt={photoDesc} />
         <p>
           <CameraOutlined style={{ verticalAlign: 'middle', color: '#6f00ff', marginRight: '5px' }} />
-          {postInfo.photoDesc}
+          {photoDesc}
         </p>
       </div>
 
-      <p className="review">{postInfo.reviewText}</p>
+      <p className="review">{reviewText}</p>
     </StyledModalContent>
   );
 }

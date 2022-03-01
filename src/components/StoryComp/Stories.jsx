@@ -3,14 +3,19 @@ import { useEffect } from 'react';
 import StoryCard from './StoryCard';
 import { ColumnsWrapper } from './styles';
 import { getFirstBatch, getNextBatch } from './utils';
+import { getDatabase, ref, onValue, off } from 'firebase/database';
+import { useSelector } from 'react-redux';
 
 function Stories({ sortBy, searchUid }) {
+  const user = useSelector((state) => state.user.currentUser);
+
   const [loading, setLoading] = useState(false);
   const [nextPosts_loading, setNextPostsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [lastPoint, setLastPoint] = useState({ lastKey: '', lastSortedValue: '' });
+  const [checkedLikesObj, setCheckedLikesObj] = useState({});
 
-  console.log('posts', posts);
+  const db = getDatabase();
 
   const fetchMorePosts = useCallback(
     (sortBy, lastSortedValue, lastKey) => {
@@ -22,7 +27,6 @@ function Stories({ sortBy, searchUid }) {
           .then((res) => {
             setLastPoint({ lastKey: res.nextLastKey, lastSortedValue: res.nextLastSortedValue });
             if (res.posts.length > 0) {
-              console.log(res.posts.length);
               setPosts((prevPosts) => [...prevPosts, ...res.posts]);
             }
             setNextPostsLoading(false);
@@ -59,7 +63,15 @@ function Stories({ sortBy, searchUid }) {
   }, [sortBy, lastPoint, fetchMorePosts]);
 
   useEffect(() => {
+    const checkedLikesRef = ref(db, `users/${user.uid}/checkedLikes`);
     setLoading(true);
+    onValue(checkedLikesRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const checkedLikes = snapshot.val();
+        setCheckedLikesObj(checkedLikes);
+      }
+    });
+
     getFirstBatch(sortBy, searchUid)
       .then((res) => {
         setPosts(res.posts);
@@ -70,7 +82,11 @@ function Stories({ sortBy, searchUid }) {
         console.log(e);
         setLoading(false);
       });
-  }, [searchUid, sortBy]);
+
+    return () => {
+      off(checkedLikesRef);
+    };
+  }, [searchUid, sortBy, db, user.uid]);
   return (
     <div>
       {/* {loading ? '로딩중...' : <button onClick={onClick}>데이터 추가버튼</button>}
@@ -82,7 +98,7 @@ function Stories({ sortBy, searchUid }) {
         {seperatePosts(posts).map((column, idx) => (
           <div className="storiesColumn" key={idx}>
             {column.map((post) => (
-              <StoryCard postInfo={post} key={post.key} />
+              <StoryCard postInfo={post} key={post.key} checkedLikesObj={checkedLikesObj} />
             ))}
           </div>
         ))}
