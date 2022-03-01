@@ -83,7 +83,7 @@ export const StyledContainer = styled.div`
   .top {
     width: 100%;
     position: sticky;
-    z-index: 9999;
+    z-index: 99;
     top: 0;
 
     .wrapper {
@@ -227,6 +227,9 @@ export const ColumnsWrapper = styled.div`
     width: 32.5%;
     display: flex;
     flex-direction: column;
+    .nara {
+      background-color: pink;
+    }
   }
 `;
 
@@ -245,29 +248,40 @@ export const Card = styled.div`
     display: block;
     width: 100%;
     background-color: green;
-    /* border-radius: 13px; */
   }
+
   .cardBottom {
     margin: 7px 0 5px 0;
-    padding: 0 5px;
+    padding: 0 10px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 
     .userInfo {
+      display: flex;
+      align-items: center;
+      width: 60%;
       img {
         width: 35px;
         height: 35px;
         border-radius: 50%;
-        border: 2px solid #fff;
-        outline: 1px solid #b6a0ff;
         background-color: #ebd3ff;
         object-fit: cover;
       }
       span {
+        display: inline-block;
+        width: 70%;
         margin-left: 7px;
         font-size: 15px;
         font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
+    }
+    .time {
+      font-size: 10px;
+      color: #555;
     }
     .likes {
       display: flex;
@@ -277,10 +291,6 @@ export const Card = styled.div`
         margin-right: 5px;
         color: #ff0000;
       }
-
-      &:hover {
-        cursor: pointer;
-      }
     }
   }
 
@@ -288,5 +298,100 @@ export const Card = styled.div`
     box-shadow: 0px 5px 13px rgba(0, 0, 0, 0.5);
     top: -4px;
     left: 2px;
+  }
+`;
+
+export const StyledModalContent = styled.div`
+  padding: 0 10px;
+  max-height: 600px;
+  overflow: auto;
+  .contentHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    top: 0;
+    position: sticky;
+    background-color: #fff;
+    background: linear-gradient(to bottom, #fff, #fff 40%, transparent);
+    .userInfo {
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      span {
+        margin-left: 10px;
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .time {
+        font-weight: 400;
+        color: #555;
+        font-size: 13px;
+      }
+    }
+    .likes {
+      padding: 5px;
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      font-size: 20px;
+      .heart {
+        margin: 0 5px;
+        color: red;
+      }
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  .travelInfo {
+    padding-left: 10px;
+    color: #555;
+    font-size: 14px;
+    p {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      span {
+        font-weight: 700;
+      }
+    }
+  }
+  .photoAndDesc {
+    margin: 20px;
+    .photo {
+      background-color: green;
+      border-radius: 10px;
+      display: block;
+      margin: 0 auto;
+      box-shadow: 3px 4px 10px rgba(0, 0, 0, 0.3);
+      max-width: 700px;
+      height: 430px;
+      object-fit: cover;
+    }
+    p {
+      padding-top: 10px;
+      text-align: center;
+      color: #555;
+      font-size: 13px;
+      font-weight: 700;
+    }
+  }
+  .review {
+    border-radius: 10px;
+    border: 2px solid #9a74cc;
+    padding: 10px 15px;
+    font-family: 'Gaegu', cursive;
+    color: #444;
+    /* font-weight: 700; */
+    white-space: pre-line;
+    line-height: 30px;
+    font-size: 20px;
+    margin-top: 10px;
+    text-decoration: underline dotted #bfa8ff;
+    text-underline-position: under;
   }
 `;
