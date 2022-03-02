@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 
 export const StoryCompWrapper = styled.div`
@@ -237,7 +238,7 @@ export const Card = styled.div`
   color: #444;
   margin-bottom: 20px;
   background-color: #fff;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.1);
   border-radius: 13px;
   overflow: hidden;
   transition: all 0.2s ease;
@@ -301,6 +302,20 @@ export const Card = styled.div`
   }
 `;
 
+const clickEffect = keyframes`
+  0% {
+    opacity: 0%;
+    transform: scale(0);
+  }
+  80% {
+    transform: scale(1.6);
+    opacity: 100%;
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
 export const StyledModalContent = styled.div`
   padding: 0 10px;
   max-height: 600px;
@@ -341,6 +356,9 @@ export const StyledModalContent = styled.div`
       .heart {
         margin: 0 5px;
         color: red;
+        &.effect {
+          animation: ${clickEffect} 0.3s ease;
+        }
       }
       &:hover {
         cursor: pointer;

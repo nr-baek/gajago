@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { StyledModalContent } from './styles';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -11,6 +11,7 @@ function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTem
 
   const { startDate, endDate, photoDesc, reviewText, timeStamp, imgUrl, detailAddress, region, key } = postInfo;
   const { nickname, image } = usersInfo[postInfo.uid];
+  const [clicked, setClicked] = useState(false);
 
   const user = useSelector((state) => state.user.currentUser);
   const db = getDatabase();
@@ -52,6 +53,11 @@ function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTem
           updates[`reviews/user/${uid}/public/${key}/likes`] = tempLikes + 1;
         }
         await update(ref(db), updates);
+        if (isChecked) {
+          setClicked(false);
+        } else {
+          setClicked(true);
+        }
         editTempLikes(isChecked);
       } catch (error) {
         console.log(error);
@@ -74,7 +80,11 @@ function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTem
             onClickLikesBtn(checkedLikesObj[key], postInfo);
           }}
         >
-          {checkedLikesObj[key] ? <HeartFilled className="heart" /> : <HeartOutlined className="heart" />}
+          {checkedLikesObj[key] ? (
+            <HeartFilled className={`heart ${clicked ? 'effect' : ''}`} />
+          ) : (
+            <HeartOutlined className="heart" />
+          )}
           {tempLikes}
         </div>
       </div>
