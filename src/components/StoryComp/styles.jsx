@@ -83,6 +83,7 @@ export const TravelerList = styled.div`
 export const StyledContainer = styled.div`
   .top {
     width: 100%;
+    padding-right: 10px;
     position: sticky;
     z-index: 99;
     top: 0;
@@ -290,7 +291,7 @@ export const Card = styled.div`
       .heart {
         padding-top: 2px;
         margin-right: 5px;
-        color: #ff0000;
+        color: #d40e07;
       }
     }
   }
@@ -305,10 +306,10 @@ export const Card = styled.div`
 const clickEffect = keyframes`
   0% {
     opacity: 0%;
-    transform: scale(0);
+    transform: scale(1);
   }
   80% {
-    transform: scale(1.6);
+    transform: scale(1.7);
     opacity: 100%;
   }
   100% {
@@ -317,9 +318,9 @@ const clickEffect = keyframes`
 `;
 
 export const StyledModalContent = styled.div`
-  padding: 0 10px;
+  padding-left: 10px;
+  height: 600px;
   max-height: 600px;
-  overflow: auto;
   .contentHeader {
     display: flex;
     align-items: center;
@@ -402,13 +403,12 @@ export const StyledModalContent = styled.div`
     border-radius: 10px;
     border: 2px solid #9a74cc;
     padding: 10px 15px;
+    margin: 10px 10px 0 0;
     font-family: 'Gaegu', cursive;
     color: #444;
-    /* font-weight: 700; */
     white-space: pre-line;
     line-height: 30px;
     font-size: 20px;
-    margin-top: 10px;
     text-decoration: underline dotted #bfa8ff;
     text-underline-position: under;
   }

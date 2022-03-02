@@ -5,6 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { CameraOutlined, EnvironmentOutlined, HeartOutlined, CalendarOutlined, HeartFilled } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { getDatabase, ref, update } from 'firebase/database';
+import Scrollbars from 'react-custom-scrollbars-2';
 
 function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTempLikes }) {
   dayjs.extend(relativeTime);
@@ -68,49 +69,51 @@ function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTem
 
   return (
     <StyledModalContent>
-      <div className="contentHeader">
-        <div className="userInfo">
-          <img src={image} alt={nickname} />
-          <span>{nickname}</span>
-          <span className="time">{dayjs().to(dayjs(timeStamp))}</span>
+      <Scrollbars autoHide>
+        <div className="contentHeader">
+          <div className="userInfo">
+            <img src={image} alt={nickname} />
+            <span>{nickname}</span>
+            <span className="time">{dayjs().to(dayjs(timeStamp))}</span>
+          </div>
+          <div
+            className="likes"
+            onClick={() => {
+              onClickLikesBtn(checkedLikesObj[key], postInfo);
+            }}
+          >
+            {checkedLikesObj[key] ? (
+              <HeartFilled className={`heart ${clicked ? 'effect' : ''}`} />
+            ) : (
+              <HeartOutlined className="heart" />
+            )}
+            {tempLikes}
+          </div>
         </div>
-        <div
-          className="likes"
-          onClick={() => {
-            onClickLikesBtn(checkedLikesObj[key], postInfo);
-          }}
-        >
-          {checkedLikesObj[key] ? (
-            <HeartFilled className={`heart ${clicked ? 'effect' : ''}`} />
-          ) : (
-            <HeartOutlined className="heart" />
-          )}
-          {tempLikes}
+        <div className="travelInfo">
+          <p>
+            <CalendarOutlined className="icon" style={{ fontSize: '20px', color: '#5d09bd', marginRight: '5px' }} />{' '}
+            <span>
+              {startDate === endDate
+                ? dayjs(endDate).format('YYYY.MM.DD')
+                : dayjs(startDate).format('YYYY.MM.DD') + ' ~ ' + dayjs(endDate).format('YYYY.MM.DD')}
+            </span>
+          </p>
+          <p>
+            <EnvironmentOutlined className="icon" style={{ fontSize: '20px', color: '#5d09bd', marginRight: '5px' }} />{' '}
+            <span>{regionObj[region] + ' ' + detailAddress}</span>
+          </p>
         </div>
-      </div>
-      <div className="travelInfo">
-        <p>
-          <CalendarOutlined className="icon" style={{ fontSize: '20px', color: '#5d09bd', marginRight: '5px' }} />{' '}
-          <span>
-            {startDate === endDate
-              ? dayjs(endDate).format('YYYY.MM.DD')
-              : dayjs(startDate).format('YYYY.MM.DD') + ' ~ ' + dayjs(endDate).format('YYYY.MM.DD')}
-          </span>
-        </p>
-        <p>
-          <EnvironmentOutlined className="icon" style={{ fontSize: '20px', color: '#5d09bd', marginRight: '5px' }} />{' '}
-          <span>{regionObj[region] + ' ' + detailAddress}</span>
-        </p>
-      </div>
-      <div className="photoAndDesc">
-        <img className="photo" src={imgUrl} alt={photoDesc} />
-        <p>
-          <CameraOutlined style={{ verticalAlign: 'middle', color: '#6f00ff', marginRight: '5px' }} />
-          {photoDesc}
-        </p>
-      </div>
+        <div className="photoAndDesc">
+          <img className="photo" src={imgUrl} alt={photoDesc} />
+          <p>
+            <CameraOutlined style={{ verticalAlign: 'middle', color: '#6f00ff', marginRight: '5px' }} />
+            {photoDesc}
+          </p>
+        </div>
 
-      <p className="review">{reviewText}</p>
+        <p className="review">{reviewText}</p>
+      </Scrollbars>
     </StyledModalContent>
   );
 }

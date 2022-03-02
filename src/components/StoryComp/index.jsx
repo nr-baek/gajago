@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { getDatabase, child, get, ref } from 'firebase/database';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 import StoriesContainer from './StoriesContainer';
 import Travelers from './Travelers';
 import { StoryCompWrapper } from './styles';
@@ -29,8 +30,10 @@ function StoryComp() {
   }, [getUsersInfo]);
   return (
     <StoryCompWrapper>
-      <Travelers />
-      <StoriesContainer />
+      <Scrollbars autoHide>
+        <Travelers />
+        <StoriesContainer />
+      </Scrollbars>
     </StoryCompWrapper>
   );
 }

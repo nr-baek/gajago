@@ -108,7 +108,7 @@ export const StyledReview = styled.li`
     overflow: hidden;
     width: 95%;
     margin: 10px auto;
-    font-size: 19px;
+    font-size: 20px;
     .photoAndDesc {
       display: flex;
       align-items: flex-end;
@@ -129,7 +129,7 @@ export const StyledReview = styled.li`
         font-weight: 700;
         text-align: center;
         line-height: 23px;
-        word-break: break-all;
+        word-break: keep-all;
         white-space: pre-line;
         padding: 0 0 50px 10px;
         width: 200px;
@@ -139,7 +139,7 @@ export const StyledReview = styled.li`
       margin-top: 20px;
       font-family: 'Gaegu', cursive;
       color: #444;
-      font-weight: 700;
+      font-weight: 400;
       white-space: pre-line;
       line-height: 30px;
       text-decoration: underline dotted #bfa8ff;
