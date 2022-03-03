@@ -24,9 +24,18 @@ const Calendar = () => {
   const [show, setShow] = useState(false);
   const [markingInfo, setMarkingInfo] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [currentHover, setCurrentHover] = useState('');
 
   const handleClose = useCallback(() => setShow(false), []);
   const handleShow = useCallback(() => setShow(true), []);
+
+  const mouseoverHandler = useCallback((currentKey) => {
+    setCurrentHover(() => currentKey);
+  }, []);
+
+  const mouseoutHandler = useCallback(() => {
+    setCurrentHover(() => '');
+  }, []);
 
   const renderCalendar = (date) => {
     const startWeek = date.startOf('month').week();
@@ -47,7 +56,14 @@ const Calendar = () => {
               return (
                 <div className={`box ${isGrayed}`} key={i}>
                   <span className="dateNumber">{current.format('D')}</span>
-                  {markingInfo[currentDateStr] && <MarkingBar currentDateMarkingInfo={currentDateMarkingInfo} />}
+                  {markingInfo[currentDateStr] && (
+                    <MarkingBar
+                      isHover={currentDateMarkingInfo.key === currentHover}
+                      currentDateMarkingInfo={currentDateMarkingInfo}
+                      mouseoverHandler={mouseoverHandler}
+                      mouseoutHandler={mouseoutHandler}
+                    />
+                  )}
                 </div>
               );
             })}

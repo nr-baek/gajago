@@ -84,15 +84,14 @@ export const StyledCalendar = styled.div`
           color: #fff;
           position: absolute;
           box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.1);
-          &:hover {
-            box-shadow: 3px 5px 7px rgba(0, 0, 0, 0.3);
-          }
-
-          .title {
-            letter-spacing: 0.8px;
-            font-weight: 700;
-            white-space: nowrap;
-            width: 100%;
+          letter-spacing: 0.8px;
+          font-weight: 700;
+          white-space: nowrap;
+          width: 100%;
+          transition: all 0.2s ease;
+          cursor: pointer;
+          &.hover {
+            box-shadow: 3px 5px 9px rgba(0, 0, 0, 0.5);
           }
           &.start {
             border-top-left-radius: 17px;
