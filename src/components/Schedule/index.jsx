@@ -29,14 +29,6 @@ const Calendar = () => {
   const handleClose = useCallback(() => setShow(false), []);
   const handleShow = useCallback(() => setShow(true), []);
 
-  const mouseoverHandler = useCallback((currentKey) => {
-    setCurrentHover(() => currentKey);
-  }, []);
-
-  const mouseoutHandler = useCallback(() => {
-    setCurrentHover(() => '');
-  }, []);
-
   const renderCalendar = (date) => {
     const startWeek = date.startOf('month').week();
     const endWeek = date.endOf('month').week() === 1 ? 53 : date.clone().endOf('month').week();
@@ -60,8 +52,7 @@ const Calendar = () => {
                     <MarkingBar
                       isHover={currentDateMarkingInfo.key === currentHover}
                       currentDateMarkingInfo={currentDateMarkingInfo}
-                      mouseoverHandler={mouseoverHandler}
-                      mouseoutHandler={mouseoutHandler}
+                      setCurrentHover={setCurrentHover}
                     />
                   )}
                 </div>

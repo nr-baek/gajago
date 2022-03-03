@@ -1,8 +1,7 @@
 import React from 'react';
 import { useRef } from 'react';
-import { useEffect } from 'react';
 
-function MarkingBar({ currentDateMarkingInfo, mouseoverHandler, mouseoutHandler, isHover }) {
+function MarkingBar({ currentDateMarkingInfo, setCurrentHover, isHover }) {
   const { start, end, title, tripType, renderDates, fromPrevMonth, key } = currentDateMarkingInfo;
   const emoji = {
     couple: '💖',
@@ -13,25 +12,6 @@ function MarkingBar({ currentDateMarkingInfo, mouseoverHandler, mouseoutHandler,
 
   const markingBarRef = useRef(null);
 
-  useEffect(() => {
-    const markingBar = markingBarRef.current;
-    markingBar.addEventListener('mouseenter', () => {
-      mouseoverHandler(key);
-    });
-    markingBar.addEventListener('mouseout', () => {
-      mouseoutHandler();
-    });
-
-    return () => {
-      markingBar.removeEventListener('mouseenter', () => {
-        mouseoverHandler(key);
-      });
-      markingBar.removeEventListener('mouseout', () => {
-        mouseoutHandler();
-      });
-    };
-  }, [mouseoverHandler, mouseoutHandler, key]);
-
   return (
     <div
       ref={markingBarRef}
@@ -39,6 +19,12 @@ function MarkingBar({ currentDateMarkingInfo, mouseoverHandler, mouseoutHandler,
         isHover && 'hover'
       }`}
       style={{ width: `${renderDates * 14.28}%` }}
+      onMouseEnter={() => {
+        setCurrentHover(key);
+      }}
+      onMouseOut={() => {
+        setCurrentHover('');
+      }}
     >
       {start && emoji[tripType]} {(start || fromPrevMonth) && title}
     </div>
