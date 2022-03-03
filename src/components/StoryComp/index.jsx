@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { getDatabase, child, get, ref } from 'firebase/database';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import StoriesContainer from './StoriesContainer';
@@ -10,6 +10,7 @@ import { setUsersInfo } from '../../redux/actions/usersInfo_action';
 function StoryComp() {
   const dbRef = ref(getDatabase());
   const dispatch = useDispatch();
+  const scrollbarRef = useRef(null);
 
   const getUsersInfo = useCallback(async () => {
     try {
@@ -25,14 +26,18 @@ function StoryComp() {
     }
   }, [dbRef, dispatch]);
 
+  const scrollToTop = useCallback(() => {
+    scrollbarRef.current?.scrollTop(194);
+  }, []);
+
   useEffect(() => {
     getUsersInfo();
   }, [getUsersInfo]);
   return (
     <StoryCompWrapper>
-      <Scrollbars autoHide>
+      <Scrollbars autoHide ref={scrollbarRef}>
         <Travelers />
-        <StoriesContainer />
+        <StoriesContainer scrollToTop={scrollToTop} />
       </Scrollbars>
     </StoryCompWrapper>
   );

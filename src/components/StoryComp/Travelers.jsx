@@ -89,4 +89,4 @@ function Travelers() {
   );
 }
 
-export default Travelers;
+export default React.memo(Travelers);

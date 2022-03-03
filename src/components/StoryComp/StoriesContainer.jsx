@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import Stories from './Stories';
 import { StyledContainer } from './styles';
 
-function StoriesContainer() {
+function StoriesContainer({ scrollToTop }) {
   const usersInfo = useSelector((state) => state.usersInfo);
 
   const [sortBy, setSortBy] = useState('timeStamp');
@@ -70,10 +70,11 @@ function StoriesContainer() {
           $input.current.blur();
           updateMatchedNicknameList(searchText);
           setSearchUid(matchedNicknameList[indexOfList][0]);
+          scrollToTop();
         }
       }
     },
-    [matchedNicknameList, indexOfList, searchText, updateMatchedNicknameList],
+    [matchedNicknameList, indexOfList, searchText, updateMatchedNicknameList, scrollToTop],
   );
 
   const onChangeHandler = useCallback(
@@ -92,9 +93,18 @@ function StoriesContainer() {
       updateMatchedNicknameList(selectedNickname);
       setSearchUid(e.currentTarget.id);
       setInputFocus(false);
+      scrollToTop();
       $input.current.blur();
     },
-    [usersInfo, updateMatchedNicknameList],
+    [usersInfo, updateMatchedNicknameList, scrollToTop],
+  );
+
+  const onClickSortBy = useCallback(
+    (sortText) => {
+      setSortBy(sortText);
+      scrollToTop();
+    },
+    [scrollToTop],
   );
 
   return (
@@ -148,10 +158,10 @@ function StoriesContainer() {
             )}
           </div>
           <div className="sort">
-            <span className={sortBy === 'timeStamp' ? 'active' : ''} onClick={() => setSortBy('timeStamp')}>
+            <span className={sortBy === 'timeStamp' ? 'active' : ''} onClick={() => onClickSortBy('timeStamp')}>
               최신순
             </span>
-            <span className={sortBy === 'likes' ? 'active' : ''} onClick={() => setSortBy('likes')}>
+            <span className={sortBy === 'likes' ? 'active' : ''} onClick={() => onClickSortBy('likes')}>
               좋아요순
             </span>
           </div>
