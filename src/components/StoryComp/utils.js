@@ -2,16 +2,17 @@ import { getDatabase, ref, get, query, orderByChild, limitToLast, endBefore } fr
 
 const db = getDatabase();
 
+const limit = 10;
+
 export const getFirstBatch = async (sortBy, searchUid) => {
   try {
     const posts = [];
     let lastKey = '';
     let lastSortedValue = '';
     if (searchUid) {
-      await get(query(ref(db, `reviews/user/${searchUid}/public`), orderByChild(sortBy), limitToLast(4))).then(
+      await get(query(ref(db, `reviews/user/${searchUid}/public`), orderByChild(sortBy), limitToLast(limit))).then(
         (snapshot) => {
           if (snapshot.exists()) {
-            console.log(snapshot.val());
             snapshot.forEach((child) => {
               posts.unshift({
                 key: child.key,
@@ -25,9 +26,8 @@ export const getFirstBatch = async (sortBy, searchUid) => {
         },
       );
     } else {
-      await get(query(ref(db, `reviews/public`), orderByChild(sortBy), limitToLast(4))).then((snapshot) => {
+      await get(query(ref(db, `reviews/public`), orderByChild(sortBy), limitToLast(limit))).then((snapshot) => {
         if (snapshot.exists()) {
-          console.log(snapshot.val());
           snapshot.forEach((child) => {
             posts.unshift({
               key: child.key,
@@ -58,7 +58,7 @@ export const getNextBatch = async (sortBy, searchUid, lastSortedValue, lastKey) 
           ref(db, `reviews/user/${searchUid}/public`),
           orderByChild(sortBy),
           endBefore(lastSortedValue, lastKey),
-          limitToLast(4),
+          limitToLast(limit),
         ),
       ).then((snapshot) => {
         if (snapshot.exists()) {
@@ -75,7 +75,7 @@ export const getNextBatch = async (sortBy, searchUid, lastSortedValue, lastKey) 
       });
     } else {
       await get(
-        query(ref(db, `reviews/public`), orderByChild(sortBy), endBefore(lastSortedValue, lastKey), limitToLast(4)),
+        query(ref(db, `reviews/public`), orderByChild(sortBy), endBefore(lastSortedValue, lastKey), limitToLast(limit)),
       ).then((snapshot) => {
         if (snapshot.exists()) {
           snapshot.forEach((child) => {

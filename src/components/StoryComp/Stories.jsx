@@ -5,6 +5,7 @@ import { ColumnsWrapper } from './styles';
 import { getFirstBatch, getNextBatch } from './utils';
 import { getDatabase, ref, onValue, off } from 'firebase/database';
 import { useSelector } from 'react-redux';
+import FetchMore from './FetchMore';
 
 function Stories({ sortBy, searchUid }) {
   const user = useSelector((state) => state.user.currentUser);
@@ -17,28 +18,23 @@ function Stories({ sortBy, searchUid }) {
 
   const db = getDatabase();
 
-  const fetchMorePosts = useCallback(
-    (sortBy, lastSortedValue, lastKey) => {
-      console.log('fetchMorePosts', lastKey.length);
-      if (lastKey.length > 0) {
-        setNextPostsLoading(true);
-        console.log('fetchMorePosts~~~HTTP');
-        getNextBatch(sortBy, searchUid, lastSortedValue, lastKey)
-          .then((res) => {
-            setLastPoint({ lastKey: res.nextLastKey, lastSortedValue: res.nextLastSortedValue });
-            if (res.posts.length > 0) {
-              setPosts((prevPosts) => [...prevPosts, ...res.posts]);
-            }
-            setNextPostsLoading(false);
-          })
-          .catch((err) => {
-            console.log(err);
-            setNextPostsLoading(false);
-          });
-      }
-    },
-    [searchUid],
-  );
+  const fetchMorePosts = useCallback(() => {
+    if (lastPoint.lastKey.length > 0) {
+      setNextPostsLoading(true);
+      getNextBatch(sortBy, searchUid, lastPoint.lastSortedValue, lastPoint.lastKey)
+        .then((res) => {
+          setLastPoint({ lastKey: res.nextLastKey, lastSortedValue: res.nextLastSortedValue });
+          if (res.posts.length > 0) {
+            setPosts((prevPosts) => [...prevPosts, ...res.posts]);
+          }
+          setNextPostsLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setNextPostsLoading(false);
+        });
+    }
+  }, [sortBy, searchUid, lastPoint]);
 
   const seperatePosts = useCallback((posts) => {
     const fstColumnPost = [];
@@ -57,10 +53,6 @@ function Stories({ sortBy, searchUid }) {
 
     return [fstColumnPost, sndColumnPost, trdColumnPost];
   }, []);
-
-  const onClick = useCallback(() => {
-    fetchMorePosts(sortBy, lastPoint.lastSortedValue, lastPoint.lastKey);
-  }, [sortBy, lastPoint, fetchMorePosts]);
 
   useEffect(() => {
     const checkedLikesRef = ref(db, `users/${user.uid}/checkedLikes`);
@@ -88,22 +80,22 @@ function Stories({ sortBy, searchUid }) {
     };
   }, [searchUid, sortBy, db, user.uid]);
   return (
-    <div>
-      {/* {loading ? '로딩중...' : <button onClick={onClick}>데이터 추가버튼</button>}
+    <>
+      <div>
+        {/* {loading ? '로딩중...' : <button onClick={onClick}>데이터 추가버튼</button>}
       <p>{lastPoint.lastKey.length > 0 ? 'fetchMore' : 'no more data'}</p> */}
-      <div onClick={onClick}>
-        <button>클릭!</button>
+        <ColumnsWrapper>
+          {seperatePosts(posts).map((column, idx) => (
+            <div className="storiesColumn" key={idx}>
+              {column.map((post) => (
+                <StoryCard postInfo={post} key={post.key} checkedLikesObj={checkedLikesObj} />
+              ))}
+            </div>
+          ))}
+        </ColumnsWrapper>
       </div>
-      <ColumnsWrapper>
-        {seperatePosts(posts).map((column, idx) => (
-          <div className="storiesColumn" key={idx}>
-            {column.map((post) => (
-              <StoryCard postInfo={post} key={post.key} checkedLikesObj={checkedLikesObj} />
-            ))}
-          </div>
-        ))}
-      </ColumnsWrapper>
-    </div>
+      <FetchMore loading={loading || nextPosts_loading} fetchMorePosts={fetchMorePosts} />
+    </>
   );
 }
 

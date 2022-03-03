@@ -219,6 +219,21 @@ export const StyledContainer = styled.div`
       background: linear-gradient(to top, transparent, #f9f7ff);
     }
   }
+
+  #fetchMore {
+    min-height: 1px;
+  }
+
+  #fetchMore.loading {
+    display: block;
+    text-align: center;
+    line-height: 40px;
+    background: linear-gradient(to bottom, transparent, #d6bdff);
+    color: #31204d;
+  }
+  #fetchMore.loading:after {
+    content: '... Loading ...';
+  }
 `;
 
 export const ColumnsWrapper = styled.div`
@@ -249,7 +264,8 @@ export const Card = styled.div`
   .photo {
     display: block;
     width: 100%;
-    background-color: green;
+    min-height: 130px;
+    background-color: #c1c0ff;
   }
 
   .cardBottom {
