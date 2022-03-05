@@ -14,14 +14,21 @@ function TripMap({ onClickRegion }) {
   const VisitRateOfAllRegion = (visitedRegionCount / 17) * 100;
 
   useEffect(() => {
-    setTimeout(() => {
+    let visitRateTimerId;
+    let isTripKingTimerId;
+    visitRateTimerId = setTimeout(() => {
       setVisitRate(VisitRateOfAllRegion);
     }, 200);
     if (VisitRateOfAllRegion >= 100) {
-      setTimeout(() => {
+      isTripKingTimerId = setTimeout(() => {
         setIsTripKing(true);
       }, 1200);
     }
+
+    return () => {
+      clearTimeout(visitRateTimerId);
+      clearTimeout(isTripKingTimerId);
+    };
   }, [VisitRateOfAllRegion]);
 
   const generateClassName = useCallback((tripObj, region) => {
