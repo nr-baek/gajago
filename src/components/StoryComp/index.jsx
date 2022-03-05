@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useRef } from 'react';
-import { getDatabase, child, get, ref } from 'firebase/database';
+import { getDatabase, get, ref } from 'firebase/database';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import StoriesContainer from './StoriesContainer';
 import Travelers from './Travelers';
@@ -8,23 +8,23 @@ import { useDispatch } from 'react-redux';
 import { setUsersInfo } from '../../redux/actions/usersInfo_action';
 
 function StoryComp() {
-  const dbRef = ref(getDatabase());
+  const db = getDatabase();
   const dispatch = useDispatch();
   const scrollbarRef = useRef(null);
 
   const getUsersInfo = useCallback(async () => {
     try {
-      await get(child(dbRef, `userList`)).then((snapshot) => {
+      await get(ref(db, `userList`)).then((snapshot) => {
         if (snapshot.exists()) {
           dispatch(setUsersInfo(snapshot.val()));
         } else {
-          console.log('No one has a trophy.');
+          console.log('No userList data.');
         }
       });
     } catch (e) {
       console.log(e);
     }
-  }, [dbRef, dispatch]);
+  }, [db, dispatch]);
 
   const scrollToTop = useCallback(() => {
     scrollbarRef.current?.scrollTop(194);

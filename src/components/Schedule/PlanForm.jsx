@@ -13,6 +13,7 @@ import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
 import { checkTrophyInfo } from './utils';
 
 function PlanForm({ closeForm, showEditForm, planData }) {
+  const db = getDatabase();
   const initialState = {
     title: planData?.title ? planData.title : '',
     startDate: planData?.startDate ? new Date(planData.startDate) : new Date(),
@@ -40,7 +41,7 @@ function PlanForm({ closeForm, showEditForm, planData }) {
   const dispatch = useDispatch();
 
   const checkTrophyState = async (planArray) => {
-    const [isOwner, tripCount] = checkTrophyInfo(planArray);
+    const { isOwner, tripCount } = checkTrophyInfo(planArray);
     const infoObj = {
       isOwner,
       tripCount,
@@ -48,9 +49,7 @@ function PlanForm({ closeForm, showEditForm, planData }) {
 
     if (trophyInfo.tripCount !== tripCount) {
       await dispatch(setTrophyInfo(infoObj));
-      if (isOwner) {
-        await set(ref(db, `trophyOwners/${user.uid}`), infoObj);
-      }
+      await set(ref(db, `userList/${user.uid}/tripCount`), infoObj.tripCount);
     }
   };
 
@@ -121,8 +120,6 @@ function PlanForm({ closeForm, showEditForm, planData }) {
     const editPlans = plans.filter((plan) => target.parentNode.parentNode.id !== plan.id + '');
     setPlans(editPlans);
   };
-
-  const db = getDatabase();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -57,5 +57,5 @@ export const checkTrophyInfo = (planArray) => {
   const tripCount = Object.values(beforeTripObj).reduce((acc, cur) => acc + cur, 0);
   const isOwner = regionCount === 17;
 
-  return [isOwner, tripCount];
+  return { isOwner, tripCount };
 };

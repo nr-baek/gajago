@@ -70,6 +70,7 @@ const SignUp = () => {
         set(ref(getDatabase(), `userList/${createdUser.user.uid}`), {
           nickname: createdUser.user.displayName,
           image: createdUser.user.photoURL,
+          tripCount: 0,
         });
         // 모든 input 초기화해주기
         initState();

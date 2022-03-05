@@ -5,7 +5,6 @@ import { getStorage, ref as strRef, uploadBytes, getDownloadURL } from 'firebase
 import { getDatabase, ref, update } from 'firebase/database';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPhotoURL } from '../../redux/actions/user_action';
-import { TrophyFilled } from '@ant-design/icons';
 
 const Profile = () => {
   const user = useSelector((state) => state.user.currentUser);
@@ -51,7 +50,7 @@ const Profile = () => {
       <div className="dropDownBox">
         <Dropdown>
           <Dropdown.Toggle style={{ background: 'transparent', border: '0px' }} id="dropdown-basic">
-            {trophy && <TrophyFilled className="trophy" />}
+            {trophy && '🏆 '}
             <span className="nickname">{user && user.displayName}</span>
           </Dropdown.Toggle>
 

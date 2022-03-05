@@ -2,7 +2,7 @@
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import './firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase, ref, child, get } from 'firebase/database';
+import { getDatabase, ref, get, orderByChild, query } from 'firebase/database';
 
 import MainPage from './pages/MainPage';
 import LogInPage from './pages/LogInPage';
@@ -14,6 +14,7 @@ import StoryPage from './pages/StoryPage';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setPlanData, setTrophyInfo, setUser } from './redux/actions/user_action';
+import { checkTrophyInfo } from './components/Schedule/utils';
 
 // const LogInPage = loadable(() => import('./pages/LogInPage'));
 // const SignUpPage = loadable(() => import('./pages/SignUpPage'));
@@ -22,13 +23,12 @@ function App() {
   const isLoading = useSelector((state) => state.user.isLoading);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const dbRef = ref(getDatabase());
 
   const db = getDatabase();
 
   const setPlanDataAndTrophy = async (user) => {
     try {
-      await get(ref(db, `users/${user.uid}/plans`)).then((snapshot) => {
+      await get(query(ref(db, `users/${user.uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
         if (snapshot.exists()) {
           let planArray = [];
 
@@ -39,17 +39,14 @@ function App() {
             });
             return false;
           });
+
           dispatch(setPlanData(planArray));
+
+          const trophyInfo = checkTrophyInfo(planArray);
+          dispatch(setTrophyInfo(trophyInfo));
         } else {
           console.log('No data available');
           dispatch(setPlanData([]));
-        }
-      });
-      await get(child(dbRef, `trophyOwners/${user.uid}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-          dispatch(setTrophyInfo(snapshot.val()));
-        } else {
-          dispatch(setTrophyInfo());
         }
       });
     } catch (error) {
