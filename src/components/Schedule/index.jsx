@@ -6,7 +6,7 @@ import weekOfYear from 'dayjs/plugin/weekOfYear';
 
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { StyledCalendar } from './styles';
-import AddPlanModal from './AddPlanModal';
+import ScheduleModal from './ScheduleModal';
 import MarkingBar from './MarkingBar';
 
 import { useSelector } from 'react-redux';
@@ -21,13 +21,23 @@ const Calendar = () => {
   console.log('Calender render');
   const planArray = useSelector((state) => state.user.planData);
   const [date, setDate] = useState(dayjs());
-  const [show, setShow] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [markingInfo, setMarkingInfo] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [currentHover, setCurrentHover] = useState('');
+  const [currentHover, setCurrentHover] = useState({ key: '', date: '' });
+  const [modalInfo, setModalInfo] = useState({ key: '', date: '' });
 
-  const handleClose = useCallback(() => setShow(false), []);
-  const handleShow = useCallback(() => setShow(true), []);
+  console.log('markingInfo', markingInfo);
+
+  const handleClose = useCallback(() => setShowModal(false), []);
+  const handleShow = useCallback(
+    () =>
+      setShowModal(() => {
+        setModalInfo({ key: '', date: '' });
+        return true;
+      }),
+    [],
+  );
 
   const renderCalendar = (date) => {
     const startWeek = date.startOf('month').week();
@@ -50,9 +60,12 @@ const Calendar = () => {
                   <span className="dateNumber">{current.format('D')}</span>
                   {markingInfo[currentDateStr] && (
                     <MarkingBar
-                      isHover={currentDateMarkingInfo.key === currentHover}
+                      isHover={currentDateMarkingInfo.key === currentHover.key}
+                      markingDate={currentDateStr}
                       currentDateMarkingInfo={currentDateMarkingInfo}
                       setCurrentHover={setCurrentHover}
+                      setShowModal={setShowModal}
+                      setModalInfo={setModalInfo}
                     />
                   )}
                 </div>
@@ -127,7 +140,7 @@ const Calendar = () => {
         </div>
         {renderCalendar(date)}
       </div>
-      <AddPlanModal show={show} handleClose={handleClose} />
+      <ScheduleModal showModal={showModal} handleClose={handleClose} modalPlanData={markingInfo[modalInfo.date]} />
     </StyledCalendar>
   );
 };

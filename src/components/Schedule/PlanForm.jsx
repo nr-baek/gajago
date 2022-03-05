@@ -12,15 +12,25 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
 import { checkTrophyInfo } from './utils';
 
-function AddPlanForm({ handleClose }) {
-  const [title, onChangeTitle] = useInput('');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [tripType, onChangeTripType] = useState('alone');
-  const [region, onChangeRegion] = useInput('Seoul');
-  const [detailAddress, onChangeDetailAddress] = useInput('');
+function PlanForm({ closeForm, showEditForm, planData }) {
+  const initialState = {
+    title: planData?.title ? planData.title : '',
+    startDate: planData?.startDate ? new Date(planData.startDate) : new Date(),
+    endDate: planData?.endDate ? new Date(planData.endDate) : new Date(),
+    tripType: planData?.tripType ? planData.tripType : 'alone',
+    region: planData?.region ? planData.region : 'Seoul',
+    detailAddress: planData?.detailAddress ? planData.detailAddress : '',
+    plans: planData?.planList ? planData.planList : [],
+  };
+
+  const [title, onChangeTitle] = useInput(initialState.title);
+  const [startDate, setStartDate] = useState(initialState.startDate);
+  const [endDate, setEndDate] = useState(initialState.endDate);
+  const [tripType, onChangeTripType] = useState(initialState.tripType);
+  const [region, onChangeRegion] = useInput(initialState.region);
+  const [detailAddress, onChangeDetailAddress] = useInput(initialState.detailAddress);
   const [planInput, onChangePlanInput, setPlanInput] = useInput('');
-  const [plans, setPlans] = useState([]);
+  const [plans, setPlans] = useState(initialState.plans);
   const [submitError, setSubmitError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -119,11 +129,11 @@ function AddPlanForm({ handleClose }) {
     setLoading(true);
 
     try {
-      const newPlanKey = push(child(ref(db), `users/${user.uid}/plans`)).key;
-      await set(ref(db, `users/${user.uid}/plans/` + dayjs(startDate).format('YYYY-MM-DD') + newPlanKey), createPlan());
+      const planKey = showEditForm ? planData.key : push(child(ref(db), `users/${user.uid}/plans`)).key;
+      await set(ref(db, `users/${user.uid}/plans/` + planKey), createPlan());
       await setPlanDataAndTrophy(user);
       setLoading(false);
-      handleClose();
+      closeForm();
     } catch (error) {
       setSubmitError(error.message);
       setLoading(false);
@@ -182,10 +192,38 @@ function AddPlanForm({ handleClose }) {
               onChangeTripType(e.target.id);
             }}
           >
-            <Form.Check type="radio" inline="true" label="나홀로" name="tripTypes" id="alone" />
-            <Form.Check type="radio" inline="true" label="가족" name="tripTypes" id="family" />
-            <Form.Check type="radio" inline="true" label="우정" name="tripTypes" id="friends" />
-            <Form.Check type="radio" inline="true" label="커플" name="tripTypes" id="couple" />
+            <Form.Check
+              type="radio"
+              defaultChecked={tripType === 'alone'}
+              inline="true"
+              label="나홀로"
+              name="tripTypes"
+              id="alone"
+            />
+            <Form.Check
+              type="radio"
+              defaultChecked={tripType === 'family'}
+              inline="true"
+              label="가족"
+              name="tripTypes"
+              id="family"
+            />
+            <Form.Check
+              type="radio"
+              defaultChecked={tripType === 'friends'}
+              inline="true"
+              label="우정"
+              name="tripTypes"
+              id="friends"
+            />
+            <Form.Check
+              type="radio"
+              defaultChecked={tripType === 'couple'}
+              inline="true"
+              label="커플"
+              name="tripTypes"
+              id="couple"
+            />
           </Col>
         </Form.Group>
       </fieldset>
@@ -196,7 +234,7 @@ function AddPlanForm({ handleClose }) {
         </Form.Label>
         <Col sm={10}>
           <SelectForm>
-            <Form.Select defaultValue="Seoul" onChange={onChangeRegion}>
+            <Form.Select defaultValue={region} onChange={onChangeRegion}>
               <option>지역을 선택하세요</option>
               <option value="Seoul">서울특별시</option>
               <option value="Busan">부산광역시</option>
@@ -257,11 +295,11 @@ function AddPlanForm({ handleClose }) {
       <FormFooter>
         <p>{submitError && submitError}</p>
         <div>
-          <Button variant="secondary" onClick={handleClose} disabled={loading}>
-            Close
+          <Button variant="secondary" onClick={closeForm} disabled={loading}>
+            닫기
           </Button>
           <Button variant="primary" type="submit" onSubmit={handleSubmit}>
-            Add Plan
+            {showEditForm ? '수정하기' : '추가하기'}
           </Button>
         </div>
       </FormFooter>
@@ -269,4 +307,4 @@ function AddPlanForm({ handleClose }) {
   );
 }
 
-export default AddPlanForm;
+export default PlanForm;

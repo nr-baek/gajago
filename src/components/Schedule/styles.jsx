@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import plannerBackground from '../../assets/images/plannerBackground.png';
 
 export const StyledCalendar = styled.div`
   display: flex;
@@ -183,6 +184,78 @@ export const FormFooter = styled.div`
     button {
       margin-left: 10px;
       height: 38px;
+    }
+  }
+`;
+
+export const StyledPlanner = styled.div`
+  padding: 40px 0 65px 0;
+  border-radius: 10px;
+  background-color: #fafaff;
+  background-image: url(${plannerBackground}), linear-gradient(#f2ecff 1px, transparent 1px),
+    linear-gradient(to right, #f2ecff 1px, #fafaff 1px);
+  background-size: cover, 20px 20px, 20px 20px;
+  font-family: 'Gaegu', cursive;
+  color: #333;
+  font-size: 20px;
+  height: 650px;
+
+  h2 {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin: 40px 0 23px 0;
+    text-shadow: 1px 1px 5px #fff;
+  }
+  .contents {
+    width: 70%;
+    margin: 0 auto;
+    p {
+      margin: 10px 0;
+    }
+    ul {
+      margin-left: 30px;
+      padding: 10px 30px 10px 50px;
+      border-radius: 10px;
+      border: 2px dashed #cfcffd;
+      li {
+        list-style: number;
+      }
+    }
+  }
+
+  button {
+    padding: 5px 15px;
+    border-radius: 7px;
+    border: 0;
+  }
+
+  .closeBtn {
+    background-color: #e9dfff;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    &:hover {
+      background-color: #dbccff;
+    }
+  }
+
+  .btnWrapper {
+    margin: 0 auto;
+    width: 270px;
+    .editBtn {
+      background-color: #ffedbd;
+      margin-right: 20px;
+      &:hover {
+        background-color: #ffd04f;
+      }
+    }
+    .delBtn {
+      background-color: #ffcbcb;
+      &:hover {
+        background-color: #ff8181;
+      }
     }
   }
 `;

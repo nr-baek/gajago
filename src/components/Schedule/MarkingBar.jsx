@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRef } from 'react';
 
-function MarkingBar({ currentDateMarkingInfo, setCurrentHover, isHover }) {
+function MarkingBar({ currentDateMarkingInfo, setCurrentHover, isHover, setShowModal, markingDate, setModalInfo }) {
   const { start, end, title, tripType, renderDates, fromPrevMonth, key } = currentDateMarkingInfo;
   const emoji = {
     couple: '💖',
@@ -13,21 +13,29 @@ function MarkingBar({ currentDateMarkingInfo, setCurrentHover, isHover }) {
   const markingBarRef = useRef(null);
 
   return (
-    <div
-      ref={markingBarRef}
-      className={`marKingBar ${tripType} ${start && 'start'} ${end && 'end'} ${fromPrevMonth && 'fromPrevMonth'} ${
-        isHover && 'hover'
-      }`}
-      style={{ width: `${renderDates * 14.28}%` }}
-      onMouseEnter={() => {
-        setCurrentHover(key);
-      }}
-      onMouseOut={() => {
-        setCurrentHover('');
-      }}
-    >
-      {start && emoji[tripType]} {(start || fromPrevMonth) && title}
-    </div>
+    <>
+      <div
+        ref={markingBarRef}
+        className={`marKingBar ${tripType} ${start && 'start'} ${end && 'end'} ${fromPrevMonth && 'fromPrevMonth'} ${
+          isHover && 'hover'
+        }`}
+        style={{ width: `${renderDates * 14.28}%` }}
+        onMouseEnter={() => {
+          setCurrentHover(() => ({ key, date: markingDate }));
+        }}
+        onMouseOut={() => {
+          setCurrentHover({ key: '', date: '' });
+        }}
+        onClick={() => {
+          setShowModal(() => {
+            setModalInfo({ key, date: markingDate });
+            return true;
+          });
+        }}
+      >
+        {start && emoji[tripType]} {(start || fromPrevMonth) && title}
+      </div>
+    </>
   );
 }
 
