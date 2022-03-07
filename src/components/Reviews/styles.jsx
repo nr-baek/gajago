@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import plannerBackground from '../../assets/images/plannerBackground.png';
 import photoDescArrow from '../../assets/images/photoDescArrow.png';
 
 export const ReviewContainer = styled.div`
@@ -31,12 +32,13 @@ export const ReviewContainer = styled.div`
   }
 `;
 
-export const AddReviewBtn = styled.div`
+export const AddReviewBtn = styled.button`
   background-color: #6264b6;
   font-size: 17px;
   color: #fff;
   width: 120px;
   padding: 8px 13px;
+  border: 0;
   border-radius: 10px;
   float: right;
   display: flex;
@@ -45,110 +47,6 @@ export const AddReviewBtn = styled.div`
   cursor: pointer;
   &:hover {
     background-color: #4231db;
-  }
-`;
-
-export const StyledReview = styled.li`
-  width: 100%;
-  max-height: ${({ selected }) => (selected ? '200%' : '73.5px')};
-  overflow: hidden;
-  margin: 10px 0;
-  padding: 10px 20px;
-  border: 2px ${({ selected }) => (selected ? 'solid #999bff' : 'dashed #b4b5ff')};
-  border-radius: 20px;
-  background-color: #fff;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.4s ease;
-  white-space: pre;
-  .expression {
-    width: 35px;
-    font-size: 30px;
-    height: 30px;
-  }
-  .title {
-    width: 55%;
-    margin-right: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    .reviewTitle {
-      font-size: 18px;
-      font-weight: 700;
-      color: #4749a3;
-      white-space: ${({ selected }) => (selected ? 'pre-wrap' : 'nowrap')};
-    }
-    .regionAndTripTitle {
-      font-size: 15px;
-      color: #838383;
-      width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      span {
-        font-weight: 700;
-        white-space: ${({ selected }) => (selected ? 'pre-wrap' : 'nowrap')};
-      }
-    }
-  }
-  .term {
-    width: 30%;
-    color: #838383;
-  }
-  .likes {
-    color: #444;
-    width: 35px;
-    font-size: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .content {
-    overflow: hidden;
-    width: 95%;
-    margin: 10px auto;
-    font-size: 20px;
-    .photoAndDesc {
-      display: flex;
-      align-items: flex-end;
-      img {
-        display: inline-block;
-        background-color: pink;
-        width: 400px;
-        min-height: 220px;
-      }
-      .photoDesc {
-        background-image: url(${photoDescArrow});
-        background-size: 60px 60px;
-        background-position-x: 10px;
-        background-position-y: 90%;
-        background-repeat: no-repeat;
-        font-family: 'Gaegu', cursive;
-        color: #6e3fee;
-        font-weight: 700;
-        text-align: center;
-        line-height: 23px;
-        word-break: keep-all;
-        white-space: pre-line;
-        padding: 0 0 50px 10px;
-        width: 200px;
-      }
-    }
-    p {
-      margin-top: 20px;
-      font-family: 'Gaegu', cursive;
-      color: #444;
-      font-weight: 400;
-      white-space: pre-line;
-      line-height: 30px;
-      text-decoration: underline dotted #bfa8ff;
-      text-underline-position: under;
-    }
-  }
-
-  &:hover {
-    border-color: #3e41f0;
   }
 `;
 
@@ -218,6 +116,119 @@ export const StyledListContainer = styled.div`
       &:hover {
         background-color: #0a5edb;
       }
+    }
+  }
+`;
+
+export const StyledButton = styled.button`
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px 20px;
+  border: 2px dashed #b4b5ff;
+  border-radius: 20px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: pre;
+
+  .expression {
+    width: 35px;
+    font-size: 30px;
+    height: 30px;
+  }
+  .title {
+    width: 55%;
+    margin-right: 10px;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    .reviewTitle {
+      font-size: 18px;
+      font-weight: 700;
+      color: #4749a3;
+      white-space: ${({ selected }) => (selected ? 'pre-wrap' : 'nowrap')};
+    }
+    .regionAndTripTitle {
+      font-size: 15px;
+      color: #838383;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      span {
+        font-weight: 700;
+        white-space: ${({ selected }) => (selected ? 'pre-wrap' : 'nowrap')};
+      }
+    }
+  }
+  .term {
+    width: 210px;
+    color: #838383;
+  }
+  .likes {
+    color: #444;
+    width: 35px;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &:hover {
+    border-color: #3e41f0;
+  }
+`;
+
+export const StyledReview = styled.div`
+  h2 {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin: 40px 0 23px 0;
+    text-shadow: 1px 1px 5px #fff;
+  }
+  .contents {
+    width: 90%;
+    margin: 0 auto;
+    p {
+      margin: 10px 0;
+    }
+    .photoAndDesc {
+      margin: 10px auto;
+      text-align: center;
+      .photo {
+        background-color: green;
+        border-radius: 10px;
+        display: block;
+        margin: 0 auto;
+        box-shadow: 3px 4px 10px rgba(0, 0, 0, 0.3);
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+      }
+      p {
+        padding: 10px 20px;
+        color: #555;
+        font-size: 18px;
+        font-weight: 700;
+      }
+    }
+    .review {
+      border-radius: 10px;
+      background: rgba(250, 250, 255, 0.8);
+      border: 2px dashed #9a74cc;
+      padding: 10px 15px;
+      font-family: 'Gaegu', cursive;
+      color: #444;
+      white-space: pre-line;
+      line-height: 30px;
+      font-size: 20px;
+      text-decoration: underline dotted #bfa8ff;
+      text-underline-position: under;
+    }
+    .bottom {
+      display: flex;
+      justify-content: space-between;
     }
   }
 `;
