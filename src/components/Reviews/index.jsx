@@ -1,17 +1,67 @@
-import { EditOutlined } from '@ant-design/icons/lib/icons';
-import React, { useCallback, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import useInput from '../../hooks/useInput';
-import AddReviewModal from './AddReviewModal';
+import { Form } from 'react-bootstrap';
+import { EditOutlined } from '@ant-design/icons/lib/icons';
+import ReviewModal from './ReviewModal';
+import { getDatabase, ref, onValue, off } from 'firebase/database';
+import { generateTripsObjectByRegion } from './utils';
 import ReviewList from './ReviewList';
 import { AddReviewBtn, ReviewContainer } from './styles';
 
 function Reviews() {
-  const [show, setShow] = useState(false);
+  const user = useSelector((state) => state.user.currentUser);
+  const [reviewsObj, setReviewsObj] = useState({});
+  const [reviewObjectByRegion, setReviewObjectByRegion] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [selectedRegion, setSelectedRegion] = useInput('allRegion');
+  const [reviewKey, setReviewKey] = useState('');
 
-  const handleClose = useCallback(() => setShow(false), []);
-  const handleShow = useCallback(() => setShow(true), []);
+  const handleClose = useCallback(() => {
+    setShowModal(false);
+  }, []);
+  const handleShow = useCallback(() => {
+    setReviewKey('');
+    setShowModal(true);
+  }, []);
+
+  const db = getDatabase();
+  const reviewRef = useMemo(() => {
+    return ref(db, `reviews/user/${user.uid}`);
+  }, [db, user.uid]);
+
+  const addReviewsListener = useCallback(() => {
+    onValue(reviewRef, (snapshot) => {
+      if (snapshot.exists()) {
+        let reviews = {};
+        const reviewList = [];
+        snapshot.forEach((child) => {
+          reviews = { ...reviews, ...child.val() };
+        });
+        console.log(reviews);
+        setReviewsObj(reviews);
+        for (let key in reviews) {
+          const reviewInfo = { key: key, ...reviews[key] };
+          reviewList.push(reviewInfo);
+        }
+
+        reviewList.sort((prev, next) => {
+          if (prev.startDate < next.startDate) return 1;
+          if (prev.startDate > next.startDate) return -1;
+          return 0;
+        });
+
+        setReviewObjectByRegion(generateTripsObjectByRegion(reviewList));
+      }
+    });
+  }, [reviewRef]);
+
+  useEffect(() => {
+    addReviewsListener();
+    return () => {
+      off(reviewRef);
+    };
+  }, [addReviewsListener, reviewRef]);
 
   return (
     <ReviewContainer>
@@ -43,8 +93,12 @@ function Reviews() {
       <AddReviewBtn onClick={handleShow}>
         <EditOutlined /> 후기 작성
       </AddReviewBtn>
-      <ReviewList selectedRegion={selectedRegion} />
-      <AddReviewModal show={show} handleClose={handleClose} />
+      <ReviewList
+        reviews={reviewObjectByRegion && reviewObjectByRegion[selectedRegion]}
+        setReviewKey={setReviewKey}
+        setShowModal={setShowModal}
+      />
+      <ReviewModal show={showModal} handleClose={handleClose} reviewInfo={reviewKey && reviewsObj[reviewKey]} />
     </ReviewContainer>
   );
 }
