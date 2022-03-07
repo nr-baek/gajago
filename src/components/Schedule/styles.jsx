@@ -188,8 +188,7 @@ export const FormFooter = styled.div`
   }
 `;
 
-export const StyledPlanner = styled.div`
-  padding: 40px 0 65px 0;
+export const StyledModalContents = styled.div`
   border-radius: 10px;
   background-color: #fafaff;
   background-image: url(${plannerBackground}), linear-gradient(#f2ecff 1px, transparent 1px),
@@ -199,29 +198,12 @@ export const StyledPlanner = styled.div`
   color: #333;
   font-size: 20px;
   height: 650px;
+  padding: 40px 0 70px 0;
 
-  h2 {
-    font-size: 30px;
-    font-weight: 700;
-    text-align: center;
-    margin: 40px 0 23px 0;
-    text-shadow: 1px 1px 5px #fff;
-  }
-  .contents {
-    width: 70%;
+  .contentsWrapper {
+    width: 85%;
     margin: 0 auto;
-    p {
-      margin: 10px 0;
-    }
-    ul {
-      margin-left: 30px;
-      padding: 10px 30px 10px 50px;
-      border-radius: 10px;
-      border: 2px dashed #cfcffd;
-      li {
-        list-style: number;
-      }
-    }
+    position: relative;
   }
 
   button {
@@ -231,18 +213,18 @@ export const StyledPlanner = styled.div`
   }
 
   .closeBtn {
-    background-color: #e9dfff;
+    background-color: #dfd1ff;
     position: absolute;
-    right: 10px;
-    top: 10px;
+    right: 20px;
+    top: 20px;
 
     &:hover {
-      background-color: #dbccff;
+      background-color: #bc93ff;
     }
   }
 
   .btnWrapper {
-    margin: 0 auto;
+    margin: 15px auto;
     width: 270px;
     .editBtn {
       background-color: #ffedbd;
@@ -255,6 +237,32 @@ export const StyledPlanner = styled.div`
       background-color: #ffcbcb;
       &:hover {
         background-color: #ff8181;
+      }
+    }
+  }
+`;
+
+export const StyledPlanner = styled.div`
+  h2 {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin: 40px 0 23px 0;
+    text-shadow: 1px 1px 5px #fff;
+  }
+  .contents {
+    width: 80%;
+    margin: 0 auto;
+    p {
+      margin: 10px 0;
+    }
+    ul {
+      margin-left: 30px;
+      padding: 10px 30px 10px 50px;
+      border-radius: 10px;
+      border: 2px dashed #cfcffd;
+      li {
+        list-style: number;
       }
     }
   }

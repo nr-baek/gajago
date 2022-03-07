@@ -1,16 +1,17 @@
 import React from 'react';
-import Scrollbars from 'react-custom-scrollbars-2';
 import { StyledPlanner } from './styles';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, getDatabase, orderByChild, query, ref as dbRef, set, update } from 'firebase/database';
 import { getStorage, ref as strRef, deleteObject } from 'firebase/storage';
-import { setPlanData } from '../../redux/actions/user_action';
+import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
+import NoteWithBtn from './NoteWithBtn';
+import { checkTrophyInfo } from './utils';
 
 function TripInfo({ planData, handleClose, setShowEditForm }) {
   const user = useSelector((state) => state.user.currentUser);
-
+  const trophyInfo = useSelector((state) => state.user.trophyInfo);
   const dispatch = useDispatch();
+  const db = getDatabase();
 
   const { key, title, startDate, endDate, days, region, detailAddress, tripType, planList } = planData;
   const tripTypeText = {
@@ -41,6 +42,19 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
     overseas: '해외',
   };
 
+  const checkTrophyState = async (planArray) => {
+    const { isOwner, tripCount } = checkTrophyInfo(planArray);
+    const infoObj = {
+      isOwner,
+      tripCount,
+    };
+
+    if (trophyInfo.tripCount !== tripCount) {
+      await dispatch(setTrophyInfo(infoObj));
+      await set(dbRef(db, `userList/${user.uid}/tripCount`), infoObj.tripCount);
+    }
+  };
+
   const onClickEditBtn = () => {
     if (planData.review) {
       alert('여행후기 등록이 완료된 일정이므로 수정할 수 없습니다.');
@@ -56,8 +70,6 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
           `${planData.review ? '등록된 여행후기 및 스토리 게시물이 사라집니다.\n' : ''}정말 삭제하시겠습니까?`,
         )
       ) {
-        // 삭제처리
-        const db = getDatabase();
         const storage = getStorage();
 
         if (planData.review) {
@@ -79,7 +91,6 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
         } else {
           await set(dbRef(db, `users/${user.uid}/plans/${key}`), null);
         }
-        // plandata 다시 get 해오고 plan이랑 트로피 여부 다시 dispatch
 
         await get(query(dbRef(db, `users/${user.uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
           if (snapshot.exists()) {
@@ -93,6 +104,7 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
               return false;
             });
             dispatch(setPlanData(planArray));
+            checkTrophyState(planArray);
           } else {
             console.log('No data available');
             dispatch(setPlanData([]));
@@ -106,10 +118,9 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
   };
 
   return (
-    <StyledPlanner>
-      <Scrollbars autoHide>
+    <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn}>
+      <StyledPlanner>
         <h2> {title} </h2>
-
         <div className="contents">
           <p>
             &#x1F4C6; 여행기간: {days > 1 ? `${startDate} ~ ${endDate}` : startDate} (
@@ -130,19 +141,8 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
             <p>등록된 계획일정 없음...</p>
           )}
         </div>
-      </Scrollbars>
-      <button className="closeBtn" onClick={handleClose}>
-        X 닫기
-      </button>
-      <div className="btnWrapper">
-        <button className="editBtn" onClick={onClickEditBtn}>
-          <EditOutlined style={{ verticalAlign: 'middle' }} /> 수정하기
-        </button>
-        <button className="delBtn" onClick={onClickDelBtn}>
-          <DeleteOutlined style={{ verticalAlign: 'middle' }} /> 삭제하기
-        </button>
-      </div>
-    </StyledPlanner>
+      </StyledPlanner>
+    </NoteWithBtn>
   );
 }
 
