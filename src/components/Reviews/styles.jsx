@@ -1,6 +1,4 @@
 import styled from '@emotion/styled';
-import plannerBackground from '../../assets/images/plannerBackground.png';
-import photoDescArrow from '../../assets/images/photoDescArrow.png';
 
 export const ReviewContainer = styled.div`
   width: 75%;
@@ -24,6 +22,11 @@ export const ReviewContainer = styled.div`
     border-top: 2px solid #c2c3fa;
     height: 80%;
     overflow: auto;
+    .loading {
+      text-align: center;
+      padding: 10px 0 30px 0;
+      color: #555;
+    }
     .noWrittenReviewMsg {
       text-align: center;
       padding: 10px 0 30px 0;

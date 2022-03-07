@@ -11,6 +11,7 @@ import { AddReviewBtn, ReviewContainer } from './styles';
 
 function Reviews() {
   const user = useSelector((state) => state.user.currentUser);
+  const [loading, setLoading] = useState(false);
   const [reviewsObj, setReviewsObj] = useState({});
   const [reviewObjectByRegion, setReviewObjectByRegion] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -31,6 +32,7 @@ function Reviews() {
   }, [db, user.uid]);
 
   const addReviewsListener = useCallback(() => {
+    setLoading(true);
     onValue(reviewRef, (snapshot) => {
       if (snapshot.exists()) {
         let reviews = {};
@@ -52,6 +54,7 @@ function Reviews() {
         });
 
         setReviewObjectByRegion(generateTripsObjectByRegion(reviewList));
+        setLoading(false);
       }
     });
   }, [reviewRef]);
@@ -94,6 +97,7 @@ function Reviews() {
         <EditOutlined /> 후기 작성
       </AddReviewBtn>
       <ReviewList
+        loading={loading}
         reviews={reviewObjectByRegion && reviewObjectByRegion[selectedRegion]}
         setReviewKey={setReviewKey}
         setShowModal={setShowModal}
