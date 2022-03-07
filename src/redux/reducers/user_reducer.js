@@ -19,9 +19,7 @@ const user_reducer = (state = initialUserState, action) => {
       };
     case CLEAR_USER:
       return {
-        ...state,
-        currentUser: null,
-        planData: [],
+        ...initialUserState,
         isLoading: false,
       };
     case SET_PHOTO_URL:

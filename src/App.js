@@ -15,6 +15,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setPlanData, setTrophyInfo, setUser } from './redux/actions/user_action';
 import { checkTrophyInfo } from './components/Schedule/utils';
+import { setPage } from './redux/actions/page_action';
 
 // const LogInPage = loadable(() => import('./pages/LogInPage'));
 // const SignUpPage = loadable(() => import('./pages/SignUpPage'));
@@ -45,8 +46,14 @@ function App() {
           const trophyInfo = checkTrophyInfo(planArray);
           dispatch(setTrophyInfo(trophyInfo));
         } else {
-          console.log('No data available');
           dispatch(setPlanData([]));
+          dispatch(
+            setTrophyInfo({
+              isOwner: false,
+              tripCount: 0,
+            }),
+          );
+          console.log('No data available');
         }
       });
     } catch (error) {
@@ -66,6 +73,7 @@ function App() {
       } else if (!user) {
         navigate('/login');
         dispatch(clearUser());
+        dispatch(setPage('schedule'));
       }
     });
   }, []);
