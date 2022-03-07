@@ -1,12 +1,17 @@
 import { CameraOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { get, getDatabase, orderByChild, query, ref as dbRef, update } from 'firebase/database';
+import { getStorage, ref as strRef, deleteObject } from 'firebase/storage';
 import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPlanData } from '../../redux/actions/user_action';
 import NoteWithBtn from '../Schedule/NoteWithBtn';
 import { StyledReview } from './styles';
 
 function ReviewInfo({ reviewInfo, setShowForm, handleClose }) {
+  const user = useSelector((state) => state.user.currentUser);
+  const dispatch = useDispatch();
   const {
-    uid,
     tripTitle,
     tripType,
     reviewTitle,
@@ -17,11 +22,10 @@ function ReviewInfo({ reviewInfo, setShowForm, handleClose }) {
     imgUrl,
     openReview,
     photoDesc,
-    planKey,
+    key,
     region,
     detailAddress,
     timeStamp,
-    likes,
     reviewText,
   } = reviewInfo;
 
@@ -63,14 +67,57 @@ function ReviewInfo({ reviewInfo, setShowForm, handleClose }) {
     setShowForm(true);
   }, [setShowForm]);
 
-  const onClickDelBtn = useCallback(() => {
-    // 삭제 처리....
-    handleClose();
-  }, [handleClose]);
+  const onClickDelBtn = useCallback(async () => {
+    try {
+      if (window.confirm(`${openReview ? '등록된 스토리 게시물이 사라집니다.\n' : ''}정말 삭제하시겠습니까?`)) {
+        const db = getDatabase();
+        const updates = {};
+
+        updates[`users/${user.uid}/plans/${key}/review`] = false;
+        updates[`users/${user.uid}/plans/${key}/openReview`] = false;
+        updates[`users/${user.uid}/plans/${key}/photoReview`] = null;
+        if (openReview) {
+          updates[`reviews/public/${key}`] = null;
+          updates[`reviews/user/${user.uid}/public/${key}`] = null;
+        } else {
+          updates[`reviews/user/${user.uid}/private/${key}`] = null;
+        }
+        await update(dbRef(db), updates);
+
+        if (imgUrl) {
+          const storage = getStorage();
+          const desertRef = strRef(storage, `review_image/${user.uid}/${key}`);
+          await deleteObject(desertRef);
+        }
+
+        await get(query(dbRef(db, `users/${user.uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
+          if (snapshot.exists()) {
+            let planArray = [];
+
+            snapshot.forEach((child) => {
+              planArray.push({
+                key: child.key,
+                ...child.val(),
+              });
+              return false;
+            });
+            dispatch(setPlanData(planArray));
+          } else {
+            console.log('No data available');
+            dispatch(setPlanData([]));
+          }
+        });
+      }
+
+      handleClose();
+      console.log('삭제되었습니다아~');
+    } catch (error) {
+      console.log('리뷰삭제 중 에러:', error);
+    }
+  }, [handleClose, reviewInfo, user.uid, dispatch]);
 
   return (
-    // <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn}>
-    <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn}>
+    <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn}>
       <StyledReview>
         <h2> {reviewTitle} </h2>
         <div className="contents">
@@ -84,8 +131,6 @@ function ReviewInfo({ reviewInfo, setShowForm, handleClose }) {
             <span> &#127944; 여행타입: {tripTypeText[tripType]}</span>
             <span style={{ marginLeft: '40px' }}>&#127880; 여행기분: {feeling[expression]}</span>
           </p>
-          {/* <p> &#127944; 여행타입: {tripTypeText[tripType]}</p>
-          <p> &#10024; 여행기분: {feeling[expression]}</p> */}
 
           {imgUrl && (
             <div className="photoAndDesc">

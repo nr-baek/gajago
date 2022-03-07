@@ -9,7 +9,7 @@ import { FormFooter } from '../Schedule/styles';
 import { setPlanData } from '../../redux/actions/user_action';
 import { EditPhotoButton } from './styles';
 
-function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose }) {
+function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowForm }) {
   const user = useSelector((state) => state.user.currentUser);
 
   const [validated, setValidated] = useState(false);
@@ -60,7 +60,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose }) {
       days: tripInfo.days,
       tripTitle: tripInfo.title,
       tripType: tripInfo.tripType,
-      planKey: tripInfo.key,
+      key: tripInfo.key,
       expression,
       imgUrl: reviewImgURL,
       reviewText,
@@ -93,7 +93,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose }) {
 
         const reviewData = createReviewData(downloadURL);
         const updates = {};
-        if (imgFile) updates[`users/${user.uid}/plans/${tripInfo.key}/imageFileType`] = imgFile.type;
+        if (imgFile) updates[`users/${user.uid}/plans/${tripInfo.key}/photoReview`] = true;
         updates[`users/${user.uid}/plans/${tripInfo.key}/review`] = true;
         updates[`users/${user.uid}/plans/${tripInfo.key}/openReview`] = openReview;
         if (openReview) {
@@ -107,6 +107,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose }) {
 
         getPlanData(user);
         setLoading(false);
+        setShowForm(false);
         handleClose();
       } catch (error) {
         setSubmitError(error.message);

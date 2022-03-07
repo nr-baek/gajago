@@ -43,8 +43,8 @@ function Reviews() {
         console.log(reviews);
         setReviewsObj(reviews);
         for (let key in reviews) {
-          const reviewInfo = { key: key, ...reviews[key] };
-          reviewList.push(reviewInfo);
+          reviewList.push(reviews[key]);
+          console.log(reviews[key]);
         }
 
         reviewList.sort((prev, next) => {
@@ -52,10 +52,11 @@ function Reviews() {
           if (prev.startDate > next.startDate) return -1;
           return 0;
         });
-
         setReviewObjectByRegion(generateTripsObjectByRegion(reviewList));
-        setLoading(false);
+      } else {
+        setReviewObjectByRegion(generateTripsObjectByRegion([]));
       }
+      setLoading(false);
     });
   }, [reviewRef]);
 
@@ -102,11 +103,7 @@ function Reviews() {
         setReviewKey={setReviewKey}
         setShowModal={setShowModal}
       />
-      <ReviewModal
-        show={showModal}
-        handleClose={handleClose}
-        reviewInfo={reviewKey && { ...reviewsObj[reviewKey], key: reviewKey }}
-      />
+      <ReviewModal show={showModal} handleClose={handleClose} reviewInfo={reviewKey && reviewsObj?.[reviewKey]} />
     </ReviewContainer>
   );
 }

@@ -51,6 +51,7 @@ function ReviewModal({ show, handleClose, reviewInfo }) {
                   tripInfo={reviewInfo?.tripTitle ? reviewInfo : newTripInfo}
                   resetTripInfo={resetSelectedTripValue}
                   handleClose={handleClose}
+                  setShowForm={setShowForm}
                 />
               ) : (
                 <UnWrittenReviewList handleClose={handleClose} selectTripToWriteReview={selectTripToWriteReview} />
