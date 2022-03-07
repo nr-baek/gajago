@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { StyledPlanner } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, getDatabase, orderByChild, query, ref as dbRef, set, update } from 'firebase/database';
@@ -42,28 +42,31 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
     overseas: '해외',
   };
 
-  const checkTrophyState = async (planArray) => {
-    const { isOwner, tripCount } = checkTrophyInfo(planArray);
-    const infoObj = {
-      isOwner,
-      tripCount,
-    };
+  const checkTrophyState = useCallback(
+    async (planArray) => {
+      const { isOwner, tripCount } = checkTrophyInfo(planArray);
+      const infoObj = {
+        isOwner,
+        tripCount,
+      };
 
-    if (trophyInfo.tripCount !== tripCount) {
-      await dispatch(setTrophyInfo(infoObj));
-      await set(dbRef(db, `userList/${user.uid}/tripCount`), infoObj.tripCount);
-    }
-  };
+      if (trophyInfo.tripCount !== tripCount) {
+        await dispatch(setTrophyInfo(infoObj));
+        await set(dbRef(db, `userList/${user.uid}/tripCount`), infoObj.tripCount);
+      }
+    },
+    [db, dispatch, trophyInfo.tripCount, user.uid],
+  );
 
-  const onClickEditBtn = () => {
+  const onClickEditBtn = useCallback(() => {
     if (planData.review) {
       alert('여행후기 등록이 완료된 일정이므로 수정할 수 없습니다.');
       return;
     }
     setShowEditForm(true);
-  };
+  }, [planData.review, setShowEditForm]);
 
-  const onClickDelBtn = async () => {
+  const onClickDelBtn = useCallback(async () => {
     try {
       if (
         window.confirm(
@@ -82,7 +85,7 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
           } else {
             updates[`reviews/user/${user.uid}/private/${key}`] = null;
           }
-          if (planData.imageFileType) {
+          if (planData.photoReview) {
             const desertRef = strRef(storage, `review_image/${user.uid}/${key}`);
             await deleteObject(desertRef);
           }
@@ -115,7 +118,7 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [checkTrophyState, db, dispatch, handleClose, key, planData, user.uid]);
 
   return (
     <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn}>
