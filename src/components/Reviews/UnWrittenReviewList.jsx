@@ -38,7 +38,7 @@ function UnWrittenReviewList({ handleClose, selectTripToWriteReview }) {
             >
               {clickedIndex === idx ? <CheckOutlined /> : <CarTwoTone twoToneColor={'#3c199b'} />}
               <span className="date">
-                {trip.startDate}~{trip.endDate}
+                {trip.startDate === trip.endDate ? trip.startDate : `${trip.startDate} ~ ${trip.endDate}`}
               </span>{' '}
               <span className="title">{trip.title}</span>
             </li>

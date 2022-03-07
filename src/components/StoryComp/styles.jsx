@@ -33,13 +33,6 @@ export const TravelerList = styled.div`
         flex-direction: column;
         align-items: center;
         position: relative;
-        .crown {
-          position: absolute;
-          font-size: 30px;
-          top: -5px;
-          left: 56px;
-          transform: rotateZ(17deg);
-        }
         img {
           width: 80px;
           height: 80px;
@@ -63,12 +56,6 @@ export const TravelerList = styled.div`
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-
-            .ranking {
-              font-size: 13px;
-              font-weight: 700;
-              color: #8400ff;
-            }
           }
           .tripCount {
             font-size: 12px;

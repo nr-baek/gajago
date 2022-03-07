@@ -7,19 +7,21 @@ import { getDatabase, ref as dbRef, get, update, query, orderByChild } from 'fir
 import { FrownTwoTone, MehTwoTone, SmileTwoTone } from '@ant-design/icons';
 import { FormFooter } from '../Schedule/styles';
 import { setPlanData } from '../../redux/actions/user_action';
+import { EditPhotoButton } from './styles';
 
-function ReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose }) {
+function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose }) {
   const user = useSelector((state) => state.user.currentUser);
 
   const [validated, setValidated] = useState(false);
-  const [reviewTitle, onChangeTitle] = useInput('');
-  const [expression, setExpression] = useState('');
+  const [reviewTitle, onChangeTitle] = useInput(tripInfo?.reviewTitle || '');
+  const [expression, setExpression] = useState(tripInfo?.expression || '');
   const [imgFile, setImgFile] = useState(null);
-  const [photoDesc, onChangePhotoDesc] = useInput('');
+  const [photoDesc, onChangePhotoDesc, setPhotoDesc] = useInput(tripInfo?.photoDesc || '');
   const [submitError, setSubmitError] = useState('');
-  const [reviewText, onChangeReviewText] = useInput('');
-  const [openReview, setOpenReview] = useState(false);
+  const [reviewText, onChangeReviewText] = useInput(tripInfo?.reviewText || '');
+  const [openReview, setOpenReview] = useState(tripInfo?.openReview || false);
   const [loading, setLoading] = useState(false);
+  const [reviewImage, setReviewImage] = useState(tripInfo?.imgUrl);
 
   const dispatch = useDispatch();
 
@@ -125,6 +127,16 @@ function ReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose }) {
     setOpenReview(e.target.checked);
   }, []);
 
+  const clickEditBtn = useCallback(
+    (e) => {
+      e.preventDefault();
+      setReviewImage(null);
+      setPhotoDesc('');
+      setOpenReview(false);
+    },
+    [setPhotoDesc],
+  );
+
   useEffect(() => {
     return () => {
       resetTripInfo();
@@ -151,6 +163,7 @@ function ReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose }) {
             <Form.Check
               type="radio"
               inline="true"
+              defaultChecked={expression === 'good'}
               required
               label={
                 <SmileTwoTone
@@ -167,6 +180,7 @@ function ReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose }) {
             <Form.Check
               type="radio"
               inline="true"
+              defaultChecked={expression === 'soSo'}
               label={
                 <MehTwoTone
                   style={{
@@ -182,6 +196,7 @@ function ReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose }) {
             <Form.Check
               type="radio"
               inline="true"
+              defaultChecked={expression === 'bad'}
               label={
                 <FrownTwoTone
                   style={{
@@ -204,28 +219,34 @@ function ReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose }) {
           사진 첨부 (선택)
         </Form.Label>
         <Col sm={10}>
-          <Form.Control type="file" onChange={handleFileInput} />
+          {reviewImage ? (
+            <p htmlFor="picture" style={{ lineHeight: '38px' }}>
+              이미 등록된 사진이 있습니다.
+              <EditPhotoButton onClick={clickEditBtn}>변경하기</EditPhotoButton>
+            </p>
+          ) : (
+            <Form.Control type="file" onChange={handleFileInput} />
+          )}
         </Col>
       </Form.Group>
 
-      {imgFile && (
-        <Form.Group as={Row} className="mb-3" controlId="tripTitle">
-          <Form.Label column sm={2}>
-            사진 설명
-          </Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              required
-              placeholder="60자 이내로 입력해주세요."
-              maxLength="60"
-              value={photoDesc}
-              onChange={onChangePhotoDesc}
-            />
-            <Form.Control.Feedback type="invalid">사진에 대한 설명을 입력해주세요.</Form.Control.Feedback>
-          </Col>
-        </Form.Group>
-      )}
+      <Form.Group as={Row} className="mb-3" controlId="tripTitle">
+        <Form.Label column sm={2}>
+          사진 설명
+        </Form.Label>
+        <Col sm={10}>
+          <Form.Control
+            type="text"
+            required
+            placeholder="60자 이내로 입력해주세요."
+            maxLength="60"
+            disabled={!imgFile && !(tripInfo?.imgUrl && reviewImage)}
+            value={photoDesc}
+            onChange={onChangePhotoDesc}
+          />
+          <Form.Control.Feedback type="invalid">사진에 대한 설명을 입력해주세요.</Form.Control.Feedback>
+        </Col>
+      </Form.Group>
 
       <Form.Group as={Row} className="mb-3" controlId="review">
         <Form.Label column sm={2}>
@@ -251,9 +272,10 @@ function ReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose }) {
           <Form.Check
             type="checkbox"
             id="custom-switch"
-            label="스토리 공개(사진 첨부시 선택 가능합니다)"
+            label="스토리 공개(사진 첨부시에만 공개 가능합니다)"
             style={{ marginTop: '8px' }}
-            disabled={!imgFile}
+            checked={openReview}
+            disabled={!imgFile && !reviewImage}
             onChange={handleCheck}
           />
         </Col>
@@ -262,7 +284,7 @@ function ReviewForm({ tripInfo, resetTripInfo, QNAHandleClose, handleClose }) {
       <FormFooter>
         <p>{submitError && submitError}</p>
         <div>
-          <Button variant="secondary" onClick={QNAHandleClose}>
+          <Button variant="secondary" onClick={closeModal}>
             닫기
           </Button>
           <Button variant="primary" type="submit" disabled={loading}>

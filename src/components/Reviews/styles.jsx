@@ -235,3 +235,9 @@ export const StyledReview = styled.div`
     }
   }
 `;
+
+export const EditPhotoButton = styled.button`
+  line-height: 20px;
+  padding: 3px;
+  margin-left: 10px;
+`;

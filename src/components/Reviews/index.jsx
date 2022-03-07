@@ -102,7 +102,11 @@ function Reviews() {
         setReviewKey={setReviewKey}
         setShowModal={setShowModal}
       />
-      <ReviewModal show={showModal} handleClose={handleClose} reviewInfo={reviewKey && reviewsObj[reviewKey]} />
+      <ReviewModal
+        show={showModal}
+        handleClose={handleClose}
+        reviewInfo={reviewKey && { ...reviewsObj[reviewKey], key: reviewKey }}
+      />
     </ReviewContainer>
   );
 }

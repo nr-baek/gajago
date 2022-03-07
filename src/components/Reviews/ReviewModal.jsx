@@ -5,7 +5,7 @@ import ReviewInfo from './ReviewInfo';
 import UnWrittenReviewList from './UnWrittenReviewList';
 
 function ReviewModal({ show, handleClose, reviewInfo }) {
-  const [newTripInfo, setNewTripInfo] = useState({});
+  const [newTripInfo, setNewTripInfo] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
   const selectTripToWriteReview = useCallback((plan) => {
@@ -13,7 +13,7 @@ function ReviewModal({ show, handleClose, reviewInfo }) {
     setNewTripInfo(plan);
   }, []);
 
-  const resetTripInfo = useCallback(() => {
+  const resetSelectedTripValue = useCallback(() => {
     setNewTripInfo({});
   }, []);
 
@@ -37,26 +37,19 @@ function ReviewModal({ show, handleClose, reviewInfo }) {
           <>
             <Modal.Header closeButton>
               <Modal.Title>
-                {reviewInfo && reviewInfo.tripTitle
+                {reviewInfo?.tripTitle
                   ? `${'[후기 수정] ' + reviewInfo.tripTitle}`
-                  : newTripInfo.title
+                  : newTripInfo?.title
                   ? `${'[후기 작성] ' + newTripInfo.title}`
                   : '후기를 작성할 여행을 선택해주세요.'}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {reviewInfo && reviewInfo.tripTitle ? (
+              {reviewInfo?.tripTitle || newTripInfo?.title ? (
                 <ReviewForm
-                  QNAHandleClose={closeModal}
-                  tripInfo={newTripInfo}
-                  resetTripInfo={resetTripInfo}
-                  handleClose={handleClose}
-                />
-              ) : newTripInfo.title ? (
-                <ReviewForm
-                  QNAHandleClose={closeModal}
-                  tripInfo={newTripInfo}
-                  resetTripInfo={resetTripInfo}
+                  closeModal={closeModal}
+                  tripInfo={reviewInfo?.tripTitle ? reviewInfo : newTripInfo}
+                  resetTripInfo={resetSelectedTripValue}
                   handleClose={handleClose}
                 />
               ) : (
