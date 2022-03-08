@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import ReviewForm from './ReviewForm';
 import ReviewInfo from './ReviewInfo';
@@ -27,6 +27,12 @@ function ReviewModal({ show, handleClose, reviewInfo }) {
       handleClose();
     }
   }, [showForm, handleClose]);
+
+  useEffect(() => {
+    return () => {
+      setNewTripInfo({});
+    };
+  }, []);
 
   return (
     <>

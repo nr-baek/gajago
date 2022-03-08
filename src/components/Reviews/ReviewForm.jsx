@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../../hooks/useInput';
-import { getStorage, ref as strRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref as strRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { getDatabase, ref as dbRef, get, update, query, orderByChild } from 'firebase/database';
 import { FrownTwoTone, MehTwoTone, SmileTwoTone } from '@ant-design/icons';
 import { FormFooter } from '../Schedule/styles';
@@ -26,9 +26,6 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
   const dispatch = useDispatch();
 
   const db = getDatabase();
-  const storage = getStorage();
-  const storageAddr = `review_image/${user.uid}/${tripInfo.key}`;
-  const storageRef = strRef(storage, storageAddr);
 
   const getPlanData = async (user) => {
     try {
@@ -57,22 +54,22 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
   const createReviewData = (reviewImgURL = '') => {
     const reviewData = {
       reviewTitle,
-      days: tripInfo.days,
-      tripTitle: tripInfo.title,
-      tripType: tripInfo.tripType,
-      key: tripInfo.key,
+      days: tripInfo?.days,
+      tripTitle: tripInfo?.title || tripInfo?.tripTitle,
+      tripType: tripInfo?.tripType,
+      key: tripInfo?.key,
       expression,
       imgUrl: reviewImgURL,
       reviewText,
       openReview,
       photoDesc,
-      likes: 0,
-      uid: user.uid,
-      region: tripInfo.region,
-      detailAddress: tripInfo.detailAddress,
-      startDate: tripInfo.startDate,
-      endDate: tripInfo.endDate,
-      timeStamp: new Date().toJSON(),
+      likes: tripInfo?.likes || 0,
+      uid: user?.uid,
+      region: tripInfo?.region,
+      detailAddress: tripInfo?.detailAddress,
+      startDate: tripInfo?.startDate,
+      endDate: tripInfo?.endDate,
+      timeStamp: tripInfo?.timeStamp || new Date().toJSON(),
     };
 
     return reviewData;
@@ -86,16 +83,41 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
       try {
         let downloadURL;
         if (imgFile) {
+          const storage = getStorage();
+          const storageAddr = `review_image/${user.uid}/${tripInfo.key}`;
+          const storageRef = strRef(storage, storageAddr);
           const metadata = { contentType: imgFile.type };
           await uploadBytes(storageRef, imgFile, metadata);
           downloadURL = await getDownloadURL(strRef(storage, storageAddr));
+        } else if (tripInfo?.imgUrl && !imgFile) {
+          const storage = getStorage();
+          const desertRef = strRef(storage, `review_image/${user.uid}/${tripInfo.key}`);
+          await deleteObject(desertRef);
         }
 
-        const reviewData = createReviewData(downloadURL);
+        const reviewData = createReviewData(downloadURL || reviewImage);
         const updates = {};
-        if (imgFile) updates[`users/${user.uid}/plans/${tripInfo.key}/photoReview`] = true;
-        updates[`users/${user.uid}/plans/${tripInfo.key}/review`] = true;
-        updates[`users/${user.uid}/plans/${tripInfo.key}/openReview`] = openReview;
+        if (!tripInfo?.imgUrl && imgFile) {
+          updates[`users/${user.uid}/plans/${tripInfo.key}/photoReview`] = true;
+        } else if (tripInfo?.imgUrl && !imgFile) {
+          updates[`users/${user.uid}/plans/${tripInfo.key}/photoReview`] = null;
+        }
+
+        if (tripInfo?.title) {
+          updates[`users/${user.uid}/plans/${tripInfo.key}/review`] = true;
+        }
+
+        if (!tripInfo?.openReview && openReview) {
+          updates[`users/${user.uid}/plans/${tripInfo.key}/openReview`] = openReview;
+          if (tripInfo?.title) {
+            updates[`reviews/user/${user.uid}/private/${tripInfo.key}`] = null;
+          }
+        } else if (tripInfo?.openReview && !openReview) {
+          updates[`users/${user.uid}/plans/${tripInfo.key}/openReview`] = openReview;
+          updates[`reviews/public/${tripInfo.key}`] = null;
+          updates[`reviews/user/${user.uid}/public/${tripInfo.key}`] = null;
+        }
+
         if (openReview) {
           updates[`reviews/public/${tripInfo.key}`] = reviewData;
           updates[`reviews/user/${user.uid}/public/${tripInfo.key}`] = reviewData;
@@ -107,9 +129,10 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
 
         getPlanData(user);
         setLoading(false);
-        setShowForm(false);
+        // setShowForm(false);
         handleClose();
       } catch (error) {
+        console.log(error);
         setSubmitError(error.message);
         setLoading(false);
       }
@@ -120,7 +143,6 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
 
   const handleFileInput = useCallback((e) => {
     const file = e.target.files[0];
-    console.log(file);
     setImgFile(file);
   }, []);
 

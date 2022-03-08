@@ -143,7 +143,7 @@ function ReviewInfo({ reviewInfo, setShowForm, handleClose }) {
           )}
           <p className="review">{reviewText}</p>
           <div className="bottom">
-            <span>{openReview ? '스토리 공개' : '스토리 비공개'}</span>
+            <span>{openReview ? '스토리: 공개' : '스토리: 비공개'}</span>
             <span className="writingDate">작성일: {dayjs(timeStamp).format('YYYY.MM.DD')}</span>
           </div>
         </div>
