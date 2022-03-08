@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useEffect } from 'react';
 import StoryCard from './StoryCard';
-import { ColumnsWrapper } from './styles';
+import { ColumnsWrapper, NoPosts } from './styles';
 import { getFirstBatch, getNextBatch } from './utils';
 import { getDatabase, ref, onValue, off } from 'firebase/database';
 import { useSelector } from 'react-redux';
@@ -36,7 +36,7 @@ function Stories({ sortBy, searchUid }) {
     }
   }, [sortBy, searchUid, lastPoint]);
 
-  const seperatePosts = useCallback((posts) => {
+  const separatePosts = useCallback((posts) => {
     const fstColumnPost = [];
     const sndColumnPost = [];
     const trdColumnPost = [];
@@ -82,17 +82,19 @@ function Stories({ sortBy, searchUid }) {
   return (
     <>
       <div>
-        {/* {loading ? '로딩중...' : <button onClick={onClick}>데이터 추가버튼</button>}
-      <p>{lastPoint.lastKey.length > 0 ? 'fetchMore' : 'no more data'}</p> */}
-        <ColumnsWrapper>
-          {seperatePosts(posts).map((column, idx) => (
-            <div className="storiesColumn" key={idx}>
-              {column.map((post) => (
-                <StoryCard postInfo={post} key={post.key} checkedLikesObj={checkedLikesObj} />
-              ))}
-            </div>
-          ))}
-        </ColumnsWrapper>
+        {posts?.length > 0 ? (
+          <ColumnsWrapper>
+            {separatePosts(posts).map((column, idx) => (
+              <div className="storiesColumn" key={idx}>
+                {column.map((post) => (
+                  <StoryCard postInfo={post} key={post.key} checkedLikesObj={checkedLikesObj} />
+                ))}
+              </div>
+            ))}
+          </ColumnsWrapper>
+        ) : (
+          <NoPosts>표시할 리뷰가 없습니다...</NoPosts>
+        )}
       </div>
       <FetchMore loading={loading || nextPosts_loading} fetchMorePosts={fetchMorePosts} />
     </>

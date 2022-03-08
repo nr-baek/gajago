@@ -80,8 +80,8 @@ function StoriesContainer({ scrollToTop }) {
   const onChangeHandler = useCallback(
     (e) => {
       const text = e.target.value;
-      setSearchText(text);
-      updateMatchedNicknameList(text);
+      setSearchText(text.trim());
+      updateMatchedNicknameList(text.trim());
     },
     [updateMatchedNicknameList],
   );

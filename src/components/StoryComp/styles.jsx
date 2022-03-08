@@ -22,44 +22,46 @@ export const TravelerList = styled.div`
     }
   }
   section {
-    height: 140px;
+    height: 153px;
     ul {
       display: flex;
       margin: 2px;
       li {
-        width: 100px;
-        padding-top: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        position: relative;
-        img {
-          width: 80px;
-          height: 80px;
-          border: 4px solid #fff;
-          border-radius: 50%;
-          outline: 2px solid #b6a0ff;
-          background-color: #ebd3ff;
-          object-fit: cover;
-        }
         div {
-          width: 100%;
-          overflow: hidden;
-          text-align: center;
-          padding-top: 5px;
+          width: 100px;
+          padding-top: 10px;
           display: flex;
           flex-direction: column;
-
-          .nickname {
-            font-size: 15px;
+          align-items: center;
+          position: relative;
+          img {
+            width: 80px;
+            height: 80px;
+            border: 4px solid #fff;
+            border-radius: 50%;
+            outline: 2px solid #b6a0ff;
+            background-color: #ebd3ff;
+            object-fit: cover;
+          }
+          div {
             width: 100%;
             overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-          }
-          .tripCount {
-            font-size: 12px;
-            color: #5802c8;
+            text-align: center;
+            padding-top: 5px;
+            display: flex;
+            flex-direction: column;
+
+            .nickname {
+              font-size: 15px;
+              width: 100%;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+            .tripCount {
+              font-size: 12px;
+              color: #5802c8;
+            }
           }
         }
       }
@@ -415,4 +417,11 @@ export const StyledModalContent = styled.div`
     text-decoration: underline dotted #bfa8ff;
     text-underline-position: under;
   }
+`;
+
+export const NoPosts = styled.div`
+  color: #4f25db;
+  font-size: 23px;
+  font-family: 'Gaegu', cursive;
+  text-align: center;
 `;

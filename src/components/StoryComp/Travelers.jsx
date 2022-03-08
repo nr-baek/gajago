@@ -30,22 +30,26 @@ function Travelers() {
       <section>
         <Scrollbars autoHide>
           <ul>
-            {sortedUsers.map((user, idx) => {
-              return (
-                <li key={user[0]}>
-                  <img src={user[1].image} alt={user[1].nickname} />
-                  <div>
-                    <span className="nickname">
-                      {idx === 0 && '🥇'}
-                      {idx === 1 && '🥈'}
-                      {idx === 2 && '🥉'}
-                      {user[1].nickname}
-                    </span>
-                    <span className="tripCount">({user[1].tripCount}회)</span>
-                  </div>
-                </li>
-              );
-            })}
+            {sortedUsers?.length > 0
+              ? sortedUsers.map((user, idx) => {
+                  return (
+                    <li key={user[0]}>
+                      <div>
+                        <img src={user[1].image} alt={user[1].nickname} />
+                        <div>
+                          <span className="nickname">
+                            {idx === 0 && '🥇'}
+                            {idx === 1 && '🥈'}
+                            {idx === 2 && '🥉'}
+                            {user[1].nickname}
+                          </span>
+                          <span className="tripCount">({user[1].tripCount}회)</span>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })
+              : ' 이용자 정보 없음...'}
           </ul>
         </Scrollbars>
       </section>
