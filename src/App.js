@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setPlanData, setTrophyInfo, setUser } from './redux/actions/user_action';
 import { checkTrophyInfo } from './components/Schedule/utils';
 import { setPage } from './redux/actions/page_action';
+import { Background } from './components/MainTemplate/styles';
+import { LoadingOutlined } from '@ant-design/icons';
 
 // const LogInPage = loadable(() => import('./pages/LogInPage'));
 // const SignUpPage = loadable(() => import('./pages/SignUpPage'));
@@ -79,7 +81,11 @@ function App() {
   }, []);
 
   return isLoading ? (
-    <div>loading..</div>
+    <Background>
+      <div style={{ color: '#724cec', textAlign: 'center', fontSize: '40px' }}>
+        loading.. <LoadingOutlined />
+      </div>
+    </Background>
   ) : (
     <Routes>
       <Route path="/" element={<Navigate replace to="/schedule" />} />

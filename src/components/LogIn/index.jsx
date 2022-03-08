@@ -10,9 +10,17 @@ const LogIn = () => {
   const [password, onChangePassword] = useInput('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [clickedSignUp, setClickedSignUp] = useState(false);
 
   const auth = getAuth();
   const navigate = useNavigate();
+
+  const onClickSignUp = useCallback(() => {
+    setClickedSignUp(true);
+    setTimeout(() => {
+      navigate('/signup');
+    }, 200);
+  }, [navigate]);
 
   useEffect(() => {
     return () => {
@@ -43,18 +51,14 @@ const LogIn = () => {
     [auth, email, password],
   );
 
-  const onClick = useCallback(() => {
-    navigate('/signup');
-  }, [navigate]);
-
   return (
-    <>
+    <div className={'showLogIn ' + (clickedSignUp ? 'noneSignIn' : '')}>
       <form onSubmit={onSubmit}>
         <h1 className="login">로그인</h1>
-        <label className="label">
+        <label className="loginLabel">
           email <input type="email" autoComplete="off" value={email} onChange={onChangeEmail} />
         </label>
-        <label className="label">
+        <label className="loginLabel">
           password
           <input type="password" value={password} onChange={onChangePassword} />
         </label>
@@ -68,10 +72,10 @@ const LogIn = () => {
         <StyledButton disabled={!(email && password) || loading}>LOGIN</StyledButton>
       </form>
 
-      <SignUpButton onClick={onClick}>
+      <SignUpButton onClick={onClickSignUp}>
         Don't have an account? <b>Sign up</b>
       </SignUpButton>
-    </>
+    </div>
   );
 };
 

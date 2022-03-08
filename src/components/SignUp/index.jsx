@@ -5,6 +5,7 @@ import '../../firebase';
 import { getAuth, createUserWithEmailAndPassword, updateProfile, signOut } from 'firebase/auth';
 import md5 from 'md5';
 import { getDatabase, ref, set } from 'firebase/database';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const [email, onChangeEmail, setEmail] = useInput('');
@@ -17,6 +18,17 @@ const SignUp = () => {
   const [signUpError, setSignUpError] = useState('');
   const [loading, setLoading] = useState(false);
   const [signUpSuccess, setSignUpSuccess] = useState(false);
+
+  const [toLogin, setToLogin] = useState(false);
+
+  const navigate = useNavigate();
+
+  const onClickLogin = useCallback(() => {
+    setToLogin(true);
+    setTimeout(() => {
+      navigate('/login');
+    }, 200);
+  }, [navigate]);
 
   const isEmpty = useCallback(() => {
     return !(email && nickname.trim() && password && passwordConfirm);
@@ -72,15 +84,15 @@ const SignUp = () => {
           image: createdUser.user.photoURL,
           tripCount: 0,
         });
-        // 모든 input 초기화해주기
         initState();
         setSignUpSuccess(true);
 
         setLoading(false);
         setTimeout(() => {
           setSignUpSuccess(false);
+          setToLogin(true);
           signOut(auth);
-        }, 2000);
+        }, 1200);
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
           setSignUpError('이미 가입된 이메일입니다.');
@@ -97,34 +109,59 @@ const SignUp = () => {
   );
 
   return (
-    <form onSubmit={onSubmit}>
-      <h1 className="signUp">회원가입</h1>
-      <label className="label">
-        Email <input type="email" autoComplete="off" value={email} onChange={onChangeEmail} />
-      </label>
-      <label className="label">
-        Nickname <input type="text" autoComplete="off" value={nickname} onChange={onChangeNickname} />
-      </label>
-      <label className="label">
-        Password
-        <input type="password" value={password} onChange={onChangePassword} />
-      </label>
-      <label className="label">
-        Password Confirm
-        <input type="password" value={passwordConfirm} onChange={onChangePasswordConfirm} />
-      </label>
-      <Message>
-        {(pwMinLengthError && <span className="error">비밀번호는 6자 이상이어야 합니다.</span>) ||
-          (mismatchError && <span className="error">비밀번호가 일치하지 않습니다.</span>) ||
-          (signUpError && (
-            <span className="error" title={signUpError}>
-              {signUpError}
-            </span>
-          )) ||
-          (signUpSuccess && <span className="success">회원가입이 완료되었습니다.</span>)}
-      </Message>
-      <StyledButton disabled={mismatchError || isEmpty() || loading || pwMinLengthError}>SIGN UP</StyledButton>
-    </form>
+    <div className={'showSignUp ' + (toLogin ? 'noneSignUp' : '')}>
+      <div className="toLogin" onClick={onClickLogin}>
+        로그인 하기
+      </div>
+      <form onSubmit={onSubmit}>
+        <h1 className="signUp">회원가입</h1>
+        <label className="signUpLabel">
+          Email{' '}
+          <input
+            type="email"
+            placeholder="이메일 형식으로 입력하세요."
+            autoComplete="off"
+            value={email}
+            onChange={onChangeEmail}
+          />
+        </label>
+        <label className="signUpLabel">
+          Nickname{' '}
+          <input
+            type="text"
+            autoComplete="off"
+            placeholder="18자 이하로 입력하세요."
+            maxLength={18}
+            value={nickname}
+            onChange={onChangeNickname}
+          />
+        </label>
+        <label className="signUpLabel">
+          Password
+          <input type="password" value={password} placeholder="6자 이상으로 입력하세요." onChange={onChangePassword} />
+        </label>
+        <label className="signUpLabel">
+          Password Confirm
+          <input
+            type="password"
+            value={passwordConfirm}
+            placeholder="비밀번호와 일치하게 입력하세요."
+            onChange={onChangePasswordConfirm}
+          />
+        </label>
+        <Message>
+          {(pwMinLengthError && <span className="error">비밀번호는 6자 이상이어야 합니다.</span>) ||
+            (mismatchError && <span className="error">비밀번호가 일치하지 않습니다.</span>) ||
+            (signUpError && (
+              <span className="error" title={signUpError}>
+                {signUpError}
+              </span>
+            )) ||
+            (signUpSuccess && <span className="success">[회원가입 완료] 로그인 화면으로 이동합니다.</span>)}
+        </Message>
+        <StyledButton disabled={mismatchError || isEmpty() || loading || pwMinLengthError}>SIGN UP</StyledButton>
+      </form>
+    </div>
   );
 };
 

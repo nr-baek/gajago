@@ -297,7 +297,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
         <Col sm={10}>
           <InputGroup className="mb-3">
             <FormControl value={planInput} onChange={onChangePlanInput} onKeyPress={onkeyDownPlanInput} />
-            <Button variant="outline-secondary" onClick={onClickAddPlanBtn} style={{ background: 'pink' }}>
+            <Button variant="outline-secondary" onClick={onClickAddPlanBtn}>
               추가
             </Button>
           </InputGroup>

@@ -1,5 +1,48 @@
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import authBg from '../../assets/images/bgImg.jpg';
+
+const showToRightAni = keyframes`
+  0% {
+    opacity: 0;
+    transform: translate(-30px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+`;
+
+const showToLeftAni = keyframes`
+  0% {
+    opacity: 0;
+    transform: translate(30px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+`;
+const disappearToRightAni = keyframes`
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(30px, 0);
+  }
+`;
+const disappearToLeftAni = keyframes`
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-30px, 0);
+  }
+`;
 
 export const AuthTemplateBlock = styled.div`
   position: absolute;
@@ -61,6 +104,20 @@ export const TemplateRight = styled.div`
   background: #fff;
   box-sizing: border-box;
   padding: 3rem;
+  position: relative;
+
+  .showLogIn {
+    animation: ${showToRightAni} 0.2s linear normal forwards;
+  }
+  .showLogIn.noneSignIn {
+    animation: ${disappearToLeftAni} 0.2s linear normal forwards;
+  }
+  .showSignUp {
+    animation: ${showToLeftAni} 0.2s linear normal forwards;
+  }
+  .showSignUp.noneSignUp {
+    animation: ${disappearToRightAni} 0.2s linear normal forwards;
+  }
 
   h1 {
     text-align: center;
@@ -76,22 +133,32 @@ export const TemplateRight = styled.div`
     margin: 0;
   }
 
-  input {
-    width: 100%;
-    font-size: 1rem;
-    padding: 0.7rem;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-
   form {
     overflow: hidden;
+
+    input {
+      width: 100%;
+      font-size: 1rem;
+      padding: 0.7rem;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .loginLabel {
+      display: block;
+      color: #4e4d4d;
+      margin-top: 1rem;
+    }
+
+    .signUpLabel {
+      display: block;
+      color: #4e4d4d;
+      margin-top: 6px;
+    }
   }
 
-  .label {
-    display: block;
-    color: #4e4d4d;
-    margin-top: 1rem;
+  .toLogin {
+    position: absolute;
+    top: 20px;
   }
 `;

@@ -39,7 +39,7 @@ export const SignUpButton = styled.button`
 export const Message = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 20px;
+  height: 23px;
   margin-top: 5px;
 
   span {
