@@ -18,7 +18,6 @@ dayjs.extend(isoWeek);
 dayjs.extend(weekOfYear);
 
 const Calendar = () => {
-  console.log('Calender render');
   const planArray = useSelector((state) => state.user.planData);
   const [date, setDate] = useState(dayjs());
   const [showModal, setShowModal] = useState(false);
@@ -26,8 +25,6 @@ const Calendar = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentHover, setCurrentHover] = useState({ key: '', date: '' });
   const [modalInfo, setModalInfo] = useState({ key: '', date: '' });
-
-  console.log('markingInfo', markingInfo);
 
   const handleClose = useCallback(() => setShowModal(false), []);
   const handleShow = useCallback(
@@ -140,7 +137,12 @@ const Calendar = () => {
         </div>
         {renderCalendar(date)}
       </div>
-      <ScheduleModal showModal={showModal} handleClose={handleClose} modalPlanData={markingInfo[modalInfo.date]} />
+      <ScheduleModal
+        showModal={showModal}
+        handleClose={handleClose}
+        modalPlanData={markingInfo[modalInfo.date]}
+        setModalInfo={setModalInfo}
+      />
     </StyledCalendar>
   );
 };

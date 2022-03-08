@@ -1,5 +1,5 @@
 import { CloseCircleOutlined, SwapRightOutlined } from '@ant-design/icons';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Button, Col, Form, FormControl, InputGroup, Row } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -12,17 +12,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
 import { checkTrophyInfo } from './utils';
 
-function PlanForm({ closeForm, showEditForm, planData }) {
+function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
   const db = getDatabase();
-  const initialState = {
-    title: planData?.title ? planData.title : '',
-    startDate: planData?.startDate ? new Date(planData.startDate) : new Date(),
-    endDate: planData?.endDate ? new Date(planData.endDate) : new Date(),
-    tripType: planData?.tripType ? planData.tripType : 'alone',
-    region: planData?.region ? planData.region : 'Seoul',
-    detailAddress: planData?.detailAddress ? planData.detailAddress : '',
-    plans: planData?.planList ? planData.planList : [],
-  };
+  const initialState = useMemo(() => {
+    return {
+      title: planData?.title ? planData.title : '',
+      startDate: planData?.startDate ? new Date(planData.startDate) : new Date(),
+      endDate: planData?.endDate ? new Date(planData.endDate) : new Date(),
+      tripType: planData?.tripType ? planData.tripType : 'alone',
+      region: planData?.region ? planData.region : 'Seoul',
+      detailAddress: planData?.detailAddress ? planData.detailAddress : '',
+      plans: planData?.planList ? planData.planList : [],
+    };
+  }, [planData]);
 
   const [title, onChangeTitle] = useInput(initialState.title);
   const [startDate, setStartDate] = useState(initialState.startDate);
@@ -115,6 +117,20 @@ function PlanForm({ closeForm, showEditForm, planData }) {
     }
   };
 
+  const onClickAddPlanBtn = (e) => {
+    e.preventDefault();
+    if (planInput.trim() !== '') {
+      setPlans((prev) => {
+        const prevLength = prev.length;
+        if (prevLength) {
+          return [...prev, { id: prev[prevLength - 1].id + 1, content: planInput }];
+        }
+        return [{ id: 1, content: planInput }];
+      });
+      setPlanInput('');
+    }
+  };
+
   const onClickDelBtn = (e) => {
     const target = e.target;
     const editPlans = plans.filter((plan) => target.parentNode.parentNode.id !== plan.id + '');
@@ -129,6 +145,9 @@ function PlanForm({ closeForm, showEditForm, planData }) {
       const planKey = showEditForm ? planData.key : push(child(ref(db), `users/${user.uid}/plans`)).key;
       await set(ref(db, `users/${user.uid}/plans/` + planKey), createPlan());
       await setPlanDataAndTrophy(user);
+      if (showEditForm && startDate !== initialState.startDate) {
+        setModalInfo((prev) => ({ ...prev, date: dayjs(startDate).format('YYYY-MM-DD') }));
+      }
       setLoading(false);
       closeForm();
     } catch (error) {
@@ -188,6 +207,7 @@ function PlanForm({ closeForm, showEditForm, planData }) {
             onChange={(e) => {
               onChangeTripType(e.target.id);
             }}
+            onKeyDown={preventEnterSubmit}
           >
             <Form.Check
               type="radio"
@@ -231,7 +251,7 @@ function PlanForm({ closeForm, showEditForm, planData }) {
         </Form.Label>
         <Col sm={10}>
           <SelectForm>
-            <Form.Select defaultValue={region} onChange={onChangeRegion}>
+            <Form.Select defaultValue={region} onKeyDown={preventEnterSubmit} onChange={onChangeRegion}>
               <option>지역을 선택하세요</option>
               <option value="Seoul">서울특별시</option>
               <option value="Busan">부산광역시</option>
@@ -263,6 +283,7 @@ function PlanForm({ closeForm, showEditForm, planData }) {
         <Col sm={10}>
           <Form.Control
             type="text"
+            required
             value={detailAddress}
             onKeyDown={preventEnterSubmit}
             onChange={onChangeDetailAddress}
@@ -276,7 +297,9 @@ function PlanForm({ closeForm, showEditForm, planData }) {
         <Col sm={10}>
           <InputGroup className="mb-3">
             <FormControl value={planInput} onChange={onChangePlanInput} onKeyPress={onkeyDownPlanInput} />
-            <Button variant="outline-secondary">추가</Button>
+            <Button variant="outline-secondary" onClick={onClickAddPlanBtn} style={{ background: 'pink' }}>
+              추가
+            </Button>
           </InputGroup>
         </Col>
       </Form.Group>
