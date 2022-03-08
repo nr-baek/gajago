@@ -6,6 +6,7 @@ import { getAuth, createUserWithEmailAndPassword, updateProfile, signOut } from 
 import md5 from 'md5';
 import { getDatabase, ref, set } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const SignUp = () => {
   const [email, onChangeEmail, setEmail] = useInput('');
@@ -110,8 +111,9 @@ const SignUp = () => {
 
   return (
     <div className={'showSignUp ' + (toLogin ? 'noneSignUp' : '')}>
-      <div className="toLogin" onClick={onClickLogin}>
-        로그인 하기
+      <div className="goToLogin" onClick={onClickLogin}>
+        <ArrowLeftOutlined style={{ marginRight: '5px' }} />
+        Login
       </div>
       <form onSubmit={onSubmit}>
         <h1 className="signUp">회원가입</h1>
