@@ -89,7 +89,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
           const metadata = { contentType: imgFile.type };
           await uploadBytes(storageRef, imgFile, metadata);
           downloadURL = await getDownloadURL(strRef(storage, storageAddr));
-        } else if (tripInfo?.imgUrl && !imgFile) {
+        } else if (tripInfo?.imgUrl && !reviewImage) {
           const storage = getStorage();
           const desertRef = strRef(storage, `review_image/${user.uid}/${tripInfo.key}`);
           await deleteObject(desertRef);
@@ -99,7 +99,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
         const updates = {};
         if (!tripInfo?.imgUrl && imgFile) {
           updates[`users/${user.uid}/plans/${tripInfo.key}/photoReview`] = true;
-        } else if (tripInfo?.imgUrl && !imgFile) {
+        } else if (tripInfo?.imgUrl && !reviewImage && !imgFile) {
           updates[`users/${user.uid}/plans/${tripInfo.key}/photoReview`] = null;
         }
 
@@ -109,7 +109,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
 
         if (!tripInfo?.openReview && openReview) {
           updates[`users/${user.uid}/plans/${tripInfo.key}/openReview`] = openReview;
-          if (tripInfo?.title) {
+          if (tripInfo?.reviewTitle) {
             updates[`reviews/user/${user.uid}/private/${tripInfo.key}`] = null;
           }
         } else if (tripInfo?.openReview && !openReview) {
@@ -163,8 +163,9 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
   useEffect(() => {
     return () => {
       resetTripInfo();
+      setShowForm(false);
     };
-  }, [resetTripInfo]);
+  }, [resetTripInfo, setShowForm]);
 
   return (
     <Form noValidate validated={validated} onSubmit={handleSubmit}>
