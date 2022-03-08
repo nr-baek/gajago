@@ -151,7 +151,7 @@ export const PlansBox = styled.ul`
   margin-left: 15%;
   margin-bottom: 10px;
   max-height: 250px;
-  padding: 0 12px;
+  padding: 0 12px 12px 12px;
   overflow: auto;
   li {
     list-style: inside;

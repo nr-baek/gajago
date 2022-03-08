@@ -135,11 +135,11 @@ export const TemplateRight = styled.div`
 
   form {
     overflow: hidden;
+    font-size: 15px;
 
     input {
       width: 100%;
-      font-size: 1rem;
-      padding: 0.7rem;
+      padding: 11px;
       border: 2px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;

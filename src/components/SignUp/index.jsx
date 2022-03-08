@@ -93,7 +93,7 @@ const SignUp = () => {
           setSignUpSuccess(false);
           setToLogin(true);
           signOut(auth);
-        }, 1200);
+        }, 1500);
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
           setSignUpError('이미 가입된 이메일입니다.');
@@ -118,7 +118,7 @@ const SignUp = () => {
       <form onSubmit={onSubmit}>
         <h1 className="signUp">회원가입</h1>
         <label className="signUpLabel">
-          Email{' '}
+          email{' '}
           <input
             type="email"
             placeholder="이메일 형식으로 입력하세요."
@@ -128,7 +128,7 @@ const SignUp = () => {
           />
         </label>
         <label className="signUpLabel">
-          Nickname{' '}
+          nickname{' '}
           <input
             type="text"
             autoComplete="off"
@@ -139,11 +139,11 @@ const SignUp = () => {
           />
         </label>
         <label className="signUpLabel">
-          Password
+          password
           <input type="password" value={password} placeholder="6자 이상으로 입력하세요." onChange={onChangePassword} />
         </label>
         <label className="signUpLabel">
-          Password Confirm
+          password Confirm
           <input
             type="password"
             value={passwordConfirm}

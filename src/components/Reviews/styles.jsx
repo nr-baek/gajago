@@ -200,13 +200,13 @@ export const StyledReview = styled.div`
       margin: 10px auto;
       text-align: center;
       .photo {
-        background-color: green;
+        background-color: #f3ecf7;
         border-radius: 10px;
         display: block;
         margin: 0 auto;
         box-shadow: 3px 4px 10px rgba(0, 0, 0, 0.3);
         max-width: 100%;
-        max-height: 400px;
+        height: 350px;
         object-fit: cover;
       }
       p {

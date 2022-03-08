@@ -6,7 +6,7 @@ export const StyledButton = styled.button`
   font-weight: 600;
   background-color: #bb97ff;
   padding: 0.8rem 2.2rem;
-  margin: 10px 0 0 0;
+  margin-top: 5px;
   border: 0;
   border-radius: 4px;
   float: right;
@@ -40,10 +40,10 @@ export const Message = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   height: 23px;
-  margin-top: 5px;
+  margin-top: 2px;
 
   span {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
     white-space: nowrap;
     width: 100%;
