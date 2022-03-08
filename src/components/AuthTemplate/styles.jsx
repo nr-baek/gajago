@@ -66,6 +66,7 @@ export const TemplateBox = styled.div`
   border-radius: 6px;
   overflow: hidden;
   display: flex;
+  position: relative;
 `;
 
 export const TemplateLeftBox = styled.div`
@@ -104,7 +105,6 @@ export const TemplateRight = styled.div`
   background: #fff;
   box-sizing: border-box;
   padding: 3rem;
-  position: relative;
 
   .showLogIn {
     animation: ${showToRightAni} 0.2s linear normal forwards;
@@ -157,8 +157,20 @@ export const TemplateRight = styled.div`
     }
   }
 
-  .toLogin {
+  .goToLogin {
     position: absolute;
-    top: 20px;
+    padding-right: 5px;
+    top: -20px;
+    left: -10px;
+    font-size: 15px;
+    color: #650df1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      text-shadow: 1px 3px 6px rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid #650df1;
+    }
   }
 `;
