@@ -111,6 +111,7 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
           } else {
             console.log('No data available');
             dispatch(setPlanData([]));
+            checkTrophyState([]);
           }
         });
         handleClose();
