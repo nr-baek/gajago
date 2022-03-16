@@ -254,7 +254,7 @@ export const Card = styled.div`
     display: block;
     width: 100%;
     min-height: 130px;
-    background-color: #c1c0ff;
+    background-color: ${(props) => props.colorCode};
   }
 
   .cardBottom {

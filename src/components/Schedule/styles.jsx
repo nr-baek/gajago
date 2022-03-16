@@ -189,7 +189,7 @@ export const FormFooter = styled.div`
 `;
 
 export const StyledModalContents = styled.div`
-  border-radius: 10px;
+  border-radius: 22px;
   background-color: #fafaff;
   background-image: url(${plannerBackground}), linear-gradient(#f2ecff 1px, transparent 1px),
     linear-gradient(to right, #f2ecff 1px, #fafaff 1px);
@@ -216,7 +216,7 @@ export const StyledModalContents = styled.div`
     background-color: #dfd1ff;
     position: absolute;
     right: 20px;
-    top: 20px;
+    margin: 15px auto;
 
     &:hover {
       background-color: #bc93ff;
@@ -224,8 +224,10 @@ export const StyledModalContents = styled.div`
   }
 
   .btnWrapper {
-    margin: 15px auto;
-    width: 270px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+
     .editBtn {
       background-color: #ffedbd;
       margin-right: 20px;

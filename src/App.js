@@ -82,7 +82,7 @@ function App() {
 
   return isLoading ? (
     <Background>
-      <div style={{ color: '#724cec', textAlign: 'center', fontSize: '40px' }}>
+      <div className="loading">
         loading.. <LoadingOutlined />
       </div>
     </Background>

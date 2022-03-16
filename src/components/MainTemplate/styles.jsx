@@ -5,6 +5,15 @@ export const Background = styled.div`
   height: 100vh;
   width: 100vw;
   padding: 30px 110px;
+
+  .loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #724cec;
+    font-size: 40px;
+  }
 `;
 
 export const Container = styled.div`
@@ -83,6 +92,7 @@ export const LeftBarBtn = styled.div`
   width: 150px;
   padding: 10px 0;
   cursor: pointer;
+
   &:hover {
     color: #fff;
     text-shadow: 0 0 4px #ffffff;
@@ -102,7 +112,6 @@ export const LeftBarBtn = styled.div`
   }
   span {
     margin-left: 20px;
-    }
   }
 `;
 

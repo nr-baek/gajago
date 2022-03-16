@@ -24,6 +24,11 @@ const Reset = css`
   h2 {
     margin-bottom: 0;
   }
+
+  /* react-bootstrap customize */
+  .modal-content {
+    border-radius: 23px;
+  }
 `;
 
 export default Reset;
