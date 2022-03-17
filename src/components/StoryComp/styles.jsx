@@ -213,7 +213,7 @@ export const StyledContainer = styled.div`
     min-height: 1px;
   }
 
-  #fetchMore.loading {
+  /* #fetchMore.loading {
     display: block;
     text-align: center;
     line-height: 40px;
@@ -222,7 +222,7 @@ export const StyledContainer = styled.div`
   }
   #fetchMore.loading:after {
     content: '... Loading ...';
-  }
+  } */
 `;
 
 export const ColumnsWrapper = styled.div`
