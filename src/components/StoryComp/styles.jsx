@@ -210,19 +210,13 @@ export const StyledContainer = styled.div`
   }
 
   #fetchMore {
-    min-height: 1px;
+    height: 1px;
+    display: block;
   }
 
-  /* #fetchMore.loading {
-    display: block;
-    text-align: center;
-    line-height: 40px;
-    background: linear-gradient(to bottom, transparent, #d6bdff);
-    color: #31204d;
+  #fetchMore.loading {
+    display: none;
   }
-  #fetchMore.loading:after {
-    content: '... Loading ...';
-  } */
 `;
 
 export const ColumnsWrapper = styled.div`

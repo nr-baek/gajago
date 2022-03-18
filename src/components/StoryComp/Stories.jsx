@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useEffect } from 'react';
 import StoryCard from './StoryCard';
 import { ColumnsWrapper, NoPosts } from './styles';
@@ -11,27 +11,32 @@ function Stories({ sortBy, searchUid }) {
   const user = useSelector((state) => state.user.currentUser);
 
   const [loading, setLoading] = useState(false);
-  const [nextPosts_loading, setNextPostsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [lastPoint, setLastPoint] = useState({ lastKey: '', lastSortedValue: '' });
   const [checkedLikesObj, setCheckedLikesObj] = useState({});
+  const [lastCardNum, setLastCardNum] = useState(null);
 
-  const db = getDatabase();
+  const db = useMemo(() => {
+    return getDatabase();
+  }, []);
 
   const fetchMorePosts = useCallback(() => {
     if (lastPoint.lastKey.length > 0) {
-      setNextPostsLoading(true);
+      setLoading(true);
       getNextBatch(sortBy, searchUid, lastPoint.lastSortedValue, lastPoint.lastKey)
         .then((res) => {
           setLastPoint({ lastKey: res.nextLastKey, lastSortedValue: res.nextLastSortedValue });
           if (res.posts.length > 0) {
-            setPosts((prevPosts) => [...prevPosts, ...res.posts]);
+            setPosts((prevPosts) => {
+              const newPosts = [...prevPosts, ...res.posts];
+              setLastCardNum(newPosts.length - 1);
+              return newPosts;
+            });
           }
-          setNextPostsLoading(false);
         })
         .catch((err) => {
           console.log(err);
-          setNextPostsLoading(false);
+          setLoading(false);
         });
     }
   }, [sortBy, searchUid, lastPoint]);
@@ -42,6 +47,7 @@ function Stories({ sortBy, searchUid }) {
     const trdColumnPost = [];
 
     posts.forEach((post, idx) => {
+      post.num = idx;
       if (idx === 0 || idx % 3 === 0) {
         fstColumnPost.push(post);
       } else if (idx % 3 === 1) {
@@ -66,9 +72,12 @@ function Stories({ sortBy, searchUid }) {
 
     getFirstBatch(sortBy, searchUid)
       .then((res) => {
-        setPosts(res.posts);
+        setPosts(() => {
+          const posts = res.posts;
+          setLastCardNum(posts.length - 1);
+          return posts;
+        });
         setLastPoint({ lastKey: res.lastKey, lastSortedValue: res.lastSortedValue });
-        setLoading(false);
       })
       .catch((e) => {
         console.log(e);
@@ -86,19 +95,27 @@ function Stories({ sortBy, searchUid }) {
           <ColumnsWrapper>
             {separatePosts(posts).map((column, idx) => (
               <div className="storiesColumn" key={idx}>
-                {column.map((post) => (
-                  <StoryCard postInfo={post} key={post.key} checkedLikesObj={checkedLikesObj} />
-                ))}
+                {column.map((post) => {
+                  return (
+                    <StoryCard
+                      isLastCard={post.num === lastCardNum}
+                      postInfo={post}
+                      key={post.key}
+                      setLoading={setLoading}
+                      checkedLikesObj={checkedLikesObj}
+                    />
+                  );
+                })}
               </div>
             ))}
           </ColumnsWrapper>
         ) : (
-          <NoPosts>표시할 리뷰가 없습니다...</NoPosts>
+          <NoPosts>{loading ? 'loading...' : '표시할 리뷰가 없습니다...'}</NoPosts>
         )}
       </div>
-      <FetchMore loading={loading || nextPosts_loading} fetchMorePosts={fetchMorePosts} />
+      <FetchMore loading={loading} fetchMorePosts={fetchMorePosts} />
     </>
   );
 }
 
-export default Stories;
+export default React.memo(Stories);

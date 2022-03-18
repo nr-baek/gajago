@@ -2,7 +2,7 @@ import { getDatabase, ref, get, query, orderByChild, limitToLast, endBefore } fr
 
 const db = getDatabase();
 
-const limit = 10;
+const limit = 15;
 
 export const getFirstBatch = async (sortBy, searchUid) => {
   try {

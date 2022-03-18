@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { Card } from './styles';
 import ModalContent from './ModalContent';
 
-function StoryCard({ postInfo, checkedLikesObj }) {
+function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
   dayjs.extend(relativeTime);
 
   const usersInfo = useSelector((state) => state.usersInfo);
@@ -34,24 +34,20 @@ function StoryCard({ postInfo, checkedLikesObj }) {
     const $img = new Image();
     $img.src = imgUrl;
 
-    // $img.onload = () => {
-    //   setSizes([$img.width, $img.height]);
-    // };
-    // $img.onerror = () => {
-    //   console.log('img error');
-    // };
-
     const poll = setInterval(function () {
       if ($img.naturalWidth) {
         clearInterval(poll);
         setSizes([$img.naturalWidth, $img.naturalHeight]);
+        if (isLastCard) {
+          setLoading(false);
+        }
       }
     }, 10);
 
     return () => {
       clearInterval(poll);
     };
-  }, [imgUrl]);
+  }, [imgUrl, isLastCard, setLoading]);
 
   return usersInfo && sizes[0] ? (
     <>
