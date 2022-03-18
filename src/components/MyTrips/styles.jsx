@@ -264,7 +264,7 @@ export const TripListInfo = styled.div`
       left: 0;
       top: 48px;
       box-shadow: -3px 1px 2px rgba(0, 0, 0, 0.4);
-      z-index: 9999;
+      z-index: 10;
       transform: rotateZ(352deg);
       &::after {
         background-color: #317bdb;
@@ -303,7 +303,7 @@ export const StyledList = styled.ul`
   padding: 8px;
   outline: 6px solid #${({ indexTab }) => (indexTab ? 'e8f1df' : 'faeddd')};
   box-shadow: -3px -7px 3px rgba(0, 0, 0, 0.2);
-  z-index: 100;
+  z-index: 9;
   width: 100%;
   height: 73%;
   position: absolute;
@@ -312,19 +312,27 @@ export const StyledList = styled.ul`
   li {
     border-radius: 6px;
     background-color: #fff;
-    padding: 5px 5px 5px 10px;
+
     margin-bottom: 5px;
     border-bottom: 2px solid #dfe0cd;
-    .title {
-      font-size: 20px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-    .date {
-      padding-left: 20px;
-      font-size: 15px;
-      color: #585858;
+    cursor: pointer;
+    button {
+      border: 0;
+      background-color: transparent;
+      padding: 5px 5px 5px 10px;
+      text-align: left;
+      width: 100%;
+      .title {
+        font-size: 20px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .date {
+        padding-left: 20px;
+        font-size: 15px;
+        color: #585858;
+      }
     }
   }
   .noPlanMsg {

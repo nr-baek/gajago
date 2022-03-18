@@ -117,7 +117,7 @@ function ReviewInfo({ reviewInfo, setShowForm, handleClose }) {
   }, [handleClose, reviewInfo, user.uid, dispatch]);
 
   return (
-    <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn}>
+    <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn} editable={true}>
       <StyledReview>
         <h2> {reviewTitle} </h2>
         <div className="contents">

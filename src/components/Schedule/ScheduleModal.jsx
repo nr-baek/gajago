@@ -17,7 +17,12 @@ function ScheduleModal({ showModal, handleClose, modalPlanData, setModalInfo }) 
   return (
     <Modal size="lg" show={showModal} onHide={closeForm}>
       {modalPlanData?.title && !showEditForm ? (
-        <TripInfo planData={modalPlanData} handleClose={handleClose} setShowEditForm={setShowEditForm} />
+        <TripInfo
+          planData={modalPlanData}
+          handleClose={handleClose}
+          setShowEditForm={setShowEditForm}
+          editable={true}
+        />
       ) : (
         <>
           <Modal.Header closeButton>

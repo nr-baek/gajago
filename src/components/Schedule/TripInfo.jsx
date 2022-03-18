@@ -7,7 +7,7 @@ import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
 import NoteWithBtn from './NoteWithBtn';
 import { checkTrophyInfo } from './utils';
 
-function TripInfo({ planData, handleClose, setShowEditForm }) {
+function TripInfo({ planData, handleClose, setShowEditForm, editable }) {
   const user = useSelector((state) => state.user.currentUser);
   const trophyInfo = useSelector((state) => state.user.trophyInfo);
   const dispatch = useDispatch();
@@ -122,7 +122,7 @@ function TripInfo({ planData, handleClose, setShowEditForm }) {
   }, [checkTrophyState, db, dispatch, handleClose, key, planData, user.uid]);
 
   return (
-    <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn}>
+    <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn} editable={editable}>
       <StyledPlanner>
         <h2> {title} </h2>
         <div className="contents">
