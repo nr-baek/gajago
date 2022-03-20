@@ -27,7 +27,10 @@ function StoryComp() {
   }, [db, dispatch]);
 
   const scrollToTop = useCallback(() => {
-    scrollbarRef.current?.scrollTop(194);
+    if (scrollbarRef.current.getScrollTop() > 194) {
+      scrollbarRef.current?.scrollTop(194);
+      console.log('scrollToTop!!!');
+    }
   }, []);
 
   useEffect(() => {

@@ -9,37 +9,25 @@ export const getFirstBatch = async (sortBy, searchUid) => {
     const posts = [];
     let lastKey = '';
     let lastSortedValue = '';
-    if (searchUid) {
-      await get(query(ref(db, `reviews/user/${searchUid}/public`), orderByChild(sortBy), limitToLast(limit))).then(
-        (snapshot) => {
-          if (snapshot.exists()) {
-            snapshot.forEach((child) => {
-              posts.unshift({
-                key: child.key,
-                ...child.val(),
-              });
-            });
-
-            lastKey = posts[posts.length - 1].key;
-            lastSortedValue = posts[posts.length - 1][sortBy];
-          }
-        },
-      );
-    } else {
-      await get(query(ref(db, `reviews/public`), orderByChild(sortBy), limitToLast(limit))).then((snapshot) => {
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            posts.unshift({
-              key: child.key,
-              ...child.val(),
-            });
+    await get(
+      query(
+        ref(db, `reviews${searchUid ? '/user/' + searchUid : ''}/public`),
+        orderByChild(sortBy),
+        limitToLast(limit),
+      ),
+    ).then((snapshot) => {
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          posts.unshift({
+            key: child.key,
+            ...child.val(),
           });
+        });
 
-          lastKey = posts[posts.length - 1].key;
-          lastSortedValue = posts[posts.length - 1][sortBy];
-        }
-      });
-    }
+        lastKey = posts[posts.length - 1].key;
+        lastSortedValue = posts[posts.length - 1][sortBy];
+      }
+    });
 
     return { posts, lastKey, lastSortedValue };
   } catch (e) {
@@ -52,44 +40,26 @@ export const getNextBatch = async (sortBy, searchUid, lastSortedValue, lastKey) 
     const posts = [];
     let nextLastKey = '';
     let nextLastSortedValue = '';
-    if (searchUid) {
-      await get(
-        query(
-          ref(db, `reviews/user/${searchUid}/public`),
-          orderByChild(sortBy),
-          endBefore(lastSortedValue, lastKey),
-          limitToLast(limit),
-        ),
-      ).then((snapshot) => {
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            posts.unshift({
-              key: child.key,
-              ...child.val(),
-            });
+    await get(
+      query(
+        ref(db, `reviews${searchUid ? '/user/' + searchUid : ''}/public`),
+        orderByChild(sortBy),
+        endBefore(lastSortedValue, lastKey),
+        limitToLast(limit),
+      ),
+    ).then((snapshot) => {
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          posts.unshift({
+            key: child.key,
+            ...child.val(),
           });
+        });
 
-          nextLastKey = posts[posts.length - 1].key;
-          nextLastSortedValue = posts[posts.length - 1][sortBy];
-        }
-      });
-    } else {
-      await get(
-        query(ref(db, `reviews/public`), orderByChild(sortBy), endBefore(lastSortedValue, lastKey), limitToLast(limit)),
-      ).then((snapshot) => {
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            posts.unshift({
-              key: child.key,
-              ...child.val(),
-            });
-          });
-
-          nextLastKey = posts[posts.length - 1].key;
-          nextLastSortedValue = posts[posts.length - 1][sortBy];
-        }
-      });
-    }
+        nextLastKey = posts[posts.length - 1].key;
+        nextLastSortedValue = posts[posts.length - 1][sortBy];
+      }
+    });
 
     return { posts, nextLastKey, nextLastSortedValue };
   } catch (e) {
