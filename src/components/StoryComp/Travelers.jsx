@@ -1,14 +1,27 @@
 import { TrophyTwoTone } from '@ant-design/icons/lib/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { TravelerList } from './styles';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setStorySearchId } from '../../redux/actions/story_action';
 
-function Travelers() {
+function Travelers({ loading }) {
   const usersInfo = useSelector((state) => state.usersInfo);
-  const [sortedUsers, setSortedUsers] = useState([]);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
+  const onClickUser = useCallback(
+    (e) => {
+      const $li = e.target.closest('li');
+      const { uid } = $li.dataset;
+
+      if (uid) {
+        dispatch(setStorySearchId(uid));
+      }
+    },
+    [dispatch],
+  );
+
+  const sortUsers = useCallback((usersInfo) => {
     if (usersInfo) {
       const userList = Object.entries(usersInfo);
       userList.sort((prev, next) => {
@@ -16,10 +29,12 @@ function Travelers() {
         if (prev[1].tripCount > next[1].tripCount) return -1;
         return 0;
       });
-      console.log(userList);
-      setSortedUsers(userList);
+
+      return userList;
     }
-  }, [usersInfo]);
+  }, []);
+
+  const sortedUsers = useMemo(() => sortUsers(usersInfo), [sortUsers, usersInfo]);
 
   return (
     <TravelerList>
@@ -29,27 +44,29 @@ function Travelers() {
       </h2>
       <section>
         <Scrollbars autoHide>
-          <ul>
-            {sortedUsers?.length > 0
-              ? sortedUsers.map((user, idx) => {
-                  return (
-                    <li key={user[0]}>
+          <ul onClick={onClickUser}>
+            {loading && 'Loading...'}
+            {!loading &&
+              sortedUsers?.length > 0 &&
+              sortedUsers.map((user, idx) => {
+                return (
+                  <li key={user[0]} data-uid={user[0]}>
+                    <div>
+                      <img src={user[1].image} alt={user[1].nickname} />
                       <div>
-                        <img src={user[1].image} alt={user[1].nickname} />
-                        <div>
-                          <span className="nickname">
-                            {idx === 0 && '🥇'}
-                            {idx === 1 && '🥈'}
-                            {idx === 2 && '🥉'}
-                            {user[1].nickname}
-                          </span>
-                          <span className="tripCount">({user[1].tripCount}회)</span>
-                        </div>
+                        <span className="nickname">
+                          {idx === 0 && '🥇'}
+                          {idx === 1 && '🥈'}
+                          {idx === 2 && '🥉'}
+                          {user[1].nickname}
+                        </span>
+                        <span className="tripCount">({user[1].tripCount}회)</span>
                       </div>
-                    </li>
-                  );
-                })
-              : ' 이용자 정보 없음...'}
+                    </div>
+                  </li>
+                );
+              })}
+            {!loading && sortedUsers?.length === 0 && ' 이용자 정보 없음...'}
           </ul>
         </Scrollbars>
       </section>

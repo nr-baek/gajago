@@ -1,19 +1,20 @@
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
-import React, { useState, useCallback, useRef, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearStorySearchId, setStorySearchId } from '../../redux/actions/story_action';
 import Stories from './Stories';
 import { StyledContainer } from './styles';
 
 function StoriesContainer({ scrollToTop }) {
+  const dispatch = useDispatch();
   const usersInfo = useSelector((state) => state.usersInfo);
+  const searchUid = useSelector((state) => state.story.searchId);
 
   const [sortBy, setSortBy] = useState('timeStamp');
   const [searchText, setSearchText] = useState('');
   const [inputFocus, setInputFocus] = useState(false);
   const [matchedNicknameList, setMatchedNicknameList] = useState([]);
   const [indexOfList, setIndexOfList] = useState(-1);
-
-  const [searchUid, setSearchUid] = useState('');
 
   const $input = useRef();
   const userInfoList = useMemo(() => {
@@ -69,12 +70,12 @@ function StoriesContainer({ scrollToTop }) {
         } else if (e.key === 'Enter' && indexOfList > -1) {
           $input.current.blur();
           updateMatchedNicknameList(searchText);
-          setSearchUid(matchedNicknameList[indexOfList][0]);
-          scrollToTop();
+          dispatch(setStorySearchId(matchedNicknameList[indexOfList][0]));
+          // scrollToTop();
         }
       }
     },
-    [matchedNicknameList, indexOfList, searchText, updateMatchedNicknameList, scrollToTop],
+    [matchedNicknameList, indexOfList, searchText, updateMatchedNicknameList, scrollToTop, dispatch],
   );
 
   const onChangeHandler = useCallback(
@@ -91,27 +92,39 @@ function StoriesContainer({ scrollToTop }) {
       const selectedNickname = usersInfo[e.currentTarget.id].nickname;
       setSearchText(selectedNickname);
       updateMatchedNicknameList(selectedNickname);
-      setSearchUid(e.currentTarget.id);
+      dispatch(setStorySearchId(e.currentTarget.id));
       setInputFocus(false);
-      scrollToTop();
+      // scrollToTop();
       $input.current.blur();
     },
-    [usersInfo, updateMatchedNicknameList, scrollToTop],
+    [usersInfo, updateMatchedNicknameList, scrollToTop, dispatch],
   );
 
   const onClickSortBy = useCallback(
     (sortText) => {
       setSortBy(sortText);
-      scrollToTop();
+      // scrollToTop();
     },
     [scrollToTop],
   );
+
+  const clearSearchId = useCallback(() => {
+    dispatch(clearStorySearchId());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (searchUid) {
+      setSearchText(usersInfo[searchUid].nickname);
+    } else {
+      setSearchText('');
+    }
+  }, [searchUid, usersInfo, scrollToTop]);
 
   return (
     <StyledContainer>
       <div className="top">
         <div className="wrapper">
-          <h2>Stories</h2>
+          <h2 onClick={clearSearchId}>Stories</h2>
 
           <div className={`searchBox ${inputFocus ? 'focused' : ''}`}>
             {!inputFocus && <SearchOutlined style={{ color: '#5c0bdf' }} onClick={focusInput} />}
@@ -168,7 +181,7 @@ function StoriesContainer({ scrollToTop }) {
         </div>
         <div className="mask" />
       </div>
-      <Stories sortBy={sortBy} searchUid={searchUid} />
+      <Stories sortBy={sortBy} searchUid={searchUid} scrollToTop={scrollToTop} />
     </StyledContainer>
   );
 }

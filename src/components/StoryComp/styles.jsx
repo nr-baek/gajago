@@ -42,6 +42,7 @@ export const TravelerList = styled.div`
             outline: 2px solid #b6a0ff;
             background-color: #ebd3ff;
             object-fit: cover;
+            cursor: pointer;
           }
           div {
             width: 100%;
@@ -57,6 +58,7 @@ export const TravelerList = styled.div`
               overflow: hidden;
               white-space: nowrap;
               text-overflow: ellipsis;
+              cursor: pointer;
             }
             .tripCount {
               font-size: 12px;
@@ -93,6 +95,7 @@ export const StyledContainer = styled.div`
         color: #6840e9;
         font-weight: 700;
         padding: 10px 0;
+        cursor: pointer;
       }
       .searchBox {
         border-radius: 5px;

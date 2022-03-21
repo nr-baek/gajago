@@ -10,3 +10,7 @@ export const SET_PAGE = 'set_page';
 
 // USERS_INFO TYPES
 export const SET_USERS_INFO = 'set_users_info';
+
+// STORY TYPES
+export const SET_STORY_SEARCH_ID = 'set_story_search_id';
+export const CLEAR_STORY_SEARCH_ID = 'clear_story_search_id';
