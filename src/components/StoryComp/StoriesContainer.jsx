@@ -71,11 +71,10 @@ function StoriesContainer({ scrollToTop }) {
           $input.current.blur();
           updateMatchedNicknameList(searchText);
           dispatch(setStorySearchId(matchedNicknameList[indexOfList][0]));
-          // scrollToTop();
         }
       }
     },
-    [matchedNicknameList, indexOfList, searchText, updateMatchedNicknameList, scrollToTop, dispatch],
+    [matchedNicknameList, indexOfList, searchText, updateMatchedNicknameList, dispatch],
   );
 
   const onChangeHandler = useCallback(
@@ -94,23 +93,23 @@ function StoriesContainer({ scrollToTop }) {
       updateMatchedNicknameList(selectedNickname);
       dispatch(setStorySearchId(e.currentTarget.id));
       setInputFocus(false);
-      // scrollToTop();
       $input.current.blur();
     },
-    [usersInfo, updateMatchedNicknameList, scrollToTop, dispatch],
+    [usersInfo, updateMatchedNicknameList, dispatch],
   );
 
   const onClickSortBy = useCallback(
     (sortText) => {
       setSortBy(sortText);
-      // scrollToTop();
+      scrollToTop();
     },
     [scrollToTop],
   );
 
   const clearSearchId = useCallback(() => {
     dispatch(clearStorySearchId());
-  }, [dispatch]);
+    scrollToTop();
+  }, [dispatch, scrollToTop]);
 
   useEffect(() => {
     if (searchUid) {
@@ -118,7 +117,7 @@ function StoriesContainer({ scrollToTop }) {
     } else {
       setSearchText('');
     }
-  }, [searchUid, usersInfo, scrollToTop]);
+  }, [searchUid, usersInfo]);
 
   return (
     <StyledContainer>
@@ -181,9 +180,9 @@ function StoriesContainer({ scrollToTop }) {
         </div>
         <div className="mask" />
       </div>
-      <Stories sortBy={sortBy} searchUid={searchUid} scrollToTop={scrollToTop} />
+      <Stories sortBy={sortBy} searchUid={searchUid} />
     </StyledContainer>
   );
 }
 
-export default StoriesContainer;
+export default React.memo(StoriesContainer);

@@ -250,7 +250,7 @@ export const Card = styled.div`
   .photo {
     display: block;
     width: 100%;
-    min-height: 130px;
+    min-height: 100px;
     background-color: ${(props) => props.colorCode};
   }
 

@@ -61,6 +61,7 @@ function Stories({ sortBy, searchUid }) {
   }, []);
 
   useEffect(() => {
+    console.log('     stories render~!~!~!');
     const checkedLikesRef = ref(db, `users/${user.uid}/checkedLikes`);
     setLoading(true);
     onValue(checkedLikesRef, (snapshot) => {
@@ -88,6 +89,7 @@ function Stories({ sortBy, searchUid }) {
       off(checkedLikesRef);
     };
   }, [searchUid, sortBy, db, user.uid]);
+
   return (
     <>
       <div>

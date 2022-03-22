@@ -27,7 +27,7 @@ function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
   }, []);
 
   const color = useMemo(() => {
-    return `hsla(${~~(360 * Math.random())},40%,70%,0.5)`;
+    return `hsla(${~~(360 * Math.random())},30%,30%,0.25)`;
   }, []);
 
   useEffect(() => {
@@ -49,13 +49,18 @@ function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
     };
   }, [imgUrl, isLastCard, setLoading]);
 
-  return usersInfo && sizes[0] ? (
+  return usersInfo ? (
     <>
       <Card onClick={() => setShow(true)} colorCode={color}>
         <img className="photo" src={imgUrl} alt={photoDesc} />
         <div className="cardBottom">
           <div className="userInfo">
-            <img src={usersInfo[uid].image} alt={usersInfo[uid].nickname} width={sizes[0]} height={sizes[1]} />
+            <img
+              src={usersInfo[uid].image}
+              alt={usersInfo[uid].nickname}
+              width={sizes[0] ? sizes[0] : 0}
+              height={sizes[1] ? sizes[1] : 0}
+            />
             <span>{usersInfo[uid].nickname}</span>
           </div>
           <span className="time">{dayjs().to(dayjs(timeStamp))}</span>
