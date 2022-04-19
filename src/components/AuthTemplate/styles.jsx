@@ -109,13 +109,13 @@ export const TemplateRight = styled.div`
   .showLogIn {
     animation: ${showToRightAni} 0.2s linear normal forwards;
   }
-  .showLogIn.noneSignIn {
+  .showLogIn.hideLogIn {
     animation: ${disappearToLeftAni} 0.2s linear normal forwards;
   }
   .showSignUp {
     animation: ${showToLeftAni} 0.2s linear normal forwards;
   }
-  .showSignUp.noneSignUp {
+  .showSignUp.hideSignUp {
     animation: ${disappearToRightAni} 0.2s linear normal forwards;
   }
 

@@ -22,12 +22,6 @@ const LogIn = () => {
     }, 200);
   }, [navigate]);
 
-  useEffect(() => {
-    return () => {
-      setLoading(false);
-    };
-  }, []);
-
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
@@ -43,16 +37,16 @@ const LogIn = () => {
         }
 
         setLoading(false);
-        setTimeout(() => {
-          setErrorMessage('');
-        }, 5000);
+        // setTimeout(() => {
+        //   setErrorMessage('');
+        // }, 5000);
       }
     },
     [auth, email, password],
   );
 
   return (
-    <div className={'showLogIn ' + (clickedSignUp ? 'noneSignIn' : '')}>
+    <div className={'showLogIn ' + (clickedSignUp ? 'hideLogIn' : '')}>
       <form onSubmit={onSubmit}>
         <h1 className="login">로그인</h1>
         <label className="loginLabel">

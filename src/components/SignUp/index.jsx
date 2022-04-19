@@ -20,12 +20,12 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [signUpSuccess, setSignUpSuccess] = useState(false);
 
-  const [toLogin, setToLogin] = useState(false);
+  const [clickedLogin, setClickedLogin] = useState(false);
 
   const navigate = useNavigate();
 
   const onClickLogin = useCallback(() => {
-    setToLogin(true);
+    setClickedLogin(true);
     setTimeout(() => {
       navigate('/login');
     }, 200);
@@ -91,7 +91,7 @@ const SignUp = () => {
         setLoading(false);
         setTimeout(() => {
           setSignUpSuccess(false);
-          setToLogin(true);
+          setClickedLogin(true);
           signOut(auth);
         }, 1500);
       } catch (error) {
@@ -110,7 +110,7 @@ const SignUp = () => {
   );
 
   return (
-    <div className={'showSignUp ' + (toLogin ? 'noneSignUp' : '')}>
+    <div className={'showSignUp ' + (clickedLogin ? 'hideSignUp' : '')}>
       <div className="goToLogin" onClick={onClickLogin}>
         <ArrowLeftOutlined style={{ marginRight: '5px' }} />
         Login
