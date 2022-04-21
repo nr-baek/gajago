@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import useInput from '../../hooks/useInput';
 import { Message, StyledButton } from '../LogIn/styles';
 import '../../firebase';
@@ -62,9 +62,6 @@ const SignUp = () => {
     },
     [password],
   );
-  useEffect(() => {
-    return () => {};
-  }, []);
 
   const onSubmit = useCallback(
     async (e) => {

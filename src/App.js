@@ -40,7 +40,6 @@ function App() {
               key: child.key,
               ...child.val(),
             });
-            return false;
           });
 
           dispatch(setPlanData(planArray));
@@ -66,8 +65,7 @@ function App() {
   useEffect(() => {
     const auth = getAuth();
 
-    onAuthStateChanged(auth, (user) => {
-      console.log('user', user);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.displayName) {
         dispatch(setUser(user));
         setPlanDataAndTrophy(user);
@@ -78,6 +76,10 @@ function App() {
         dispatch(setPage('schedule'));
       }
     });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return isLoading ? (

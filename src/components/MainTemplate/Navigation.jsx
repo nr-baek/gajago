@@ -18,28 +18,28 @@ function Navigation() {
   return (
     <ul>
       <li>
-        <LeftBarBtn id="schedule" className={currentPage === 'schedule' && 'active'} onClick={onClickHandler}>
+        <LeftBarBtn id="schedule" className={currentPage === 'schedule' ? 'active' : ''} onClick={onClickHandler}>
           {currentPage === 'schedule' && <div />}
           {currentPage === 'schedule' ? <ScheduleFilled /> : <ScheduleOutlined />}
           <span>Schedule</span>
         </LeftBarBtn>
       </li>
       <li>
-        <LeftBarBtn id="myTrips" className={currentPage === 'myTrips' && 'active'} onClick={onClickHandler}>
+        <LeftBarBtn id="myTrips" className={currentPage === 'myTrips' ? 'active' : ''} onClick={onClickHandler}>
           {currentPage === 'myTrips' && <div />}
           {currentPage === 'myTrips' ? <CarFilled /> : <CarOutlined />}
           <span>My Trips</span>
         </LeftBarBtn>
       </li>
       <li>
-        <LeftBarBtn id="reviews" className={currentPage === 'reviews' && 'active'} onClick={onClickHandler}>
+        <LeftBarBtn id="reviews" className={currentPage === 'reviews' ? 'active' : ''} onClick={onClickHandler}>
           {currentPage === 'reviews' && <div />}
           {currentPage === 'reviews' ? <RocketFilled /> : <RocketOutlined />}
           <span>Review</span>
         </LeftBarBtn>
       </li>
       <li>
-        <LeftBarBtn id="story" className={currentPage === 'story' && 'active'} onClick={onClickHandler}>
+        <LeftBarBtn id="story" className={currentPage === 'story' ? 'active' : ''} onClick={onClickHandler}>
           {currentPage === 'story' && <div />}
           {currentPage === 'story' ? <SmileFilled /> : <SmileOutlined />}
           <span>Story</span>

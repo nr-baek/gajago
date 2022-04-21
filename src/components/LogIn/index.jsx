@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import useInput from '../../hooks/useInput';
 import { StyledButton, SignUpButton, Message } from './styles';
 import '../../firebase';
@@ -37,9 +37,6 @@ const LogIn = () => {
         }
 
         setLoading(false);
-        // setTimeout(() => {
-        //   setErrorMessage('');
-        // }, 5000);
       }
     },
     [auth, email, password],
