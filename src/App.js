@@ -15,7 +15,6 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setPlanData, setTrophyInfo, setUser } from './redux/actions/user_action';
 import { checkTrophyInfo } from './components/Schedule/utils';
-import { setPage } from './redux/actions/page_action';
 import { Background } from './components/MainTemplate/styles';
 import { LoadingOutlined } from '@ant-design/icons';
 
@@ -73,7 +72,6 @@ function App() {
       } else if (!user) {
         navigate('/login');
         dispatch(clearUser());
-        dispatch(setPage('schedule'));
       }
     });
 

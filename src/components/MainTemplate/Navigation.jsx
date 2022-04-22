@@ -8,40 +8,48 @@ import {
   RocketOutlined,
   RocketFilled,
 } from '@ant-design/icons/lib/icons';
-import React from 'react';
-import usePageState from '../../hooks/usePageState';
+import React, { useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { LeftBarBtn } from './styles';
 
 function Navigation() {
-  const [currentPage, onClickHandler] = usePageState();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const onClickHandler = useCallback(
+    (e) => {
+      navigate(`/${e.currentTarget.id}`);
+    },
+    [navigate],
+  );
 
   return (
     <ul>
       <li>
-        <LeftBarBtn id="schedule" className={currentPage === 'schedule' ? 'active' : ''} onClick={onClickHandler}>
-          {currentPage === 'schedule' && <div />}
-          {currentPage === 'schedule' ? <ScheduleFilled /> : <ScheduleOutlined />}
+        <LeftBarBtn id="schedule" className={pathname === '/schedule' ? 'active' : ''} onClick={onClickHandler}>
+          {pathname === '/schedule' && <div />}
+          {pathname === '/schedule' ? <ScheduleFilled /> : <ScheduleOutlined />}
           <span>Schedule</span>
         </LeftBarBtn>
       </li>
       <li>
-        <LeftBarBtn id="myTrips" className={currentPage === 'myTrips' ? 'active' : ''} onClick={onClickHandler}>
-          {currentPage === 'myTrips' && <div />}
-          {currentPage === 'myTrips' ? <CarFilled /> : <CarOutlined />}
+        <LeftBarBtn id="myTrips" className={pathname === '/myTrips' ? 'active' : ''} onClick={onClickHandler}>
+          {pathname === '/myTrips' && <div />}
+          {pathname === '/myTrips' ? <CarFilled /> : <CarOutlined />}
           <span>My Trips</span>
         </LeftBarBtn>
       </li>
       <li>
-        <LeftBarBtn id="reviews" className={currentPage === 'reviews' ? 'active' : ''} onClick={onClickHandler}>
-          {currentPage === 'reviews' && <div />}
-          {currentPage === 'reviews' ? <RocketFilled /> : <RocketOutlined />}
+        <LeftBarBtn id="reviews" className={pathname === '/reviews' ? 'active' : ''} onClick={onClickHandler}>
+          {pathname === '/reviews' && <div />}
+          {pathname === '/reviews' ? <RocketFilled /> : <RocketOutlined />}
           <span>Review</span>
         </LeftBarBtn>
       </li>
       <li>
-        <LeftBarBtn id="story" className={currentPage === 'story' ? 'active' : ''} onClick={onClickHandler}>
-          {currentPage === 'story' && <div />}
-          {currentPage === 'story' ? <SmileFilled /> : <SmileOutlined />}
+        <LeftBarBtn id="story" className={pathname === '/story' ? 'active' : ''} onClick={onClickHandler}>
+          {pathname === '/story' && <div />}
+          {pathname === '/story' ? <SmileFilled /> : <SmileOutlined />}
           <span>Story</span>
         </LeftBarBtn>
       </li>

@@ -5,9 +5,6 @@ export const SET_PHOTO_URL = 'set_photo_url';
 export const SET_PLAN_DATA = 'set_plan_data';
 export const SET_TROPHY_INFO = 'set_trophy_info';
 
-// PAGE TYPES
-export const SET_PAGE = 'set_page';
-
 // USERS_INFO TYPES
 export const SET_USERS_INFO = 'set_users_info';
 
