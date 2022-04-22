@@ -4,7 +4,7 @@ import { Button, Col, Form, FormControl, InputGroup, Row } from 'react-bootstrap
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import useInput from '../../hooks/useInput';
-import { DatePickerForm, FormFooter, PlansBox, SelectForm } from './styles';
+import { DatePickerForm, FormFooter, LeftMarginSpan, PlansBox, SelectForm } from './styles';
 import dayjs from 'dayjs';
 
 import { getDatabase, ref, set, get, push, query, orderByChild, child } from 'firebase/database';
@@ -160,7 +160,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
     <Form onSubmit={handleSubmit}>
       <Form.Group as={Row} className="mb-3" controlId="tripTitle">
         <Form.Label column sm={2}>
-          여행명
+          <LeftMarginSpan>여행명</LeftMarginSpan>
         </Form.Label>
         <Col sm={10}>
           <Form.Control type="text" value={title} required onKeyDown={preventEnterSubmit} onChange={onChangeTitle} />
@@ -169,7 +169,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
 
       <Form.Group as={Row} className="mb-3" controlId="tripDate">
         <Form.Label column sm={2}>
-          여행 기간
+          <LeftMarginSpan>여행 기간</LeftMarginSpan>
         </Form.Label>
         <Col>
           <DatePickerForm>
@@ -199,7 +199,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
       <fieldset>
         <Form.Group as={Row} className="mb-3">
           <Form.Label as="legend" column sm={2}>
-            여행 타입
+            <LeftMarginSpan>여행 타입</LeftMarginSpan>
           </Form.Label>
           <Col
             sm={10}
@@ -247,7 +247,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
 
       <Form.Group as={Row} className="mb-3" controlId="tripRegion">
         <Form.Label column sm={2}>
-          여행 지역
+          <LeftMarginSpan>여행 지역</LeftMarginSpan>
         </Form.Label>
         <Col sm={10}>
           <SelectForm>
@@ -278,7 +278,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
 
       <Form.Group as={Row} className="mb-3" controlId="detailAddress">
         <Form.Label column sm={2}>
-          상세주소
+          <LeftMarginSpan>상세주소</LeftMarginSpan>
         </Form.Label>
         <Col sm={10}>
           <Form.Control
@@ -292,7 +292,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
       </Form.Group>
       <Form.Group as={Row} className="mb-3" controlId="tripPlan">
         <Form.Label column sm={2}>
-          계획일정
+          <LeftMarginSpan>계획일정</LeftMarginSpan>
         </Form.Label>
         <Col sm={10}>
           <InputGroup className="mb-3">

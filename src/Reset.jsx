@@ -27,7 +27,7 @@ const Reset = css`
 
   /* react-bootstrap customize */
   .modal-content {
-    border-radius: 23px;
+    border-radius: 20px;
   }
 `;
 

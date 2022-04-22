@@ -12,7 +12,7 @@ export const StyledCalendar = styled.div`
     width: 200px;
     display: inline-block;
   }
-  button {
+  .addBtn {
     width: 100px;
     font-size: 15px;
     font-weight: bold;
@@ -41,6 +41,7 @@ export const StyledCalendar = styled.div`
       padding: 4px 12px;
       font-weight: bold;
       color: #505050;
+      cursor: pointer;
       .month {
         font-size: 40px;
         color: #7a6bff;
@@ -127,6 +128,10 @@ export const StyledCalendar = styled.div`
       border-left: none;
     }
   }
+`;
+
+export const LeftMarginSpan = styled.span`
+  padding-left: 20px;
 `;
 
 export const DatePickerForm = styled.div`

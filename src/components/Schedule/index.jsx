@@ -1,8 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
 import isoWeek from 'dayjs/plugin/isoWeek';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
+
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { StyledCalendar } from './styles';
@@ -17,17 +20,25 @@ dayjs.extend(weekday);
 dayjs.extend(isoWeek);
 dayjs.extend(weekOfYear);
 
+const MonthAndYear = forwardRef(({ onClick, date }, ref) => (
+  <span className="showMonth" onClick={onClick} ref={ref}>
+    <span className="month">{date.format('MM')}</span>
+    <span className="year">{date.format('YYYY')}</span>
+  </span>
+));
+
 const Calendar = () => {
   const planArray = useSelector((state) => state.user.planData);
-  const [date, setDate] = useState(dayjs());
-  const [showModal, setShowModal] = useState(false);
-  const [markingInfo, setMarkingInfo] = useState({});
+
   const [isLoading, setIsLoading] = useState(true);
-  const [currentHover, setCurrentHover] = useState({ key: '', date: '' });
+  const [date, setDate] = useState(dayjs());
+  const [markingInfo, setMarkingInfo] = useState({});
+  const [hoveredMarkingInfo, setHoveredMarkingInfo] = useState({ key: '', date: '' });
+  const [showModal, setShowModal] = useState(false);
   const [modalInfo, setModalInfo] = useState({ key: '', date: '' });
 
-  const handleClose = useCallback(() => setShowModal(false), []);
-  const handleShow = useCallback(
+  const handleCloseModal = useCallback(() => setShowModal(false), []);
+  const handleShowModal = useCallback(
     () =>
       setShowModal(() => {
         setModalInfo({ key: '', date: '' });
@@ -57,10 +68,10 @@ const Calendar = () => {
                   <span className="dateNumber">{current.format('D')}</span>
                   {markingInfo[currentDateStr] && (
                     <MarkingBar
-                      isHover={currentDateMarkingInfo.key === currentHover.key}
+                      isHover={currentDateMarkingInfo.key === hoveredMarkingInfo.key}
                       markingDate={currentDateStr}
                       currentDateMarkingInfo={currentDateMarkingInfo}
-                      setCurrentHover={setCurrentHover}
+                      setCurrentHover={setHoveredMarkingInfo}
                       setShowModal={setShowModal}
                       setModalInfo={setModalInfo}
                     />
@@ -101,12 +112,16 @@ const Calendar = () => {
     setIsLoading(false);
   }, [filterPlansOfMonth, date]);
 
-  const setPrevMonth = useCallback(() => {
+  const clickPrevMonth = useCallback(() => {
     setDate((date) => date.subtract(1, 'month'));
   }, []);
 
-  const setAfterMonth = useCallback(() => {
+  const clickAfterMonth = useCallback(() => {
     setDate((date) => date.add(1, 'month'));
+  }, []);
+
+  const changeMonth = useCallback((date) => {
+    setDate(dayjs(date));
   }, []);
 
   return isLoading ? (
@@ -115,15 +130,22 @@ const Calendar = () => {
     <StyledCalendar>
       <div>
         <h1>Schedule</h1>
-        <button onClick={handleShow}>Add New</button>
+        <button className="addBtn" onClick={handleShowModal}>
+          Add New
+        </button>
       </div>
       <div className="selectedMonth">
-        <LeftOutlined className="changeMonth" onClick={setPrevMonth} />
-        <span className="showMonth">
-          <span className="month">{date.format('MM')}</span>
-          <span className="year">{date.format('YYYY')}</span>
+        <LeftOutlined className="changeMonth" onClick={clickPrevMonth} />
+        <span>
+          <DatePicker
+            customInput={<MonthAndYear date={date} />}
+            dateFormat="MM.yyyy"
+            showMonthYearPicker
+            onChange={changeMonth}
+            selected={new Date(date)}
+          />
         </span>
-        <RightOutlined className="changeMonth" onClick={setAfterMonth} />
+        <RightOutlined className="changeMonth" onClick={clickAfterMonth} />
       </div>
       <div className="body">
         <div className="days">
@@ -139,7 +161,7 @@ const Calendar = () => {
       </div>
       <ScheduleModal
         showModal={showModal}
-        handleClose={handleClose}
+        handleClose={handleCloseModal}
         modalPlanData={markingInfo[modalInfo.date]}
         setModalInfo={setModalInfo}
       />
