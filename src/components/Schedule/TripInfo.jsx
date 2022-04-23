@@ -6,6 +6,7 @@ import { getStorage, ref as strRef, deleteObject } from 'firebase/storage';
 import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
 import NoteWithBtn from './NoteWithBtn';
 import { checkTrophyInfo } from './utils';
+import { REGION_NAME, TRIP_TYPE_TEXT } from '../../common';
 
 function TripInfo({ planData, handleClose, setShowEditForm, editable }) {
   const user = useSelector((state) => state.user.currentUser);
@@ -14,33 +15,6 @@ function TripInfo({ planData, handleClose, setShowEditForm, editable }) {
   const db = getDatabase();
 
   const { key, title, startDate, endDate, days, region, detailAddress, tripType, planList } = planData;
-  const tripTypeText = {
-    alone: '나홀로여행',
-    family: '가족여행',
-    couple: '커플여행',
-    friends: '우정여행',
-  };
-
-  const regionObj = {
-    Seoul: '서울특별시',
-    Busan: '부산광역시',
-    DaeGu: '대구광역시',
-    InCheon: '인천광역시',
-    DaeJeon: '대전광역시',
-    GwangJu: '광주광역시',
-    UlSan: '울산광역시',
-    SeJong: '세종시',
-    GyeongGi: '경기도',
-    GangWon: '강원도',
-    ChungBuk: '충청북도',
-    ChungNam: '충청남도',
-    JeonBuk: '전라북도',
-    JeonNam: '전라남도',
-    GyeongBuk: '경상북도',
-    GyeongNam: '경상남도',
-    JeJu: '제주도',
-    overseas: '해외',
-  };
 
   const checkTrophyState = useCallback(
     async (planArray) => {
@@ -130,8 +104,8 @@ function TripInfo({ planData, handleClose, setShowEditForm, editable }) {
             &#x1F4C6; 여행기간: {days > 1 ? `${startDate} ~ ${endDate}` : startDate} (
             {days > 1 ? `${days - 1 + '박' + days + '일'}` : '당일치기'})
           </p>
-          <p> &#x1F3DD; 여 행 지: {regionObj[region] + ' ' + detailAddress}</p>
-          <p> &#x1F94E; 여행타입: {tripTypeText[tripType]}</p>
+          <p> &#x1F3DD; 여 행 지: {REGION_NAME[region] + ' ' + detailAddress}</p>
+          <p> &#x1F94E; 여행타입: {TRIP_TYPE_TEXT[tripType]}</p>
           <p> &#x1F4DD; 계획일정: </p>
           {planList && planList.length > 0 ? (
             <ul>

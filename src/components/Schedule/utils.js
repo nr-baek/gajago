@@ -1,34 +1,62 @@
 import dayjs from 'dayjs';
 
-export const getStartAndEndDateOfDisplay = (date) => {
+export const getFirstDateAndLastDateOfCalendar = (date) => {
   const startWeek = date.startOf('month').week();
   const endWeek = date.endOf('month').week() === 1 ? 53 : date.clone().endOf('month').week();
-  const startOfMonth = date.week(startWeek).startOf('week').format('YYYY-MM-DD');
-  const endOfMonth = date.week(endWeek).endOf('week').format('YYYY-MM-DD');
+  const firstDate = date.week(startWeek).startOf('week').format('YYYY-MM-DD');
+  const lastDate = date.week(endWeek).endOf('week').format('YYYY-MM-DD');
 
-  return [startOfMonth, endOfMonth];
+  return [firstDate, lastDate];
 };
 
-export const makeMarkingInfoObj = (startOfMonth, displayPlans = []) => {
+export const filterPlansOfMonth = (date, planArray) => {
+  console.log(planArray);
+  const [firstDate, lastDate] = getFirstDateAndLastDateOfCalendar(date);
+  let sortedPlan = [];
+
+  if (planArray && planArray.length) {
+    sortedPlan = planArray.filter((plan) => {
+      const { startDate, endDate } = plan;
+
+      const isStartDateInDisplay = startDate >= firstDate && startDate <= lastDate;
+      const isEndDateInDisplay = endDate >= firstDate && endDate <= lastDate;
+      const isIncludeMonth = startDate < firstDate && endDate > lastDate;
+
+      return isStartDateInDisplay || isEndDateInDisplay || isIncludeMonth;
+    });
+  }
+
+  return sortedPlan;
+};
+
+export const makeMarkingInfoObj = (firstDateOfCalendar, displayPlans = []) => {
   const markingInfoObj = {};
 
   if (displayPlans.length) {
     displayPlans.forEach((plan) => {
       const { startDate, days } = plan;
 
-      let RemainingDatesOfRender = days;
-      let startDateOfRender = startDate;
-      let firstDayOfWeek = dayjs(startDate).day();
-      let renderDates = 7 - firstDayOfWeek >= RemainingDatesOfRender ? RemainingDatesOfRender : 7 - firstDayOfWeek;
+      const dayOfTheWeekOfTheStartDate = dayjs(startDate).day();
 
-      while (RemainingDatesOfRender > 0) {
-        markingInfoObj[startDateOfRender] = { ...plan, renderDates };
-        if (startDateOfRender === startDate) markingInfoObj[startDateOfRender].start = true;
-        if (startDateOfRender === startOfMonth) markingInfoObj[startDateOfRender].fromPrevMonth = true;
-        RemainingDatesOfRender -= renderDates;
-        if (RemainingDatesOfRender === 0) markingInfoObj[startDateOfRender].end = true;
-        startDateOfRender = dayjs(startDateOfRender).add(renderDates, 'day').format('YYYY-MM-DD');
-        renderDates = 7 > RemainingDatesOfRender ? RemainingDatesOfRender : 7;
+      let countDates = days; // 그려야할 여행일 수 카운트
+      let startDateOfMarkingBar = startDate; // 마킹바가 그려질 시작날짜
+
+      // 주 내에서 마킹바가 그려질 길이
+      let numberOfDatesToRender =
+        7 - dayOfTheWeekOfTheStartDate >= countDates ? countDates : 7 - dayOfTheWeekOfTheStartDate;
+
+      while (countDates > 0) {
+        markingInfoObj[startDateOfMarkingBar] = { ...plan, numberOfDatesToRender };
+        if (startDateOfMarkingBar === startDate) {
+          markingInfoObj[startDateOfMarkingBar].start = true;
+        }
+        if (startDateOfMarkingBar === firstDateOfCalendar) {
+          markingInfoObj[startDateOfMarkingBar].fromPrevMonth = true;
+        }
+        countDates -= numberOfDatesToRender;
+        if (countDates === 0) markingInfoObj[startDateOfMarkingBar].end = true;
+        startDateOfMarkingBar = dayjs(startDateOfMarkingBar).add(numberOfDatesToRender, 'day').format('YYYY-MM-DD');
+        numberOfDatesToRender = 7 > countDates ? countDates : 7;
       }
     });
   }

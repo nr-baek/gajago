@@ -13,7 +13,7 @@ import ScheduleModal from './ScheduleModal';
 import MarkingBar from './MarkingBar';
 
 import { useSelector } from 'react-redux';
-import { getStartAndEndDateOfDisplay, makeMarkingInfoObj } from './utils';
+import { filterPlansOfMonth, getFirstDateAndLastDateOfCalendar, makeMarkingInfoObj } from './utils';
 
 // dayjs extend
 dayjs.extend(weekday);
@@ -46,6 +46,15 @@ const Calendar = () => {
       }),
     [],
   );
+  const clickPrevMonth = useCallback(() => {
+    setDate((date) => date.subtract(1, 'month'));
+  }, []);
+  const clickAfterMonth = useCallback(() => {
+    setDate((date) => date.add(1, 'month'));
+  }, []);
+  const changeMonth = useCallback((date) => {
+    setDate(dayjs(date));
+  }, []);
 
   const renderCalendar = (date) => {
     const startWeek = date.startOf('month').week();
@@ -58,19 +67,19 @@ const Calendar = () => {
           {Array(7)
             .fill(0)
             .map((_, i) => {
-              const current = date.week(week).startOf('week').add(i, 'day');
-              const currentDateStr = current.format('YYYY-MM-DD');
-              const currentDateMarkingInfo = markingInfo[currentDateStr];
-              const isGrayed = current.format('MM') === date.format('MM') ? '' : 'grayed';
+              const currentDate = date.week(week).startOf('week').add(i, 'day');
+              const currentDateString = currentDate.format('YYYY-MM-DD');
+              const MarkingInfoOfCurrentDate = markingInfo[currentDateString];
+              const isGrayed = currentDate.format('MM') === date.format('MM') ? '' : 'grayed';
 
               return (
                 <div className={`box ${isGrayed}`} key={i}>
-                  <span className="dateNumber">{current.format('D')}</span>
-                  {markingInfo[currentDateStr] && (
+                  <span className="dateNumber">{currentDate.format('D')}</span>
+                  {MarkingInfoOfCurrentDate && (
                     <MarkingBar
-                      isHover={currentDateMarkingInfo.key === hoveredMarkingInfo.key}
-                      markingDate={currentDateStr}
-                      currentDateMarkingInfo={currentDateMarkingInfo}
+                      isHover={MarkingInfoOfCurrentDate.key === hoveredMarkingInfo.key}
+                      markingDate={currentDateString}
+                      currentDateMarkingInfo={MarkingInfoOfCurrentDate}
                       setCurrentHover={setHoveredMarkingInfo}
                       setShowModal={setShowModal}
                       setModalInfo={setModalInfo}
@@ -85,44 +94,14 @@ const Calendar = () => {
     return calendar;
   };
 
-  const filterPlansOfMonth = useCallback(() => {
-    const [startOfMonth, endOfMonth] = getStartAndEndDateOfDisplay(date);
-    let sortedPlan = [];
-
-    if (planArray && planArray.length) {
-      sortedPlan = planArray.filter((plan) => {
-        const { startDate, endDate } = plan;
-        const isStartDateInDisplay = startDate >= startOfMonth && startDate <= endOfMonth;
-        const isEndDateInDisplay = endDate >= startOfMonth && endDate <= endOfMonth;
-        const isIncludeMonth = startDate < startOfMonth && endDate > endOfMonth;
-
-        return isStartDateInDisplay || isEndDateInDisplay || isIncludeMonth;
-      });
-    }
-
-    return sortedPlan;
-  }, [planArray, date]);
-
   useEffect(() => {
-    const [startOfMonth] = getStartAndEndDateOfDisplay(date);
-    const displayPlans = filterPlansOfMonth(date);
-    const markingInfoObj = makeMarkingInfoObj(startOfMonth, displayPlans);
+    const [firstDate] = getFirstDateAndLastDateOfCalendar(date);
+    const displayPlans = filterPlansOfMonth(date, planArray);
+    const markingInfoObj = makeMarkingInfoObj(firstDate, displayPlans);
 
     setMarkingInfo(markingInfoObj);
     setIsLoading(false);
-  }, [filterPlansOfMonth, date]);
-
-  const clickPrevMonth = useCallback(() => {
-    setDate((date) => date.subtract(1, 'month'));
-  }, []);
-
-  const clickAfterMonth = useCallback(() => {
-    setDate((date) => date.add(1, 'month'));
-  }, []);
-
-  const changeMonth = useCallback((date) => {
-    setDate(dayjs(date));
-  }, []);
+  }, [date, planArray]);
 
   return isLoading ? (
     <div>loading..</div>

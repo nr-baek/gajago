@@ -75,8 +75,7 @@ export const StyledCalendar = styled.div`
         height: 10vh;
         min-height: 65px;
 
-        .marKingBar {
-          width: 100%;
+        .markingBar {
           height: 35%;
           font-size: 15px;
           text-shadow: 1px 1px 4px #6d6d6d;
