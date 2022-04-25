@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 
 export const Background = styled.div`
   background: linear-gradient(20deg, #ffffff, #e0d0ff, #fffdff, #f1dcff, #ffffff, #e0d0ff);
-  height: 100vh;
-  width: 100vw;
+  width: 1440px;
+  height: 790px;
   padding: 30px 110px;
 
   .loading {
@@ -22,7 +22,6 @@ export const Container = styled.div`
   padding: 10px;
   width: 100%;
   height: 100%;
-  min-height: 600px;
   display: flex;
   box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.5);
 
