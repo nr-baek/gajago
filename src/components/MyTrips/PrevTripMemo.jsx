@@ -1,6 +1,6 @@
 import React from 'react';
-import PostIt from './PostIt';
-import { NoPrevPlan, PlanMemo, PrevPlan } from './styles';
+import { REGION_NAME } from '../../common';
+import { NoPrevPlan, PlanMemo, PrevPlan, PostIt } from './styles';
 
 function PrevTripMemo({ prevTrip, howManyDaysAgo }) {
   return (
@@ -12,7 +12,7 @@ function PrevTripMemo({ prevTrip, howManyDaysAgo }) {
             <p>
               <span className="days">{howManyDaysAgo}</span>일 전
             </p>
-            <PostIt region={prevTrip.region} />
+            <PostIt className="region">{REGION_NAME[prevTrip.region]}</PostIt>
           </div>
           <div className="detailAddrMsg">
             '<span className="detailAddr">{prevTrip.detailAddress}</span>

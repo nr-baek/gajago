@@ -72,7 +72,7 @@ export const InfoBoard = styled.div`
   }
 `;
 
-export const StyledSticker = styled.div`
+export const PostIt = styled.div`
   height: 40px;
   padding: 0 8px;
   font-size: 25px;

@@ -2,12 +2,13 @@ import { Modal } from 'react-bootstrap';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TripInfo from '../Schedule/TripInfo';
-import PostIt from './PostIt';
-import { Index, StyledList, Tab } from './styles';
+import { Index, StyledList, Tab, PostIt } from './styles';
 import { generateDividedBeforeAfterObj } from './utils';
+import { REGION_NAME, TRIP_TYPE_EMOJI } from '../../common';
 
 function TripList({ currentRegion, beforeTripObj, nextTripObj }) {
   const planArray = useSelector((state) => state.user.planData);
+
   const [indexTab, setIndexTab] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [modalInfo, setModalInfo] = useState({});
@@ -15,13 +16,6 @@ function TripList({ currentRegion, beforeTripObj, nextTripObj }) {
   const handleClose = useCallback(() => setShowModal(false), []);
 
   const generateList = (lists) => {
-    const emoji = {
-      couple: '💖',
-      family: '💛',
-      friends: '💚',
-      alone: '💜',
-    };
-
     return lists.map((list) => {
       const { startDate, endDate, title, tripType } = list;
       return (
@@ -36,7 +30,7 @@ function TripList({ currentRegion, beforeTripObj, nextTripObj }) {
         >
           <button>
             <div className="title">
-              {emoji[tripType]}
+              {TRIP_TYPE_EMOJI[tripType]}
               {title}
             </div>
             <div className="date">
@@ -48,7 +42,7 @@ function TripList({ currentRegion, beforeTripObj, nextTripObj }) {
     });
   };
 
-  const checkedGenerateList = (indexTab, lists) => {
+  const checkedGenerateList = (indexTab, lists = []) => {
     if (lists.length === 0) {
       return indexTab ? (
         <p className="noPlanMsg">등록된 여행 일정 없음.</p>
@@ -74,7 +68,7 @@ function TripList({ currentRegion, beforeTripObj, nextTripObj }) {
   return (
     <>
       <div className="tripList">
-        {currentRegion !== 'allRegion' && <PostIt region={currentRegion} />}
+        {currentRegion !== 'allRegion' && <PostIt className="region">{REGION_NAME[currentRegion]}</PostIt>}
         <p className="memoTitle"># 나의 여행 리스트</p>
         <Index>
           <Tab selected={indexTab === 0} onClick={() => setIndexTab(0)} tab={0}>

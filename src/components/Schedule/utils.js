@@ -10,7 +10,6 @@ export const getFirstDateAndLastDateOfCalendar = (date) => {
 };
 
 export const filterPlansOfMonth = (date, planArray) => {
-  console.log(planArray);
   const [firstDate, lastDate] = getFirstDateAndLastDateOfCalendar(date);
   let sortedPlan = [];
 

@@ -13,8 +13,6 @@ function TripsInfo({ currentRegion }) {
   const [prevTrip, howManyDaysAgo, nextTrip, dDay] = getPrevAndNextTripOfToday(planArray);
   const [beforeTripObj, nextTripObj] = generateTripsObjectByRegion(planArray);
 
-  console.log(beforeTripObj, nextTripObj);
-
   return (
     <InfoBoard>
       <div className="prevAndNextInfo">
