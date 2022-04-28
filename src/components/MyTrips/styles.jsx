@@ -79,6 +79,7 @@ export const PostIt = styled.div`
   line-height: 40px;
   text-align: center;
   vertical-align: middle;
+  white-space: nowrap;
   color: #343238;
   &::after {
     content: '';
@@ -120,6 +121,7 @@ export const PrevPlan = styled.div`
     justify-content: center;
     p {
       margin: 0 10px 0 0;
+      white-space: nowrap;
     }
     .days {
       font-size: 35px;
