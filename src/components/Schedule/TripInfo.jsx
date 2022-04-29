@@ -1,24 +1,24 @@
 import React, { useCallback } from 'react';
 import { StyledPlanner } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { get, getDatabase, orderByChild, query, ref as dbRef, set, update } from 'firebase/database';
+import { getDatabase, ref as dbRef, set, update } from 'firebase/database';
 import { getStorage, ref as strRef, deleteObject } from 'firebase/storage';
 import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
 import NoteWithBtn from './NoteWithBtn';
-import { checkTrophyInfo } from './utils';
+import { createTrophyInfoObj, getPlanData } from './utils';
 import { REGION_NAME, TRIP_TYPE_TEXT } from '../../common';
 
 function TripInfo({ planData, handleClose, setShowEditForm, editable }) {
   const user = useSelector((state) => state.user.currentUser);
   const trophyInfo = useSelector((state) => state.user.trophyInfo);
   const dispatch = useDispatch();
-  const db = getDatabase();
 
   const { key, title, startDate, endDate, days, region, detailAddress, tripType, planList } = planData;
 
-  const checkTrophyState = useCallback(
+  const checkAndSetStateOfTrophy = useCallback(
     async (planArray) => {
-      const { isOwner, tripCount } = checkTrophyInfo(planArray);
+      const db = getDatabase();
+      const { isOwner, tripCount } = createTrophyInfoObj(planArray);
       const infoObj = {
         isOwner,
         tripCount,
@@ -29,7 +29,16 @@ function TripInfo({ planData, handleClose, setShowEditForm, editable }) {
         await set(dbRef(db, `userList/${user.uid}/tripCount`), infoObj.tripCount);
       }
     },
-    [db, dispatch, trophyInfo.tripCount, user.uid],
+    [dispatch, trophyInfo.tripCount, user.uid],
+  );
+
+  const setPlanDataAndUpdateTrophy = useCallback(
+    async (uid) => {
+      const planArray = await getPlanData(uid);
+      dispatch(setPlanData(planArray));
+      checkAndSetStateOfTrophy(planArray, uid);
+    },
+    [checkAndSetStateOfTrophy, dispatch],
   );
 
   const onClickEditBtn = useCallback(() => {
@@ -47,6 +56,7 @@ function TripInfo({ planData, handleClose, setShowEditForm, editable }) {
           `${planData.review ? '등록된 여행후기 및 스토리 게시물이 사라집니다.\n' : ''}정말 삭제하시겠습니까?`,
         )
       ) {
+        const db = getDatabase();
         const storage = getStorage();
 
         if (planData.review) {
@@ -69,31 +79,13 @@ function TripInfo({ planData, handleClose, setShowEditForm, editable }) {
           await set(dbRef(db, `users/${user.uid}/plans/${key}`), null);
         }
 
-        await get(query(dbRef(db, `users/${user.uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
-          if (snapshot.exists()) {
-            let planArray = [];
-
-            snapshot.forEach((child) => {
-              planArray.push({
-                key: child.key,
-                ...child.val(),
-              });
-              return false;
-            });
-            dispatch(setPlanData(planArray));
-            checkTrophyState(planArray);
-          } else {
-            console.log('No data available');
-            dispatch(setPlanData([]));
-            checkTrophyState([]);
-          }
-        });
+        setPlanDataAndUpdateTrophy(user.uid);
         handleClose();
       }
     } catch (error) {
       console.log(error);
     }
-  }, [checkTrophyState, db, dispatch, handleClose, key, planData, user.uid]);
+  }, [setPlanDataAndUpdateTrophy, handleClose, key, planData, user.uid]);
 
   return (
     <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn} editable={editable}>

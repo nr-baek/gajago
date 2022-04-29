@@ -1,4 +1,30 @@
 import dayjs from 'dayjs';
+import '../../firebase';
+import { getDatabase, ref as dbRef, get, query, orderByChild } from 'firebase/database';
+
+const db = getDatabase();
+
+export const getPlanData = async (uid) => {
+  let planArray = [];
+  try {
+    await get(query(dbRef(db, `users/${uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          planArray.push({
+            key: child.key,
+            ...child.val(),
+          });
+          return false;
+        });
+      } else {
+        console.log('No data available');
+      }
+    });
+    return planArray;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export const getFirstDateAndLastDateOfCalendar = (date) => {
   const startWeek = date.startOf('month').week();
@@ -63,7 +89,7 @@ export const makeMarkingInfoObj = (firstDateOfCalendar, displayPlans = []) => {
   return markingInfoObj;
 };
 
-export const checkTrophyInfo = (planArray) => {
+export const createTrophyInfoObj = (planArray = []) => {
   const today = dayjs(new Date()).format('YYYY-MM-DD');
   const beforeTripObj = {};
 

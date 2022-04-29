@@ -7,10 +7,10 @@ import useInput from '../../hooks/useInput';
 import { DatePickerForm, FormFooter, LeftMarginSpan, PlansBox, SelectForm } from './styles';
 import dayjs from 'dayjs';
 
-import { getDatabase, ref, set, get, push, query, orderByChild, child } from 'firebase/database';
+import { getDatabase, ref, set, push, child } from 'firebase/database';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
-import { checkTrophyInfo } from './utils';
+import { createTrophyInfoObj, getPlanData } from './utils';
 
 function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
   const db = getDatabase();
@@ -42,41 +42,23 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
 
   const dispatch = useDispatch();
 
-  const checkTrophyState = async (planArray) => {
-    const { isOwner, tripCount } = checkTrophyInfo(planArray);
+  const checkAndSetStateOfTrophy = (planArray = [], uid) => {
+    const { isOwner, tripCount } = createTrophyInfoObj(planArray);
     const infoObj = {
       isOwner,
       tripCount,
     };
 
     if (trophyInfo.tripCount !== tripCount) {
-      await dispatch(setTrophyInfo(infoObj));
-      await set(ref(db, `userList/${user.uid}/tripCount`), infoObj.tripCount);
+      dispatch(setTrophyInfo(infoObj));
+      set(ref(db, `userList/${uid}/tripCount`), infoObj.tripCount);
     }
   };
 
-  const setPlanDataAndTrophy = async (user) => {
-    try {
-      await get(query(ref(db, `users/${user.uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
-        if (snapshot.exists()) {
-          const planArray = [];
-
-          snapshot.forEach((child) => {
-            planArray.push({
-              key: child.key,
-              ...child.val(),
-            });
-          });
-
-          dispatch(setPlanData(planArray));
-          checkTrophyState(planArray);
-        } else {
-          console.log('No data available');
-        }
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  const setPlanDataAndUpdateTrophy = async (uid) => {
+    const planArray = await getPlanData(uid);
+    dispatch(setPlanData(planArray));
+    checkAndSetStateOfTrophy(planArray, uid);
   };
 
   const createPlan = () => {
@@ -144,7 +126,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
     try {
       const planKey = showEditForm ? planData.key : push(child(ref(db), `users/${user.uid}/plans`)).key;
       await set(ref(db, `users/${user.uid}/plans/` + planKey), createPlan());
-      await setPlanDataAndTrophy(user);
+      await setPlanDataAndUpdateTrophy(user.uid);
       if (showEditForm && startDate !== initialState.startDate) {
         setModalInfo((prev) => ({ ...prev, date: dayjs(startDate).format('YYYY-MM-DD') }));
       }
