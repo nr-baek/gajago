@@ -2,7 +2,6 @@
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import './firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase, ref, get, orderByChild, query } from 'firebase/database';
 
 import MainPage from './pages/MainPage';
 import LogInPage from './pages/LogInPage';
@@ -14,7 +13,7 @@ import StoryPage from './pages/StoryPage';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setPlanData, setTrophyInfo, setUser } from './redux/actions/user_action';
-import { checkTrophyInfo } from './components/Schedule/utils';
+import { createTrophyInfoObj, getPlanData } from './components/Schedule/utils';
 import { Background } from './components/MainTemplate/styles';
 import { LoadingOutlined } from '@ant-design/icons';
 
@@ -26,39 +25,11 @@ function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const db = getDatabase();
-
-  const setPlanDataAndTrophy = async (user) => {
-    try {
-      await get(query(ref(db, `users/${user.uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
-        if (snapshot.exists()) {
-          let planArray = [];
-
-          snapshot.forEach((child) => {
-            planArray.push({
-              key: child.key,
-              ...child.val(),
-            });
-          });
-
-          dispatch(setPlanData(planArray));
-
-          const trophyInfo = checkTrophyInfo(planArray);
-          dispatch(setTrophyInfo(trophyInfo));
-        } else {
-          dispatch(setPlanData([]));
-          dispatch(
-            setTrophyInfo({
-              isOwner: false,
-              tripCount: 0,
-            }),
-          );
-          console.log('No data available');
-        }
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  const setPlanDataAndTrophy = (uid) => {
+    const planArray = getPlanData(uid);
+    const trophyInfo = createTrophyInfoObj(planArray);
+    dispatch(setPlanData(planArray));
+    dispatch(setTrophyInfo(trophyInfo));
   };
 
   useEffect(() => {
@@ -67,7 +38,7 @@ function App() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.displayName) {
         dispatch(setUser(user));
-        setPlanDataAndTrophy(user);
+        setPlanDataAndTrophy(user.uid);
         navigate('/');
       } else if (!user) {
         navigate('/login');
