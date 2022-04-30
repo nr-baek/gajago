@@ -14,7 +14,7 @@ function ReviewList({ reviews, setReviewKey, setShowModal, loading }) {
   return (
     <ul>
       {loading ? (
-        <p className="loading">loading...</p>
+        <p className="loadingReview">loading...</p>
       ) : (
         <Scrollbars autoHide>
           {reviews && reviews.length ? (

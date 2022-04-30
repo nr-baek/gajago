@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 
-// 작성 안한 리뷰 배열 만드는 함수 (예만 있음 돼!!!)
-export const generateUnWrittenReviewArray = (planArray) => {
+export const generateUnWrittenReviewArray = (planArray = []) => {
   const today = dayjs(new Date()).format('YYYY-MM-DD');
   const sortedPlanArray = [];
 

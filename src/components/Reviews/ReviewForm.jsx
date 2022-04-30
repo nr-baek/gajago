@@ -3,11 +3,12 @@ import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../../hooks/useInput';
 import { getStorage, ref as strRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { getDatabase, ref as dbRef, get, update, query, orderByChild } from 'firebase/database';
+import { getDatabase, ref as dbRef, update } from 'firebase/database';
 import { FrownTwoTone, MehTwoTone, SmileTwoTone } from '@ant-design/icons';
 import { FormFooter } from '../Schedule/styles';
 import { setPlanData } from '../../redux/actions/user_action';
 import { EditPhotoButton } from './styles';
+import { getPlanData } from '../Schedule/utils';
 
 function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowForm }) {
   const user = useSelector((state) => state.user.currentUser);
@@ -27,28 +28,9 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
 
   const db = getDatabase();
 
-  const getPlanData = async (user) => {
-    try {
-      await get(query(dbRef(db, `users/${user.uid}/plans`), orderByChild('startDate'))).then((snapshot) => {
-        if (snapshot.exists()) {
-          let planArray = [];
-
-          snapshot.forEach((child) => {
-            planArray.push({
-              key: child.key,
-              ...child.val(),
-            });
-            return false;
-          });
-          dispatch(setPlanData(planArray));
-        } else {
-          console.log('No data available');
-          dispatch(setPlanData([]));
-        }
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  const updatePlanDataOfStore = async (uid) => {
+    const planArray = getPlanData(uid);
+    dispatch(setPlanData(planArray));
   };
 
   const createReviewData = (reviewImgURL = '') => {
@@ -127,7 +109,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
 
         await update(dbRef(db), updates);
 
-        getPlanData(user);
+        updatePlanDataOfStore(user.uid);
         setLoading(false);
         // setShowForm(false);
         handleClose();

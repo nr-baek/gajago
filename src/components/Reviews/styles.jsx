@@ -22,10 +22,11 @@ export const ReviewContainer = styled.div`
     border-top: 2px solid #c2c3fa;
     height: 80%;
     overflow: auto;
-    .loading {
+    .loadingReview {
       text-align: center;
-      padding: 10px 0 30px 0;
+      padding: 30px 0;
       color: #555;
+      font-size: 25px;
     }
     .noWrittenReviewMsg {
       text-align: center;

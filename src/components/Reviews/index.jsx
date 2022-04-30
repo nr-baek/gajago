@@ -13,7 +13,7 @@ function Reviews() {
   const user = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
   const [reviewsObj, setReviewsObj] = useState({});
-  const [reviewObjectByRegion, setReviewObjectByRegion] = useState(null);
+  const [reviewObjectByRegion, setReviewObjectByRegion] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedRegion, setSelectedRegion] = useInput('allRegion');
   const [reviewKey, setReviewKey] = useState('');
@@ -26,25 +26,25 @@ function Reviews() {
     setShowModal(true);
   }, []);
 
-  const db = getDatabase();
   const reviewRef = useMemo(() => {
+    const db = getDatabase();
     return ref(db, `reviews/user/${user.uid}`);
-  }, [db, user.uid]);
+  }, [user.uid]);
 
   const addReviewsListener = useCallback(() => {
-    setLoading(true);
     onValue(reviewRef, (snapshot) => {
+      setLoading(true);
       if (snapshot.exists()) {
         let reviews = {};
         const reviewList = [];
         snapshot.forEach((child) => {
           reviews = { ...reviews, ...child.val() };
         });
-        console.log(reviews);
+
         setReviewsObj(reviews);
+
         for (let key in reviews) {
           reviewList.push(reviews[key]);
-          console.log(reviews[key]);
         }
 
         reviewList.sort((prev, next) => {
@@ -52,6 +52,7 @@ function Reviews() {
           if (prev.startDate > next.startDate) return -1;
           return 0;
         });
+
         setReviewObjectByRegion(generateTripsObjectByRegion(reviewList));
       } else {
         setReviewObjectByRegion(generateTripsObjectByRegion([]));
@@ -99,7 +100,7 @@ function Reviews() {
       </AddReviewBtn>
       <ReviewList
         loading={loading}
-        reviews={reviewObjectByRegion && reviewObjectByRegion[selectedRegion]}
+        reviews={reviewObjectByRegion[selectedRegion]}
         setReviewKey={setReviewKey}
         setShowModal={setShowModal}
       />
