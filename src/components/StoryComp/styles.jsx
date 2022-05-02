@@ -8,6 +8,58 @@ export const StoryCompWrapper = styled.div`
   overflow: auto;
 `;
 
+const sweep = keyframes`
+  0% {
+    transform: translateX(-60%);
+  }
+  100% {
+    transform: translateX(150%);
+  }
+  /* 100% {
+    transform: translateX(-100%);
+  } */
+`;
+
+export const Skeleton = styled.div`
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 4px;
+  position: relative;
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(58, 57, 57, 0.3);
+  }
+  .nickname {
+    width: 90px;
+    height: 15px;
+    margin-top: 5px;
+    background-color: rgba(58, 57, 57, 0.3);
+  }
+  .count {
+    width: 40px;
+    height: 15px;
+    margin-top: 5px;
+    background-color: rgba(58, 57, 57, 0.3);
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    height: 100%;
+    animation: ${sweep} 3s linear infinite;
+    background-image: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.4), transparent);
+  }
+`;
+
 export const TravelerList = styled.div`
   padding: 0 30px;
   h2 {
@@ -230,9 +282,6 @@ export const ColumnsWrapper = styled.div`
     width: 32.5%;
     display: flex;
     flex-direction: column;
-    .nara {
-      background-color: pink;
-    }
   }
 `;
 

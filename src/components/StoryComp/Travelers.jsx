@@ -4,6 +4,7 @@ import Scrollbars from 'react-custom-scrollbars-2';
 import { TravelerList } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { setStorySearchId } from '../../redux/actions/story_action';
+import TravelersSkeleton from './TravelersSkeleton';
 
 function Travelers({ loading }) {
   const usersInfo = useSelector((state) => state.usersInfo);
@@ -12,10 +13,12 @@ function Travelers({ loading }) {
   const onClickUser = useCallback(
     (e) => {
       const $li = e.target.closest('li');
-      const { uid } = $li.dataset;
+      if ($li) {
+        const { uid } = $li.dataset;
 
-      if (uid) {
-        dispatch(setStorySearchId(uid));
+        if (uid) {
+          dispatch(setStorySearchId(uid));
+        }
       }
     },
     [dispatch],
@@ -45,7 +48,7 @@ function Travelers({ loading }) {
       <section>
         <Scrollbars autoHide>
           <ul onClick={onClickUser}>
-            {loading && 'Loading...'}
+            {loading && <TravelersSkeleton />}
             {!loading &&
               sortedUsers?.length > 0 &&
               sortedUsers.map((user, idx) => {
