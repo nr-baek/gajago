@@ -61,31 +61,38 @@ function Stories({ sortBy, searchUid }) {
   }, []);
 
   useEffect(() => {
-    console.log('     stories render~!~!~!');
+    let isComponentMounted = true;
     const checkedLikesRef = ref(db, `users/${user.uid}/checkedLikes`);
     setLoading(true);
     onValue(checkedLikesRef, (snapshot) => {
       if (snapshot.exists()) {
         const checkedLikes = snapshot.val();
-        setCheckedLikesObj(checkedLikes);
+        if (isComponentMounted) {
+          setCheckedLikesObj(checkedLikes);
+        }
       }
     });
 
     getFirstBatch(sortBy, searchUid)
       .then((res) => {
-        setPosts(() => {
-          const posts = res.posts;
-          setLastCardNum(posts.length - 1);
-          return posts;
-        });
-        setLastPoint({ lastKey: res.lastKey, lastSortedValue: res.lastSortedValue });
+        if (isComponentMounted) {
+          setPosts(() => {
+            const posts = res.posts;
+            setLastCardNum(posts.length - 1);
+            return posts;
+          });
+          setLastPoint({ lastKey: res.lastKey, lastSortedValue: res.lastSortedValue });
+        }
       })
       .catch((e) => {
         console.log(e);
-        setLoading(false);
+        if (isComponentMounted) {
+          setLoading(false);
+        }
       });
 
     return () => {
+      isComponentMounted = false;
       off(checkedLikesRef);
     };
   }, [searchUid, sortBy, db, user.uid]);

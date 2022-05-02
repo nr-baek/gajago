@@ -4,6 +4,23 @@ const db = getDatabase();
 
 const limit = 15;
 
+export const getUsersInfo = async () => {
+  try {
+    let userInfo;
+    await get(ref(db, `userList`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        userInfo = snapshot.val();
+      } else {
+        console.log('No userList data.');
+      }
+    });
+
+    return userInfo;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 export const getFirstBatch = async (sortBy, searchUid) => {
   try {
     const posts = [];
