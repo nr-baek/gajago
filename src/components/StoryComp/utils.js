@@ -83,3 +83,22 @@ export const getNextBatch = async (sortBy, searchUid, lastSortedValue, lastKey) 
     console.log(e);
   }
 };
+
+export const separatePostsByColumn = (posts) => {
+  const fstColumnPost = [];
+  const sndColumnPost = [];
+  const trdColumnPost = [];
+
+  posts.forEach((post, idx) => {
+    post.num = idx;
+    if (idx === 0 || idx % 3 === 0) {
+      fstColumnPost.push(post);
+    } else if (idx % 3 === 1) {
+      sndColumnPost.push(post);
+    } else if (idx % 3 === 2) {
+      trdColumnPost.push(post);
+    }
+  });
+
+  return [fstColumnPost, sndColumnPost, trdColumnPost];
+};

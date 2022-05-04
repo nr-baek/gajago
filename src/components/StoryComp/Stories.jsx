@@ -1,8 +1,8 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useEffect } from 'react';
 import StoryCard from './StoryCard';
 import { ColumnsWrapper, NoPosts } from './styles';
-import { getFirstBatch, getNextBatch } from './utils';
+import { getFirstBatch, getNextBatch, separatePostsByColumn } from './utils';
 import { getDatabase, ref, onValue, off } from 'firebase/database';
 import { useSelector } from 'react-redux';
 import FetchMore from './FetchMore';
@@ -16,11 +16,8 @@ function Stories({ sortBy, searchUid }) {
   const [checkedLikesObj, setCheckedLikesObj] = useState({});
   const [lastCardNum, setLastCardNum] = useState(null);
 
-  const db = useMemo(() => {
-    return getDatabase();
-  }, []);
-
   const fetchMorePosts = useCallback(() => {
+    console.log('fetchMore');
     if (lastPoint.lastKey.length > 0) {
       setLoading(true);
       getNextBatch(sortBy, searchUid, lastPoint.lastSortedValue, lastPoint.lastKey)
@@ -41,29 +38,14 @@ function Stories({ sortBy, searchUid }) {
     }
   }, [sortBy, searchUid, lastPoint]);
 
-  const separatePosts = useCallback((posts) => {
-    const fstColumnPost = [];
-    const sndColumnPost = [];
-    const trdColumnPost = [];
-
-    posts.forEach((post, idx) => {
-      post.num = idx;
-      if (idx === 0 || idx % 3 === 0) {
-        fstColumnPost.push(post);
-      } else if (idx % 3 === 1) {
-        sndColumnPost.push(post);
-      } else if (idx % 3 === 2) {
-        trdColumnPost.push(post);
-      }
-    });
-
-    return [fstColumnPost, sndColumnPost, trdColumnPost];
-  }, []);
-
   useEffect(() => {
-    let isComponentMounted = true;
+    const db = getDatabase();
     const checkedLikesRef = ref(db, `users/${user.uid}/checkedLikes`);
+
+    let isComponentMounted = true;
+
     setLoading(true);
+
     onValue(checkedLikesRef, (snapshot) => {
       if (snapshot.exists()) {
         const checkedLikes = snapshot.val();
@@ -95,14 +77,14 @@ function Stories({ sortBy, searchUid }) {
       isComponentMounted = false;
       off(checkedLikesRef);
     };
-  }, [searchUid, sortBy, db, user.uid]);
+  }, [searchUid, sortBy, user.uid]);
 
   return (
     <>
       <div>
         {posts?.length > 0 ? (
           <ColumnsWrapper>
-            {separatePosts(posts).map((column, idx) => (
+            {separatePostsByColumn(posts).map((column, idx) => (
               <div className="storiesColumn" key={idx}>
                 {column.map((post) => {
                   return (
