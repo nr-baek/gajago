@@ -6,6 +6,7 @@ import { CameraOutlined, EnvironmentOutlined, HeartOutlined, CalendarOutlined, H
 import { useSelector } from 'react-redux';
 import { getDatabase, ref, update } from 'firebase/database';
 import Scrollbars from 'react-custom-scrollbars-2';
+import { REGION_NAME } from '../../common';
 
 function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTempLikes }) {
   dayjs.extend(relativeTime);
@@ -15,32 +16,11 @@ function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTem
   const [clicked, setClicked] = useState(false);
 
   const user = useSelector((state) => state.user.currentUser);
-  const db = getDatabase();
-
-  const regionObj = {
-    Seoul: '서울특별시',
-    Busan: '부산광역시',
-    DaeGu: '대구광역시',
-    InCheon: '인천광역시',
-    DaeJeon: '대전광역시',
-    GwangJu: '광주광역시',
-    UlSan: '울산광역시',
-    SeJong: '세종시',
-    GyeongGi: '경기도',
-    GangWon: '강원도',
-    ChungBuk: '충청북도',
-    ChungNam: '충청남도',
-    JeonBuk: '전라북도',
-    JeonNam: '전라남도',
-    GyeongBuk: '경상북도',
-    GyeongNam: '경상남도',
-    JeJu: '제주도',
-    overseas: '해외',
-  };
 
   const onClickLikesBtn = useCallback(
     async (isChecked, postInfo) => {
       try {
+        const db = getDatabase();
         const { key, uid } = postInfo;
         const updates = {};
 
@@ -64,7 +44,7 @@ function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTem
         console.log(error);
       }
     },
-    [db, user.uid, editTempLikes, tempLikes],
+    [user.uid, editTempLikes, tempLikes],
   );
 
   return (
@@ -101,7 +81,7 @@ function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTem
           </p>
           <p>
             <EnvironmentOutlined className="icon" style={{ fontSize: '20px', color: '#5d09bd', marginRight: '5px' }} />{' '}
-            <span>{regionObj[region] + ' ' + detailAddress}</span>
+            <span>{REGION_NAME[region] + ' ' + detailAddress}</span>
           </p>
         </div>
         <div className="photoAndDesc">
