@@ -14,7 +14,7 @@ function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
   const usersInfo = useSelector((state) => state.usersInfo);
   const [show, setShow] = useState(false);
   const [tempLikes, setTempLikes] = useState(postInfo.likes);
-  const [sizes, setSizes] = useState([]);
+  const [sizes, setSizes] = useState([0, 0]);
 
   const { photoDesc, reviewTitle, timeStamp, imgUrl, expression, key, uid } = postInfo;
 
@@ -38,29 +38,27 @@ function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
       if ($img.naturalWidth) {
         clearInterval(poll);
         setSizes([$img.naturalWidth, $img.naturalHeight]);
-        if (isLastCard) {
-          setLoading(false);
-        }
       }
     }, 10);
 
     return () => {
       clearInterval(poll);
     };
-  }, [imgUrl, isLastCard, setLoading]);
+  }, [imgUrl]);
 
-  return usersInfo ? (
+  useEffect(() => {
+    if (isLastCard && sizes[1]) {
+      setLoading(false);
+    }
+  }, [isLastCard, sizes, setLoading]);
+
+  return usersInfo && sizes[1] ? (
     <>
-      <Card onClick={() => setShow(true)} colorCode={color}>
+      <Card onClick={() => setShow(true)} colorCode={color} sizes={sizes}>
         <img className="photo" src={imgUrl} alt={photoDesc} />
         <div className="cardBottom">
           <div className="userInfo">
-            <img
-              src={usersInfo[uid].image}
-              alt={usersInfo[uid].nickname}
-              width={sizes[0] ? sizes[0] : 0}
-              height={sizes[1] ? sizes[1] : 0}
-            />
+            <img src={usersInfo[uid].image} alt={usersInfo[uid].nickname} />
             <span>{usersInfo[uid].nickname}</span>
           </div>
           <span className="time">{dayjs().to(dayjs(timeStamp))}</span>

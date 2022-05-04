@@ -55,7 +55,7 @@ export const Skeleton = styled.div`
     left: 0;
     width: 60%;
     height: 100%;
-    animation: ${sweep} 3s linear infinite;
+    animation: ${sweep} 2s linear infinite;
     background-image: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.4), transparent);
   }
 `;
@@ -299,7 +299,7 @@ export const Card = styled.div`
   .photo {
     display: block;
     width: 100%;
-    min-height: 100px;
+    aspect-ratio: ${(props) => props.sizes[0] / props.sizes[1]};
     background-color: ${(props) => props.colorCode};
   }
 
