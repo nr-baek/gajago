@@ -3,42 +3,30 @@ import { StyledPlanner } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDatabase, ref as dbRef, set, update } from 'firebase/database';
 import { getStorage, ref as strRef, deleteObject } from 'firebase/storage';
-import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
+import { setPublicReviewCount, setTrophyInfo } from '../../redux/actions/user_action';
 import NoteWithBtn from './NoteWithBtn';
-import { createTrophyInfoObj, getPlanData } from './utils';
+import { countPublicReview, createScheduleInfo, createTrophyInfoObj, getPlanData } from './utils';
 import { REGION_NAME, TRIP_TYPE_TEXT } from '../../common';
+import { setScheduleInfo } from '../../redux/actions/scheduleInfo_action';
 
 function TripInfo({ planData, handleClose, setShowEditForm, editable }) {
-  const user = useSelector((state) => state.user.currentUser);
-  const trophyInfo = useSelector((state) => state.user.trophyInfo);
+  const uid = useSelector((state) => state.user.currentUser.uid);
+  const publicReviewCount = useSelector((state) => state.user.publicReviewCount);
   const dispatch = useDispatch();
 
   const { key, title, startDate, endDate, days, region, detailAddress, tripType, planList } = planData;
 
-  const checkAndSetStateOfTrophy = useCallback(
-    async (planArray) => {
-      const db = getDatabase();
-      const { isOwner, tripCount } = createTrophyInfoObj(planArray);
-      const infoObj = {
-        isOwner,
-        tripCount,
-      };
-
-      if (trophyInfo.tripCount !== tripCount) {
-        await dispatch(setTrophyInfo(infoObj));
-        await set(dbRef(db, `userList/${user.uid}/tripCount`), infoObj.tripCount);
-      }
-    },
-    [dispatch, trophyInfo.tripCount, user.uid],
-  );
-
-  const setPlanDataAndUpdateTrophy = useCallback(
+  const setScheduleAndTrophyInfo = useCallback(
     async (uid) => {
       const planArray = await getPlanData(uid);
-      dispatch(setPlanData(planArray));
-      checkAndSetStateOfTrophy(planArray, uid);
+      const scheduleInfo = createScheduleInfo(planArray);
+      const trophyInfo = createTrophyInfoObj(scheduleInfo.schedulesByRegion.beforeToday);
+      const publicReviewCount = countPublicReview(scheduleInfo.overallRegionalSchedule.beforeToday);
+      dispatch(setScheduleInfo(scheduleInfo));
+      dispatch(setTrophyInfo(trophyInfo));
+      dispatch(setPublicReviewCount(publicReviewCount));
     },
-    [checkAndSetStateOfTrophy, dispatch],
+    [dispatch],
   );
 
   const onClickEditBtn = useCallback(() => {
@@ -61,31 +49,32 @@ function TripInfo({ planData, handleClose, setShowEditForm, editable }) {
 
         if (planData.review) {
           const updates = {};
-          updates[`users/${user.uid}/plans/${key}`] = null;
+          updates[`users/${uid}/plans/${key}`] = null;
 
           if (planData.openReview) {
             updates[`reviews/public/${key}`] = null;
-            updates[`reviews/user/${user.uid}/public/${key}`] = null;
+            updates[`reviews/user/${uid}/public/${key}`] = null;
+            updates[`userList/${uid}/publicReviewCount`] = publicReviewCount - 1;
           } else {
-            updates[`reviews/user/${user.uid}/private/${key}`] = null;
+            updates[`reviews/user/${uid}/private/${key}`] = null;
           }
           if (planData.photoReview) {
-            const desertRef = strRef(storage, `review_image/${user.uid}/${key}`);
+            const desertRef = strRef(storage, `review_image/${uid}/${key}`);
             await deleteObject(desertRef);
           }
 
           await update(dbRef(db), updates);
         } else {
-          await set(dbRef(db, `users/${user.uid}/plans/${key}`), null);
+          await set(dbRef(db, `users/${uid}/plans/${key}`), null);
         }
 
-        setPlanDataAndUpdateTrophy(user.uid);
+        setScheduleAndTrophyInfo(uid);
         handleClose();
       }
     } catch (error) {
       console.log(error);
     }
-  }, [setPlanDataAndUpdateTrophy, handleClose, key, planData, user.uid]);
+  }, [setScheduleAndTrophyInfo, handleClose, key, planData, uid, publicReviewCount]);
 
   return (
     <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn} editable={editable}>

@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 import '../../firebase';
 import { getDatabase, ref as dbRef, get, query, orderByChild } from 'firebase/database';
 
+const today = dayjs(new Date()).format('YYYY-MM-DD');
+
 const db = getDatabase();
 
 export const getPlanData = async (uid) => {
@@ -89,26 +91,91 @@ export const makeMarkingInfoObj = (firstDateOfCalendar, displayPlans = []) => {
   return markingInfoObj;
 };
 
-export const createTrophyInfoObj = (planArray = []) => {
-  const today = dayjs(new Date()).format('YYYY-MM-DD');
-  const beforeTripObj = {};
+export const createScheduleInfo = (planArray = []) => {
+  const tripScheduleInfo = {
+    schedulesByRegion: {
+      beforeToday: {
+        Seoul: [],
+        Busan: [],
+        DaeGu: [],
+        InCheon: [],
+        DaeJeon: [],
+        GwangJu: [],
+        UlSan: [],
+        SeJong: [],
+        GyeongGi: [],
+        GangWon: [],
+        ChungBuk: [],
+        ChungNam: [],
+        JeonBuk: [],
+        JeonNam: [],
+        GyeongBuk: [],
+        GyeongNam: [],
+        JeJu: [],
+        overseas: [],
+      },
+      afterToday: {
+        Seoul: [],
+        Busan: [],
+        DaeGu: [],
+        InCheon: [],
+        DaeJeon: [],
+        GwangJu: [],
+        UlSan: [],
+        SeJong: [],
+        GyeongGi: [],
+        GangWon: [],
+        ChungBuk: [],
+        ChungNam: [],
+        JeonBuk: [],
+        JeonNam: [],
+        GyeongBuk: [],
+        GyeongNam: [],
+        JeJu: [],
+        overseas: [],
+      },
+    },
+    overallRegionalSchedule: {
+      beforeToday: [],
+      afterToday: [],
+    },
+    sortedOverallSchedule: [...planArray],
+  };
 
-  for (let i = 0; i < planArray.length; i++) {
-    const plan = planArray[i];
-
+  planArray.forEach((plan) => {
     if (plan.endDate <= today) {
-      if (plan.region === 'overseas') {
-        continue;
-      }
-      beforeTripObj[plan.region] = beforeTripObj[plan.region] ? beforeTripObj[plan.region] + 1 : 1;
-    } else {
-      break;
+      tripScheduleInfo.schedulesByRegion.beforeToday[plan.region].push(plan);
+      tripScheduleInfo.overallRegionalSchedule.beforeToday.push(plan);
+    } else if (plan.startDate >= today) {
+      tripScheduleInfo.schedulesByRegion.afterToday[plan.region].push(plan);
+      tripScheduleInfo.overallRegionalSchedule.afterToday.push(plan);
     }
-  }
+  });
 
-  const regionCount = Object.values(beforeTripObj).length;
-  const tripCount = Object.values(beforeTripObj).reduce((acc, cur) => acc + cur, 0);
-  const isOwner = regionCount === 17;
+  return tripScheduleInfo;
+};
 
-  return { isOwner, tripCount };
+export const countPublicReview = (planArray = []) => {
+  const publicReviewCount = planArray.reduce((acc, curr) => {
+    if (curr.openReview) {
+      return acc + 1;
+    }
+    return acc;
+  }, 0);
+
+  return publicReviewCount;
+};
+
+export const createTrophyInfoObj = (schedulesByRegionOfBeforeToday) => {
+  const regionCountOfTrip = Object.entries(schedulesByRegionOfBeforeToday).reduce((acc, curr) => {
+    if (curr[0] !== 'overseas' && curr[1].length > 0) {
+      return acc + 1;
+    }
+
+    return acc;
+  }, 0);
+
+  const isOwner = regionCountOfTrip === 17;
+
+  return { isOwner, regionCountOfTrip };
 };

@@ -28,7 +28,7 @@ const MonthAndYear = forwardRef(({ onClick, date }, ref) => (
 ));
 
 const Calendar = () => {
-  const planArray = useSelector((state) => state.user.planData);
+  const planArray = useSelector((state) => state.schedule_info.sortedOverallSchedule);
 
   const [isLoading, setIsLoading] = useState(true);
   const [date, setDate] = useState(dayjs());

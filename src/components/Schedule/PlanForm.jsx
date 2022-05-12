@@ -9,8 +9,9 @@ import dayjs from 'dayjs';
 
 import { getDatabase, ref, set, push, child } from 'firebase/database';
 import { useSelector, useDispatch } from 'react-redux';
-import { setPlanData, setTrophyInfo } from '../../redux/actions/user_action';
-import { createTrophyInfoObj, getPlanData } from './utils';
+import { setTrophyInfo } from '../../redux/actions/user_action';
+import { createScheduleInfo, createTrophyInfoObj, getPlanData } from './utils';
+import { setScheduleInfo } from '../../redux/actions/scheduleInfo_action';
 
 function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
   const db = getDatabase();
@@ -37,28 +38,16 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
   const [submitError, setSubmitError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const user = useSelector((state) => state.user.currentUser);
-  const trophyInfo = useSelector((state) => state.user.trophyInfo);
+  const uid = useSelector((state) => state.user.currentUser.uid);
 
   const dispatch = useDispatch();
 
-  const checkAndSetStateOfTrophy = (planArray = [], uid) => {
-    const { isOwner, tripCount } = createTrophyInfoObj(planArray);
-    const infoObj = {
-      isOwner,
-      tripCount,
-    };
-
-    if (trophyInfo.tripCount !== tripCount) {
-      dispatch(setTrophyInfo(infoObj));
-      set(ref(db, `userList/${uid}/tripCount`), infoObj.tripCount);
-    }
-  };
-
-  const setPlanDataAndUpdateTrophy = async (uid) => {
+  const setScheduleAndTrophyInfo = async (uid) => {
     const planArray = await getPlanData(uid);
-    dispatch(setPlanData(planArray));
-    checkAndSetStateOfTrophy(planArray, uid);
+    const scheduleInfo = createScheduleInfo(planArray);
+    const trophyInfo = createTrophyInfoObj(scheduleInfo.schedulesByRegion.beforeToday);
+    dispatch(setScheduleInfo(scheduleInfo));
+    dispatch(setTrophyInfo(trophyInfo));
   };
 
   const createPlan = () => {
@@ -124,9 +113,9 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
     setLoading(true);
 
     try {
-      const planKey = showEditForm ? planData.key : push(child(ref(db), `users/${user.uid}/plans`)).key;
-      await set(ref(db, `users/${user.uid}/plans/` + planKey), createPlan());
-      await setPlanDataAndUpdateTrophy(user.uid);
+      const planKey = showEditForm ? planData.key : push(child(ref(db), `users/${uid}/plans`)).key;
+      await set(ref(db, `users/${uid}/plans/` + planKey), createPlan());
+      await setScheduleAndTrophyInfo(uid);
       if (showEditForm && startDate !== initialState.startDate) {
         setModalInfo((prev) => ({ ...prev, date: dayjs(startDate).format('YYYY-MM-DD') }));
       }
