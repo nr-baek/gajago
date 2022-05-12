@@ -1,4 +1,4 @@
-import { CLEAR_USER, SET_USER, SET_PHOTO_URL, SET_PLAN_DATA, SET_TROPHY_INFO } from './types.js';
+import { CLEAR_USER, SET_USER, SET_PHOTO_URL, SET_TROPHY_INFO, SET_PUBLIC_REVIEW_COUNT } from './types.js';
 
 export const setUser = (user) => {
   return {
@@ -20,16 +20,16 @@ export const setPhotoURL = (photoURL) => {
   };
 };
 
-export const setPlanData = (planArray) => {
-  return {
-    type: SET_PLAN_DATA,
-    payload: planArray,
-  };
-};
-
 export const setTrophyInfo = (trophyInfo) => {
   return {
     type: SET_TROPHY_INFO,
     payload: trophyInfo,
+  };
+};
+
+export const setPublicReviewCount = (publicReviewCount) => {
+  return {
+    type: SET_PUBLIC_REVIEW_COUNT,
+    payload: publicReviewCount,
   };
 };
