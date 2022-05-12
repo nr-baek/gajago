@@ -9,9 +9,13 @@ function PrevTripMemo({ prevTrip, howManyDaysAgo }) {
         <PrevPlan>
           <span className="recent"># 최근여행</span>
           <div className="daysAndRegion">
-            <p>
-              <span className="days">{howManyDaysAgo}</span>일 전
-            </p>
+            {howManyDaysAgo > 0 ? (
+              <p>
+                <span className="days">{howManyDaysAgo}</span>일 전
+              </p>
+            ) : (
+              <p>오늘</p>
+            )}
             <PostIt className="region">{REGION_NAME[prevTrip.region]}</PostIt>
           </div>
           <div className="detailAddrMsg">
