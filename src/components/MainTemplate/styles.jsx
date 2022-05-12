@@ -37,14 +37,34 @@ export const Container = styled.div`
       display: flex;
       justify-content: center;
     }
-    img {
-      width: 120px;
-      height: 120px;
-      background-color: #ebd3ff;
-      border-radius: 50%;
-      margin: 20px auto;
-      object-fit: cover;
+    .imgBox {
+      position: relative;
+      img {
+        width: 120px;
+        height: 120px;
+        background-color: #ebd3ff;
+        border-radius: 50%;
+        margin: 20px auto;
+        object-fit: cover;
+      }
+      .changing {
+        width: 120px;
+        height: 120px;
+        background-color: rgba(108, 108, 108, 0.6);
+        border-radius: 50%;
+        position: absolute;
+        top: 20px;
+        color: #fff;
+        text-align: center;
+        line-height: 120px;
+        display: none;
+        font-weight: 13px;
+        &.show {
+          display: block;
+        }
+      }
     }
+
     .trophy {
       color: #f3db00;
       font-size: 25px;

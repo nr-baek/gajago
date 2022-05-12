@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { getAuth, updateProfile } from 'firebase/auth';
 import { getStorage, ref as strRef, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -9,6 +9,9 @@ import { setPhotoURL } from '../../redux/actions/user_action';
 const Profile = () => {
   const user = useSelector((state) => state.user.currentUser);
   const trophy = useSelector((state) => state.user.trophyInfo.isOwner);
+
+  const [loading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
   const inputOpenImageRef = useRef();
 
@@ -26,6 +29,7 @@ const Profile = () => {
       const metadata = { contentType: file.type };
 
       try {
+        setLoading(true);
         await uploadBytes(storageRef, file, metadata);
         const downloadURL = await getDownloadURL(strRef(storage, `user_image/${user.uid}`));
         await updateProfile(auth.currentUser, {
@@ -37,6 +41,8 @@ const Profile = () => {
         await update(ref(getDatabase(), `userList/${user.uid}`), {
           image: downloadURL,
         });
+
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -46,7 +52,11 @@ const Profile = () => {
 
   return (
     <div className="profile">
-      <img src={user && user.photoURL} alt={user && user.displayName} />
+      <div className="imgBox">
+        <img src={user && user.photoURL} alt={user && user.displayName} />
+        <div className={`changing ${loading ? 'show' : ''}`}>변경중...</div>
+      </div>
+
       <div className="dropDownBox">
         <Dropdown>
           <Dropdown.Toggle style={{ background: 'transparent', border: '0px' }} id="dropdown-basic">
