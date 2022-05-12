@@ -8,16 +8,15 @@ import { useSelector } from 'react-redux';
 import FetchMore from './FetchMore';
 
 function Stories({ sortBy, searchUid }) {
-  const user = useSelector((state) => state.user.currentUser);
+  const uid = useSelector((state) => state.user.currentUser.uid);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const [lastPoint, setLastPoint] = useState({ lastKey: '', lastSortedValue: '' });
   const [checkedLikesObj, setCheckedLikesObj] = useState({});
   const [lastCardNum, setLastCardNum] = useState(null);
 
   const fetchMorePosts = useCallback(() => {
-    console.log('fetchMore');
     if (lastPoint.lastKey.length > 0) {
       setLoading(true);
       getNextBatch(sortBy, searchUid, lastPoint.lastSortedValue, lastPoint.lastKey)
@@ -40,7 +39,7 @@ function Stories({ sortBy, searchUid }) {
 
   useEffect(() => {
     const db = getDatabase();
-    const checkedLikesRef = ref(db, `users/${user.uid}/checkedLikes`);
+    const checkedLikesRef = ref(db, `users/${uid}/checkedLikes`);
 
     let isComponentMounted = true;
 
@@ -61,6 +60,9 @@ function Stories({ sortBy, searchUid }) {
           setPosts(() => {
             const posts = res.posts;
             setLastCardNum(posts.length - 1);
+            if (posts.length === 0) {
+              setLoading(false);
+            }
             return posts;
           });
           setLastPoint({ lastKey: res.lastKey, lastSortedValue: res.lastSortedValue });
@@ -77,7 +79,7 @@ function Stories({ sortBy, searchUid }) {
       isComponentMounted = false;
       off(checkedLikesRef);
     };
-  }, [searchUid, sortBy, user.uid]);
+  }, [searchUid, sortBy, uid]);
 
   return (
     <>
@@ -104,7 +106,7 @@ function Stories({ sortBy, searchUid }) {
           <NoPosts>{loading ? 'loading...' : '표시할 리뷰가 없습니다...'}</NoPosts>
         )}
       </div>
-      <FetchMore loading={loading} fetchMorePosts={fetchMorePosts} />
+      {!loading && <FetchMore loading={loading} fetchMorePosts={fetchMorePosts} />}
     </>
   );
 }
