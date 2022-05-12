@@ -28,8 +28,8 @@ function Travelers({ loading }) {
     if (usersInfo) {
       const userList = Object.entries(usersInfo);
       userList.sort((prev, next) => {
-        if (prev[1].tripCount < next[1].tripCount) return 1;
-        if (prev[1].tripCount > next[1].tripCount) return -1;
+        if (prev[1].publicReviewCount < next[1].publicReviewCount) return 1;
+        if (prev[1].publicReviewCount > next[1].publicReviewCount) return -1;
         return 0;
       });
 
@@ -63,7 +63,7 @@ function Travelers({ loading }) {
                           {idx === 2 && '🥉'}
                           {user[1].nickname}
                         </span>
-                        <span className="tripCount">({user[1].tripCount}회)</span>
+                        <span className="publicReviewCount">({user[1].publicReviewCount}회)</span>
                       </div>
                     </div>
                   </li>

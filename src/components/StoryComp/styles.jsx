@@ -112,7 +112,7 @@ export const TravelerList = styled.div`
               text-overflow: ellipsis;
               cursor: pointer;
             }
-            .tripCount {
+            .publicReviewCount {
               font-size: 12px;
               color: #5802c8;
             }
