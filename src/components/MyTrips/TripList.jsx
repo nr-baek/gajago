@@ -3,11 +3,10 @@ import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TripInfo from '../Schedule/TripInfo';
 import { Index, StyledList, Tab, PostIt } from './styles';
-import { generateDividedBeforeAfterObj } from './utils';
 import { REGION_NAME, TRIP_TYPE_EMOJI } from '../../common';
 
-function TripList({ currentRegion, beforeTripObj, nextTripObj }) {
-  const planArray = useSelector((state) => state.user.planData);
+function TripList({ currentRegion }) {
+  const { overallRegionalSchedule, schedulesByRegion } = useSelector((state) => state.schedule_info);
 
   const [indexTab, setIndexTab] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -56,12 +55,13 @@ function TripList({ currentRegion, beforeTripObj, nextTripObj }) {
 
   const renderTripList = () => {
     if (currentRegion === 'allRegion') {
-      const { beforeTrip, afterTrip } = generateDividedBeforeAfterObj(planArray);
-      return indexTab === 0 ? checkedGenerateList(indexTab, beforeTrip) : checkedGenerateList(indexTab, afterTrip);
+      return indexTab === 0
+        ? checkedGenerateList(indexTab, overallRegionalSchedule.beforeToday)
+        : checkedGenerateList(indexTab, overallRegionalSchedule.afterToday);
     } else {
       return indexTab === 0
-        ? checkedGenerateList(indexTab, beforeTripObj[currentRegion])
-        : checkedGenerateList(indexTab, nextTripObj[currentRegion]);
+        ? checkedGenerateList(indexTab, schedulesByRegion.beforeToday[currentRegion])
+        : checkedGenerateList(indexTab, schedulesByRegion.afterToday[currentRegion]);
     }
   };
 
