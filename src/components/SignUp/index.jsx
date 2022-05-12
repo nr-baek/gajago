@@ -80,7 +80,7 @@ const SignUp = () => {
         set(ref(getDatabase(), `userList/${createdUser.user.uid}`), {
           nickname: createdUser.user.displayName,
           image: createdUser.user.photoURL,
-          tripCount: 0,
+          publicReviewCount: 0,
         });
         initState();
         setSignUpSuccess(true);
