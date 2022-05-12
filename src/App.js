@@ -12,10 +12,11 @@ import StoryPage from './pages/StoryPage';
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearUser, setPlanData, setTrophyInfo, setUser } from './redux/actions/user_action';
-import { createTrophyInfoObj, getPlanData } from './components/Schedule/utils';
+import { clearUser, setPublicReviewCount, setTrophyInfo, setUser } from './redux/actions/user_action';
+import { countPublicReview, createScheduleInfo, createTrophyInfoObj, getPlanData } from './components/Schedule/utils';
 import { Background } from './components/MainTemplate/styles';
 import { LoadingOutlined } from '@ant-design/icons';
+import { setScheduleInfo } from './redux/actions/scheduleInfo_action';
 
 // const LogInPage = loadable(() => import('./pages/LogInPage'));
 // const SignUpPage = loadable(() => import('./pages/SignUpPage'));
@@ -25,20 +26,32 @@ function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const setPlanDataAndTrophy = (uid) => {
-    const planArray = getPlanData(uid);
-    const trophyInfo = createTrophyInfoObj(planArray);
-    dispatch(setPlanData(planArray));
-    dispatch(setTrophyInfo(trophyInfo));
+  const setScheduleAndTrophyInfo = async (uid) => {
+    try {
+      const planArray = await getPlanData(uid);
+      const scheduleInfo = createScheduleInfo(planArray);
+      const trophyInfo = createTrophyInfoObj(scheduleInfo.schedulesByRegion.beforeToday);
+      const publicReviewCount = countPublicReview(scheduleInfo.overallRegionalSchedule.beforeToday);
+      dispatch(setScheduleInfo(scheduleInfo));
+      dispatch(setTrophyInfo(trophyInfo));
+      dispatch(setPublicReviewCount(publicReviewCount));
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
     const auth = getAuth();
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      const userInfo = {
+        displayName: user?.displayName,
+        uid: user?.uid,
+        photoURL: user?.photoURL,
+      };
       if (user && user.displayName) {
-        dispatch(setUser(user));
-        setPlanDataAndTrophy(user.uid);
+        dispatch(setUser(userInfo));
+        setScheduleAndTrophyInfo(user.uid);
         navigate('/');
       } else if (!user) {
         navigate('/login');
