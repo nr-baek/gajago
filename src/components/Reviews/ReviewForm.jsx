@@ -6,12 +6,14 @@ import { getStorage, ref as strRef, uploadBytes, getDownloadURL, deleteObject } 
 import { getDatabase, ref as dbRef, update } from 'firebase/database';
 import { FrownTwoTone, MehTwoTone, SmileTwoTone } from '@ant-design/icons';
 import { FormFooter } from '../Schedule/styles';
-import { setPlanData } from '../../redux/actions/user_action';
+import { setPublicReviewCount } from '../../redux/actions/user_action';
 import { EditPhotoButton } from './styles';
-import { getPlanData } from '../Schedule/utils';
+import { countPublicReview, createScheduleInfo, getPlanData } from '../Schedule/utils';
+import { setScheduleInfo } from '../../redux/actions/scheduleInfo_action';
 
 function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowForm }) {
-  const user = useSelector((state) => state.user.currentUser);
+  const uid = useSelector((state) => state.user.currentUser.uid);
+  const publicReviewCount = useSelector((state) => state.user.publicReviewCount);
 
   const [validated, setValidated] = useState(false);
   const [reviewTitle, onChangeTitle] = useInput(tripInfo?.reviewTitle || '');
@@ -28,9 +30,16 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
 
   const db = getDatabase();
 
-  const updatePlanDataOfStore = async (uid) => {
-    const planArray = getPlanData(uid);
-    dispatch(setPlanData(planArray));
+  const setScheduleAndPublicReviewCount = async (uid) => {
+    try {
+      const planArray = await getPlanData(uid);
+      const scheduleInfo = createScheduleInfo(planArray);
+      const publicReviewCount = countPublicReview(scheduleInfo.overallRegionalSchedule.beforeToday);
+      dispatch(setScheduleInfo(scheduleInfo));
+      dispatch(setPublicReviewCount(publicReviewCount));
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const createReviewData = (reviewImgURL = '') => {
@@ -46,7 +55,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
       openReview,
       photoDesc,
       likes: tripInfo?.likes || 0,
-      uid: user?.uid,
+      uid: uid,
       region: tripInfo?.region,
       detailAddress: tripInfo?.detailAddress,
       startDate: tripInfo?.startDate,
@@ -66,52 +75,53 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
         let downloadURL;
         if (imgFile) {
           const storage = getStorage();
-          const storageAddr = `review_image/${user.uid}/${tripInfo.key}`;
+          const storageAddr = `review_image/${uid}/${tripInfo.key}`;
           const storageRef = strRef(storage, storageAddr);
           const metadata = { contentType: imgFile.type };
           await uploadBytes(storageRef, imgFile, metadata);
           downloadURL = await getDownloadURL(strRef(storage, storageAddr));
         } else if (tripInfo?.imgUrl && !reviewImage) {
           const storage = getStorage();
-          const desertRef = strRef(storage, `review_image/${user.uid}/${tripInfo.key}`);
+          const desertRef = strRef(storage, `review_image/${uid}/${tripInfo.key}`);
           await deleteObject(desertRef);
         }
 
         const reviewData = createReviewData(downloadURL || reviewImage);
         const updates = {};
         if (!tripInfo?.imgUrl && imgFile) {
-          updates[`users/${user.uid}/plans/${tripInfo.key}/photoReview`] = true;
+          updates[`users/${uid}/plans/${tripInfo.key}/photoReview`] = true;
         } else if (tripInfo?.imgUrl && !reviewImage && !imgFile) {
-          updates[`users/${user.uid}/plans/${tripInfo.key}/photoReview`] = null;
+          updates[`users/${uid}/plans/${tripInfo.key}/photoReview`] = null;
         }
 
         if (tripInfo?.title) {
-          updates[`users/${user.uid}/plans/${tripInfo.key}/review`] = true;
+          updates[`users/${uid}/plans/${tripInfo.key}/review`] = true;
         }
 
         if (!tripInfo?.openReview && openReview) {
-          updates[`users/${user.uid}/plans/${tripInfo.key}/openReview`] = openReview;
+          updates[`users/${uid}/plans/${tripInfo.key}/openReview`] = openReview;
+          updates[`userList/${uid}/publicReviewCount`] = publicReviewCount + 1;
           if (tripInfo?.reviewTitle) {
-            updates[`reviews/user/${user.uid}/private/${tripInfo.key}`] = null;
+            updates[`reviews/user/${uid}/private/${tripInfo.key}`] = null;
           }
         } else if (tripInfo?.openReview && !openReview) {
-          updates[`users/${user.uid}/plans/${tripInfo.key}/openReview`] = openReview;
+          updates[`users/${uid}/plans/${tripInfo.key}/openReview`] = openReview;
           updates[`reviews/public/${tripInfo.key}`] = null;
-          updates[`reviews/user/${user.uid}/public/${tripInfo.key}`] = null;
+          updates[`reviews/user/${uid}/public/${tripInfo.key}`] = null;
+          updates[`userList/${uid}/publicReviewCount`] = publicReviewCount - 1;
         }
 
         if (openReview) {
           updates[`reviews/public/${tripInfo.key}`] = reviewData;
-          updates[`reviews/user/${user.uid}/public/${tripInfo.key}`] = reviewData;
+          updates[`reviews/user/${uid}/public/${tripInfo.key}`] = reviewData;
         } else {
-          updates[`reviews/user/${user.uid}/private/${tripInfo.key}`] = reviewData;
+          updates[`reviews/user/${uid}/private/${tripInfo.key}`] = reviewData;
         }
 
         await update(dbRef(db), updates);
 
-        updatePlanDataOfStore(user.uid);
+        setScheduleAndPublicReviewCount(uid);
         setLoading(false);
-        // setShowForm(false);
         handleClose();
       } catch (error) {
         console.log(error);

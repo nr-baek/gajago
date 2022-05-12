@@ -5,9 +5,10 @@ import { getStorage, ref as strRef, deleteObject } from 'firebase/storage';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { REGION_NAME, TRIP_TYPE_TEXT } from '../../common';
-import { setPlanData } from '../../redux/actions/user_action';
+import { setScheduleInfo } from '../../redux/actions/scheduleInfo_action';
+import { setPublicReviewCount } from '../../redux/actions/user_action';
 import NoteWithBtn from '../Schedule/NoteWithBtn';
-import { getPlanData } from '../Schedule/utils';
+import { createScheduleInfo, getPlanData } from '../Schedule/utils';
 import { StyledReview } from './styles';
 
 const feeling = {
@@ -17,7 +18,8 @@ const feeling = {
 };
 
 function ReviewInfo({ reviewInfo, setShowForm, handleClose }) {
-  const user = useSelector((state) => state.user.currentUser);
+  const uid = useSelector((state) => state.user.currentUser.uid);
+  const publicReviewCount = useSelector((state) => state.user.publicReviewCount);
   const dispatch = useDispatch();
   const {
     tripTitle,
@@ -47,32 +49,34 @@ function ReviewInfo({ reviewInfo, setShowForm, handleClose }) {
         const db = getDatabase();
         const updates = {};
 
-        updates[`users/${user.uid}/plans/${key}/review`] = false;
-        updates[`users/${user.uid}/plans/${key}/openReview`] = false;
-        updates[`users/${user.uid}/plans/${key}/photoReview`] = null;
+        updates[`users/${uid}/plans/${key}/review`] = false;
+        updates[`users/${uid}/plans/${key}/openReview`] = false;
+        updates[`users/${uid}/plans/${key}/photoReview`] = null;
         if (openReview) {
           updates[`reviews/public/${key}`] = null;
-          updates[`reviews/user/${user.uid}/public/${key}`] = null;
+          updates[`reviews/user/${uid}/public/${key}`] = null;
+          updates[`userList/${uid}/publicReviewCount`] = publicReviewCount - 1;
         } else {
-          updates[`reviews/user/${user.uid}/private/${key}`] = null;
+          updates[`reviews/user/${uid}/private/${key}`] = null;
         }
         await update(dbRef(db), updates);
 
         if (imgUrl) {
           const storage = getStorage();
-          const desertRef = strRef(storage, `review_image/${user.uid}/${key}`);
+          const desertRef = strRef(storage, `review_image/${uid}/${key}`);
           await deleteObject(desertRef);
         }
 
-        const planArray = getPlanData(user.uid);
-        dispatch(setPlanData(planArray));
-
+        const planArray = await getPlanData(uid);
+        const scheduleInfo = createScheduleInfo(planArray);
+        dispatch(setScheduleInfo(scheduleInfo));
+        dispatch(setPublicReviewCount(publicReviewCount - 1));
         handleClose();
       }
     } catch (error) {
       console.log('리뷰삭제 중 에러:', error);
     }
-  }, [handleClose, user.uid, dispatch, imgUrl, key, openReview]);
+  }, [handleClose, uid, dispatch, imgUrl, key, openReview, publicReviewCount]);
 
   return (
     <NoteWithBtn onClickClose={handleClose} onClickEdit={onClickEditBtn} onClickDel={onClickDelBtn} editable={true}>

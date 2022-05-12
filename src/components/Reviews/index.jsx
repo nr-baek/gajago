@@ -10,7 +10,8 @@ import ReviewList from './ReviewList';
 import { AddReviewBtn, ReviewContainer } from './styles';
 
 function Reviews() {
-  const user = useSelector((state) => state.user.currentUser);
+  const uid = useSelector((state) => state.user.currentUser.uid);
+
   const [loading, setLoading] = useState(false);
   const [reviewsObj, setReviewsObj] = useState({});
   const [reviewObjectByRegion, setReviewObjectByRegion] = useState({});
@@ -28,8 +29,8 @@ function Reviews() {
 
   const reviewRef = useMemo(() => {
     const db = getDatabase();
-    return ref(db, `reviews/user/${user.uid}`);
-  }, [user.uid]);
+    return ref(db, `reviews/user/${uid}`);
+  }, [uid]);
 
   const addReviewsListener = useCallback(() => {
     onValue(reviewRef, (snapshot) => {

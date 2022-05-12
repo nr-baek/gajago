@@ -1,17 +1,17 @@
 import { CarTwoTone, CheckOutlined } from '@ant-design/icons';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormFooter } from '../Schedule/styles';
 import { StyledListContainer } from './styles';
 import { generateUnWrittenReviewArray } from './utils';
 
 function UnWrittenReviewList({ handleClose, selectTripToWriteReview }) {
-  const planArray = useSelector((state) => state.user.planData);
+  const planArray = useSelector((state) => state.schedule_info.sortedOverallSchedule);
   const unWrittenReviewOfTripArray = generateUnWrittenReviewArray(planArray);
   const [clickedIndex, setClickedIndex] = useState(-1);
   const [clickMsg, setClickMsg] = useState(false);
 
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     if (unWrittenReviewOfTripArray.length) {
       if (clickedIndex !== -1) {
         selectTripToWriteReview(unWrittenReviewOfTripArray[clickedIndex]);
@@ -21,7 +21,7 @@ function UnWrittenReviewList({ handleClose, selectTripToWriteReview }) {
     } else {
       handleClose();
     }
-  }, [clickedIndex, unWrittenReviewOfTripArray, handleClose, selectTripToWriteReview]);
+  };
 
   return (
     <StyledListContainer>
