@@ -299,7 +299,12 @@ export const Card = styled.div`
   .photo {
     display: block;
     width: 100%;
-    aspect-ratio: ${(props) => props.sizes[0] / props.sizes[1]};
+    aspect-ratio: ${(props) => {
+      if (props.sizes[1]) {
+        return props.sizes[0] / props.sizes[1];
+      }
+      return 1 / 1;
+    }};
     background-color: ${(props) => props.colorCode};
   }
 

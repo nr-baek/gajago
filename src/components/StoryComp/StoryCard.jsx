@@ -34,15 +34,20 @@ function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
     const $img = new Image();
     $img.src = imgUrl;
 
-    const poll = setInterval(function () {
-      if ($img.naturalWidth) {
-        clearInterval(poll);
-        setSizes([$img.naturalWidth, $img.naturalHeight]);
-      }
-    }, 10);
+    // const poll = setInterval(function () {
+    //   if ($img.naturalWidth) {
+    //     clearInterval(poll);
+    //     setSizes([$img.naturalWidth, $img.naturalHeight]);
+    //   }
+    // }, 10);
+
+    $img.onload = function () {
+      setSizes([$img.width, $img.height]);
+    };
 
     return () => {
-      clearInterval(poll);
+      $img.onload = null;
+      // clearInterval(poll);
     };
   }, [imgUrl]);
 
@@ -52,7 +57,7 @@ function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
     }
   }, [isLastCard, sizes, setLoading]);
 
-  return usersInfo && sizes[1] ? (
+  return usersInfo ? (
     <>
       <Card onClick={() => setShow(true)} colorCode={color} sizes={sizes}>
         <img className="photo" src={imgUrl} alt={photoDesc} />
