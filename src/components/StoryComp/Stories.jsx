@@ -13,7 +13,7 @@ function Stories({ sortBy, searchUid }) {
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const [lastPoint, setLastPoint] = useState({ lastKey: '', lastSortedValue: '' });
-  const [checkedLikesObj, setCheckedLikesObj] = useState({});
+  const [myCheckedLikesObj, setMyCheckedLikesObj] = useState({});
   const [lastCardNum, setLastCardNum] = useState(null);
 
   const fetchMorePosts = useCallback(() => {
@@ -49,7 +49,7 @@ function Stories({ sortBy, searchUid }) {
       if (snapshot.exists()) {
         const checkedLikes = snapshot.val();
         if (isComponentMounted) {
-          setCheckedLikesObj(checkedLikes);
+          setMyCheckedLikesObj(checkedLikes);
         }
       }
     });
@@ -95,7 +95,7 @@ function Stories({ sortBy, searchUid }) {
                       postInfo={post}
                       key={post.key}
                       setLoading={setLoading}
-                      checkedLikesObj={checkedLikesObj}
+                      myCheckedLikesObj={myCheckedLikesObj}
                     />
                   );
                 })}
@@ -106,7 +106,7 @@ function Stories({ sortBy, searchUid }) {
           <NoPosts>{loading ? 'loading...' : '표시할 리뷰가 없습니다...'}</NoPosts>
         )}
       </div>
-      {!loading && <FetchMore loading={loading} fetchMorePosts={fetchMorePosts} />}
+      {<FetchMore loading={loading} fetchMorePosts={fetchMorePosts} />}
     </>
   );
 }

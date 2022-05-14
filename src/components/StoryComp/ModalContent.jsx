@@ -8,30 +8,30 @@ import { getDatabase, ref, update } from 'firebase/database';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { REGION_NAME } from '../../common';
 
-function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTempLikes }) {
+function ModalContent({ postInfo, usersInfo, myCheckedLikesObj, tempLikes, editTempLikes }) {
   dayjs.extend(relativeTime);
 
   const { startDate, endDate, photoDesc, reviewText, timeStamp, imgUrl, detailAddress, region, key } = postInfo;
   const { nickname, image } = usersInfo[postInfo.uid];
   const [clicked, setClicked] = useState(false);
 
-  const user = useSelector((state) => state.user.currentUser);
+  const uid = useSelector((state) => state.user.currentUser.uid);
 
   const onClickLikesBtn = useCallback(
     async (isChecked, postInfo) => {
       try {
         const db = getDatabase();
-        const { key, uid } = postInfo;
+        const { key, uid: postUid } = postInfo;
         const updates = {};
 
         if (isChecked) {
-          updates[`users/${user.uid}/checkedLikes/${key}`] = false;
-          updates[`reviews/public/${key}/likes`] = tempLikes - 1;
-          updates[`reviews/user/${uid}/public/${key}/likes`] = tempLikes - 1;
+          updates[`users/${uid}/checkedLikes/${key}`] = null;
+          updates[`reviews/public/${key}/likes`] = tempLikes === 0 ? 0 : tempLikes - 1;
+          updates[`reviews/user/${postUid}/public/${key}/likes`] = tempLikes === 0 ? 0 : tempLikes - 1;
         } else {
-          updates[`users/${user.uid}/checkedLikes/${postInfo.key}`] = true;
+          updates[`users/${uid}/checkedLikes/${postInfo.key}`] = true;
           updates[`reviews/public/${key}/likes`] = tempLikes + 1;
-          updates[`reviews/user/${uid}/public/${key}/likes`] = tempLikes + 1;
+          updates[`reviews/user/${postUid}/public/${key}/likes`] = tempLikes + 1;
         }
         await update(ref(db), updates);
         if (isChecked) {
@@ -44,7 +44,7 @@ function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTem
         console.log(error);
       }
     },
-    [user.uid, editTempLikes, tempLikes],
+    [uid, editTempLikes, tempLikes],
   );
 
   return (
@@ -59,10 +59,10 @@ function ModalContent({ postInfo, usersInfo, checkedLikesObj, tempLikes, editTem
           <div
             className="likes"
             onClick={() => {
-              onClickLikesBtn(checkedLikesObj[key], postInfo);
+              onClickLikesBtn(myCheckedLikesObj[key], postInfo);
             }}
           >
-            {checkedLikesObj[key] ? (
+            {myCheckedLikesObj[key] ? (
               <HeartFilled className={`heart ${clicked ? 'effect' : ''}`} />
             ) : (
               <HeartOutlined className="heart" />

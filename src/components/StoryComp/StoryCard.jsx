@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { Card } from './styles';
 import ModalContent from './ModalContent';
 
-function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
+function StoryCard({ postInfo, myCheckedLikesObj, isLastCard, setLoading }) {
   dayjs.extend(relativeTime);
 
   const usersInfo = useSelector((state) => state.usersInfo);
@@ -16,7 +16,7 @@ function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
   const [tempLikes, setTempLikes] = useState(postInfo.likes);
   const [sizes, setSizes] = useState([0, 0]);
 
-  const { photoDesc, reviewTitle, timeStamp, imgUrl, expression, key, uid } = postInfo;
+  const { photoDesc, reviewTitle, timeStamp, imgUrl, expression, key, uid: postUid } = postInfo;
 
   const editTempLikes = useCallback((isChecked) => {
     if (isChecked) {
@@ -34,28 +34,20 @@ function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
     const $img = new Image();
     $img.src = imgUrl;
 
-    // const poll = setInterval(function () {
-    //   if ($img.naturalWidth) {
-    //     clearInterval(poll);
-    //     setSizes([$img.naturalWidth, $img.naturalHeight]);
-    //   }
-    // }, 10);
-
     $img.onload = function () {
       setSizes([$img.width, $img.height]);
     };
 
     return () => {
       $img.onload = null;
-      // clearInterval(poll);
     };
   }, [imgUrl]);
 
   useEffect(() => {
-    if (isLastCard && sizes[1]) {
+    if (isLastCard) {
       setLoading(false);
     }
-  }, [isLastCard, sizes, setLoading]);
+  }, [isLastCard, setLoading]);
 
   return usersInfo ? (
     <>
@@ -63,12 +55,12 @@ function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
         <img className="photo" src={imgUrl} alt={photoDesc} />
         <div className="cardBottom">
           <div className="userInfo">
-            <img src={usersInfo[uid].image} alt={usersInfo[uid].nickname} />
-            <span>{usersInfo[uid].nickname}</span>
+            <img src={usersInfo[postUid].image} alt={usersInfo[postUid].nickname} />
+            <span>{usersInfo[postUid].nickname}</span>
           </div>
           <span className="time">{dayjs().to(dayjs(timeStamp))}</span>
           <div className="likes">
-            {checkedLikesObj[key] ? <HeartFilled className="heart" /> : <HeartOutlined className="heart" />}
+            {myCheckedLikesObj[key] ? <HeartFilled className="heart" /> : <HeartOutlined className="heart" />}
             {tempLikes}
           </div>
         </div>
@@ -94,7 +86,7 @@ function StoryCard({ postInfo, checkedLikesObj, isLastCard, setLoading }) {
           <ModalContent
             postInfo={postInfo}
             usersInfo={usersInfo}
-            checkedLikesObj={checkedLikesObj}
+            myCheckedLikesObj={myCheckedLikesObj}
             tempLikes={tempLikes}
             editTempLikes={editTempLikes}
           />
