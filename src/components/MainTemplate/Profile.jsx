@@ -1,4 +1,5 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useReducer, useRef, useState } from 'react';
+import Compressor from 'compressorjs';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { getAuth, updateProfile } from 'firebase/auth';
 import { getStorage, ref as strRef, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -9,6 +10,8 @@ import { setPhotoURL } from '../../redux/actions/user_action';
 const Profile = () => {
   const user = useSelector((state) => state.user.currentUser);
   const trophy = useSelector((state) => state.user.trophyInfo.isOwner);
+
+  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
 
   const [loading, setLoading] = useState(false);
 
@@ -26,28 +29,45 @@ const Profile = () => {
   const handleUploadImage = useCallback(
     async (e) => {
       const file = e.target.files[0];
-      const metadata = { contentType: file.type };
+      if (file) {
+        try {
+          setLoading(true);
+          const metadata = { contentType: file.type };
+          new Compressor(file, {
+            maxWidth: 300,
+            maxHeight: 300,
+            minWidth: 120,
+            minHeight: 120,
+            quality: 0.8,
+            success: function (result) {
+              uploadBytes(storageRef, result, metadata).then(() => {
+                forceUpdate();
+              });
+            },
+            error(err) {
+              console.log(err.message);
+            },
+          });
 
-      try {
-        setLoading(true);
-        await uploadBytes(storageRef, file, metadata);
-        const downloadURL = await getDownloadURL(strRef(storage, `user_image/${user.uid}`));
-        await updateProfile(auth.currentUser, {
-          photoURL: downloadURL,
-        });
+          const downloadURL = await getDownloadURL(strRef(storage, `user_image/${user.uid}`));
 
-        dispatch(setPhotoURL(downloadURL));
+          if (downloadURL !== user?.photoURL) {
+            await updateProfile(auth.currentUser, {
+              photoURL: downloadURL,
+            });
+            await update(ref(getDatabase(), `userList/${user.uid}`), {
+              image: downloadURL,
+            });
+          }
 
-        await update(ref(getDatabase(), `userList/${user.uid}`), {
-          image: downloadURL,
-        });
-
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
+          dispatch(setPhotoURL(downloadURL));
+          setLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
       }
     },
-    [storageRef, auth.currentUser, dispatch, storage, user.uid],
+    [storageRef, auth.currentUser, dispatch, storage, user],
   );
 
   return (

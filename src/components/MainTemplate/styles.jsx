@@ -39,12 +39,15 @@ export const Container = styled.div`
     }
     .imgBox {
       position: relative;
+      width: 120px;
+      height: 120px;
+      background-color: #ebd3ff;
+      border-radius: 50%;
+      margin: 20px auto;
       img {
         width: 120px;
         height: 120px;
-        background-color: #ebd3ff;
         border-radius: 50%;
-        margin: 20px auto;
         object-fit: cover;
       }
       .changing {
@@ -53,7 +56,7 @@ export const Container = styled.div`
         background-color: rgba(108, 108, 108, 0.6);
         border-radius: 50%;
         position: absolute;
-        top: 20px;
+        top: 0px;
         color: #fff;
         text-align: center;
         line-height: 120px;

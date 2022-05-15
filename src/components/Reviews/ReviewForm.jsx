@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import Compressor from 'compressorjs';
 import useInput from '../../hooks/useInput';
 import { getStorage, ref as strRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { getDatabase, ref as dbRef, update } from 'firebase/database';
@@ -78,7 +79,16 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
           const storageAddr = `review_image/${uid}/${tripInfo.key}`;
           const storageRef = strRef(storage, storageAddr);
           const metadata = { contentType: imgFile.type };
-          await uploadBytes(storageRef, imgFile, metadata);
+          new Compressor(imgFile, {
+            maxHeight: 430,
+            quality: 0.8,
+            success: function (result) {
+              uploadBytes(storageRef, result, metadata);
+            },
+            error(err) {
+              console.log(err.message);
+            },
+          });
           downloadURL = await getDownloadURL(strRef(storage, storageAddr));
         } else if (tripInfo?.imgUrl && !reviewImage) {
           const storage = getStorage();
