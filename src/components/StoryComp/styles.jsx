@@ -91,7 +91,7 @@ export const TravelerList = styled.div`
             height: 80px;
             border: 4px solid #fff;
             border-radius: 50%;
-            outline: 2px solid #b6a0ff;
+            box-shadow: 0 0 0 2px #b6a0ff;
             background-color: #ebd3ff;
             object-fit: cover;
             cursor: pointer;

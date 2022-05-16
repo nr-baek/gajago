@@ -80,7 +80,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
           const storageRef = strRef(storage, storageAddr);
           const metadata = { contentType: imgFile.type };
           new Compressor(imgFile, {
-            maxHeight: 430,
+            maxHeight: 600,
             quality: 0.8,
             success: function (result) {
               uploadBytes(storageRef, result, metadata);
