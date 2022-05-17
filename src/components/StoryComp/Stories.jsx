@@ -7,8 +7,9 @@ import { getDatabase, ref, onValue, off } from 'firebase/database';
 import { useSelector } from 'react-redux';
 import FetchMore from './FetchMore';
 
-function Stories({ sortBy, searchUid }) {
+function Stories({ sortBy }) {
   const uid = useSelector((state) => state.user.currentUser.uid);
+  const searchUid = useSelector((state) => state.story.searchId);
 
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);

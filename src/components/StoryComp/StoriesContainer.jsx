@@ -113,11 +113,13 @@ function StoriesContainer({ scrollToTop }) {
 
   useEffect(() => {
     if (searchUid) {
-      setSearchText(usersInfo[searchUid].nickname);
+      const searchNickname = usersInfo[searchUid].nickname;
+      setSearchText(searchNickname);
+      updateMatchedNicknameList(searchNickname);
     } else {
       setSearchText('');
     }
-  }, [searchUid, usersInfo]);
+  }, [searchUid, usersInfo, updateMatchedNicknameList]);
 
   return (
     <StyledContainer>
@@ -180,7 +182,7 @@ function StoriesContainer({ scrollToTop }) {
         </div>
         <div className="mask" />
       </div>
-      <Stories sortBy={sortBy} searchUid={searchUid} />
+      <Stories sortBy={sortBy} />
     </StyledContainer>
   );
 }
