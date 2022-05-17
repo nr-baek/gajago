@@ -4,7 +4,6 @@ import { TRIP_TYPE_EMOJI } from '../../common';
 
 function MarkingBar({ currentDateMarkingInfo, setCurrentHover, isHover, setShowModal, markingDate, setModalInfo }) {
   const { start, end, title, tripType, numberOfDatesToRender, fromPrevMonth, key } = currentDateMarkingInfo;
-
   const markingBarRef = useRef(null);
 
   return (
@@ -32,4 +31,4 @@ function MarkingBar({ currentDateMarkingInfo, setCurrentHover, isHover, setShowM
   );
 }
 
-export default MarkingBar;
+export default React.memo(MarkingBar);

@@ -3,7 +3,7 @@ import { HeartFilled, HeartOutlined, SmileTwoTone, MehTwoTone, FrownTwoTone } fr
 import { Modal } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Card } from './styles';
 import ModalContent from './ModalContent';
@@ -43,7 +43,7 @@ function StoryCard({ postInfo, myCheckedLikesObj, isLastCard, setLoading }) {
     };
   }, [imgUrl]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isLastCard) {
       setLoading(false);
     }
@@ -96,4 +96,4 @@ function StoryCard({ postInfo, myCheckedLikesObj, isLastCard, setLoading }) {
   ) : null;
 }
 
-export default StoryCard;
+export default React.memo(StoryCard);

@@ -160,4 +160,4 @@ function TripMap({ onClickRegion }) {
   );
 }
 
-export default TripMap;
+export default React.memo(TripMap);

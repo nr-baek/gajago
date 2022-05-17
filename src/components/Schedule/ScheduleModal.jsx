@@ -44,4 +44,4 @@ function ScheduleModal({ showModal, handleClose, modalPlanData, setModalInfo }) 
   );
 }
 
-export default ScheduleModal;
+export default React.memo(ScheduleModal);
