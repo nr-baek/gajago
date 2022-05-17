@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import ReviewForm from './ReviewForm';
 import ReviewInfo from './ReviewInfo';
-import UnWrittenReviewList from './UnWrittenReviewList';
+import UnWrittenReviews from './UnWrittenReviews';
 
 function ReviewModal({ show, handleClose, reviewInfo }) {
   const [newTripInfo, setNewTripInfo] = useState(null);
@@ -60,7 +60,7 @@ function ReviewModal({ show, handleClose, reviewInfo }) {
                   setShowForm={setShowForm}
                 />
               ) : (
-                <UnWrittenReviewList handleClose={handleClose} selectTripToWriteReview={selectTripToWriteReview} />
+                <UnWrittenReviews handleClose={handleClose} selectTripToWriteReview={selectTripToWriteReview} />
               )}
             </Modal.Body>
           </>

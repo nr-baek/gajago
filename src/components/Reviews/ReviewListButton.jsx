@@ -32,4 +32,4 @@ function ReviewListButton({ trip, id, handleClick }) {
   );
 }
 
-export default ReviewListButton;
+export default React.memo(ReviewListButton);
