@@ -15,7 +15,6 @@ import { setScheduleInfo } from '../../redux/actions/scheduleInfo_action';
 function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowForm }) {
   const uid = useSelector((state) => state.user.currentUser.uid);
   const publicReviewCount = useSelector((state) => state.user.publicReviewCount);
-
   const [validated, setValidated] = useState(false);
   const [reviewTitle, onChangeTitle] = useInput(tripInfo?.reviewTitle || '');
   const [expression, setExpression] = useState(tripInfo?.expression || '');
@@ -25,7 +24,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
   const [reviewText, onChangeReviewText] = useInput(tripInfo?.reviewText || '');
   const [openReview, setOpenReview] = useState(tripInfo?.openReview || false);
   const [loading, setLoading] = useState(false);
-  const [reviewImage, setReviewImage] = useState(tripInfo?.imgUrl);
+  const [prevReviewImage, setReviewImage] = useState(tripInfo?.imgUrl);
 
   const dispatch = useDispatch();
 
@@ -71,55 +70,35 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
     e.preventDefault();
     const form = e.currentTarget;
     if (form.checkValidity() !== false) {
+      const updates = {};
       setLoading(true);
-      try {
-        let downloadURL;
-        if (imgFile) {
-          const storage = getStorage();
-          const storageAddr = `review_image/${uid}/${tripInfo.key}`;
-          const storageRef = strRef(storage, storageAddr);
-          const metadata = { contentType: imgFile.type };
-          new Compressor(imgFile, {
-            maxHeight: 600,
-            quality: 0.8,
-            success: function (result) {
-              uploadBytes(storageRef, result, metadata);
-            },
-            error(err) {
-              console.log(err.message);
-            },
-          });
-          downloadURL = await getDownloadURL(strRef(storage, storageAddr));
-        } else if (tripInfo?.imgUrl && !reviewImage) {
-          const storage = getStorage();
-          const desertRef = strRef(storage, `review_image/${uid}/${tripInfo.key}`);
-          await deleteObject(desertRef);
-        }
 
-        const reviewData = createReviewData(downloadURL || reviewImage);
-        const updates = {};
-        if (!tripInfo?.imgUrl && imgFile) {
-          updates[`users/${uid}/plans/${tripInfo.key}/photoReview`] = true;
-        } else if (tripInfo?.imgUrl && !reviewImage && !imgFile) {
-          updates[`users/${uid}/plans/${tripInfo.key}/photoReview`] = null;
-        }
+      if (tripInfo?.title) {
+        updates[`users/${uid}/plans/${tripInfo.key}/review`] = true;
+      }
 
-        if (tripInfo?.title) {
-          updates[`users/${uid}/plans/${tripInfo.key}/review`] = true;
-        }
+      if (!tripInfo?.imgUrl && imgFile) {
+        updates[`users/${uid}/plans/${tripInfo.key}/photoReview`] = true;
+      } else if (tripInfo?.imgUrl && !prevReviewImage && !imgFile) {
+        updates[`users/${uid}/plans/${tripInfo.key}/photoReview`] = null;
+      }
 
-        if (!tripInfo?.openReview && openReview) {
-          updates[`users/${uid}/plans/${tripInfo.key}/openReview`] = openReview;
+      if (tripInfo?.openReview !== openReview) {
+        updates[`users/${uid}/plans/${tripInfo.key}/openReview`] = openReview;
+        if (openReview) {
           updates[`userList/${uid}/publicReviewCount`] = publicReviewCount + 1;
           if (tripInfo?.reviewTitle) {
             updates[`reviews/user/${uid}/private/${tripInfo.key}`] = null;
           }
-        } else if (tripInfo?.openReview && !openReview) {
-          updates[`users/${uid}/plans/${tripInfo.key}/openReview`] = openReview;
+        } else {
           updates[`reviews/public/${tripInfo.key}`] = null;
           updates[`reviews/user/${uid}/public/${tripInfo.key}`] = null;
           updates[`userList/${uid}/publicReviewCount`] = publicReviewCount - 1;
         }
+      }
+
+      const updateReviewData = async (reviewImgURL) => {
+        const reviewData = createReviewData(reviewImgURL);
 
         if (openReview) {
           updates[`reviews/public/${tripInfo.key}`] = reviewData;
@@ -129,18 +108,53 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
         }
 
         await update(dbRef(db), updates);
-
         setScheduleAndPublicReviewCount(uid);
         setLoading(false);
         handleClose();
+      };
+
+      try {
+        const storage = getStorage();
+        let downloadURL;
+
+        if (imgFile) {
+          const storageAddr = `review_image/${uid}/${tripInfo.key}`;
+          const storageRef = strRef(storage, storageAddr);
+          const metadata = { contentType: imgFile.type };
+          new Compressor(imgFile, {
+            maxHeight: 600,
+            quality: 0.8,
+            success: async (result) => {
+              try {
+                await uploadBytes(storageRef, result, metadata);
+                downloadURL = await getDownloadURL(strRef(storage, storageAddr));
+                updateReviewData(downloadURL);
+              } catch (e) {
+                console.log(e);
+                setLoading(false);
+              }
+            },
+            error(err) {
+              console.log(err.message);
+              setLoading(false);
+            },
+          });
+        } else {
+          if (tripInfo?.imgUrl && !prevReviewImage) {
+            const desertRef = strRef(storage, `review_image/${uid}/${tripInfo.key}`);
+            await deleteObject(desertRef);
+          }
+
+          updateReviewData(prevReviewImage);
+        }
       } catch (error) {
         console.log(error);
         setSubmitError(error.message);
         setLoading(false);
       }
+    } else {
+      setValidated(true);
     }
-
-    setValidated(true);
   };
 
   const handleFileInput = useCallback((e) => {
@@ -245,7 +259,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
           사진 첨부 (선택)
         </Form.Label>
         <Col sm={10}>
-          {reviewImage ? (
+          {prevReviewImage ? (
             <p htmlFor="picture" style={{ lineHeight: '38px' }}>
               이미 등록된 사진이 있습니다.
               <EditPhotoButton onClick={clickEditBtn}>변경하기</EditPhotoButton>
@@ -266,7 +280,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
             required
             placeholder="60자 이내로 입력해주세요."
             maxLength="60"
-            disabled={!imgFile && !(tripInfo?.imgUrl && reviewImage)}
+            disabled={!imgFile && tripInfo?.imgUrl && !prevReviewImage}
             value={photoDesc}
             onChange={onChangePhotoDesc}
           />
@@ -301,7 +315,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
             label="스토리 공개(사진 첨부시에만 공개 가능합니다)"
             style={{ marginTop: '8px' }}
             checked={openReview}
-            disabled={!imgFile && !reviewImage}
+            disabled={!imgFile && !prevReviewImage}
             onChange={handleCheck}
           />
         </Col>
