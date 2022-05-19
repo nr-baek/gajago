@@ -89,6 +89,7 @@ function StoryCard({ postInfo, myCheckedLikesObj, isLastCard, setLoading }) {
             myCheckedLikesObj={myCheckedLikesObj}
             tempLikes={tempLikes}
             editTempLikes={editTempLikes}
+            colorCode={color}
           />
         </Modal.Body>
       </Modal>

@@ -8,7 +8,7 @@ import { getDatabase, ref, update } from 'firebase/database';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { REGION_NAME } from '../../common';
 
-function ModalContent({ postInfo, usersInfo, myCheckedLikesObj, tempLikes, editTempLikes }) {
+function ModalContent({ postInfo, usersInfo, myCheckedLikesObj, tempLikes, editTempLikes, colorCode }) {
   dayjs.extend(relativeTime);
 
   const { startDate, endDate, photoDesc, reviewText, timeStamp, imgUrl, detailAddress, region, key } = postInfo;
@@ -48,7 +48,7 @@ function ModalContent({ postInfo, usersInfo, myCheckedLikesObj, tempLikes, editT
   );
 
   return (
-    <StyledModalContent>
+    <StyledModalContent colorCode={colorCode}>
       <Scrollbars autoHide>
         <div className="contentHeader">
           <div className="userInfo">

@@ -438,7 +438,7 @@ export const StyledModalContent = styled.div`
   .photoAndDesc {
     margin: 20px;
     .photo {
-      background-color: green;
+      background-color: ${(props) => props.colorCode};
       border-radius: 10px;
       display: block;
       margin: 0 auto;
