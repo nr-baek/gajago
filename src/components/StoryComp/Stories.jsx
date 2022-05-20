@@ -52,6 +52,10 @@ function Stories({ sortBy }) {
         if (isComponentMounted) {
           setMyCheckedLikesObj(checkedLikes);
         }
+      } else {
+        if (isComponentMounted) {
+          setMyCheckedLikesObj({});
+        }
       }
     });
 
