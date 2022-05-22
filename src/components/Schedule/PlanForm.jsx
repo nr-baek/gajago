@@ -184,7 +184,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
               type="radio"
               defaultChecked={tripType === 'alone'}
               inline="true"
-              label="나홀로"
+              label="나홀로💜"
               name="tripTypes"
               id="alone"
             />
@@ -192,7 +192,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
               type="radio"
               defaultChecked={tripType === 'family'}
               inline="true"
-              label="가족"
+              label="가족💛"
               name="tripTypes"
               id="family"
             />
@@ -200,7 +200,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
               type="radio"
               defaultChecked={tripType === 'friends'}
               inline="true"
-              label="우정"
+              label="우정💚"
               name="tripTypes"
               id="friends"
             />
@@ -208,7 +208,7 @@ function PlanForm({ closeForm, showEditForm, planData, setModalInfo }) {
               type="radio"
               defaultChecked={tripType === 'couple'}
               inline="true"
-              label="커플"
+              label="커플💖"
               name="tripTypes"
               id="couple"
             />

@@ -26,7 +26,7 @@ const MonthAndYear = forwardRef(({ onClick, date }, ref) => (
     <span className="year">{date.format('YYYY')}</span>
   </span>
 ));
-
+const today = dayjs().format('YYYY-MM-DD');
 const Calendar = () => {
   const planArray = useSelector((state) => state.schedule_info.sortedOverallSchedule);
 
@@ -71,10 +71,11 @@ const Calendar = () => {
               const currentDateString = currentDate.format('YYYY-MM-DD');
               const MarkingInfoOfCurrentDate = markingInfo[currentDateString];
               const isGrayed = currentDate.format('MM') === date.format('MM') ? '' : 'grayed';
+              const isToday = today === currentDateString ? 'today' : '';
 
               return (
                 <div className={`box ${isGrayed}`} key={i}>
-                  <span className="dateNumber">{currentDate.format('D')}</span>
+                  <span className={`dateNumber ${isToday}`}>{currentDate.format('D')}</span>
                   {MarkingInfoOfCurrentDate && (
                     <MarkingBar
                       isHover={MarkingInfoOfCurrentDate.key === hoveredMarkingInfo.key}

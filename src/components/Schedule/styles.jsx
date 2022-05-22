@@ -120,6 +120,31 @@ export const StyledCalendar = styled.div`
           font-weight: bold;
           display: inline-block;
           margin: 5px;
+          position: relative;
+          z-index: 1;
+          &.today {
+            color: #fff;
+            &::after {
+              content: '';
+              height: 24px;
+              width: 24px;
+              background: #724cec;
+              position: absolute;
+              border-radius: 50%;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -45%);
+              position: absolute;
+              z-index: -1;
+            }
+          }
+        }
+        .todayPoint {
+          display: inline-block;
+          width: 10px;
+          height: 10px;
+          background: #ff0000;
+          border-radius: 50%;
         }
       }
     }
