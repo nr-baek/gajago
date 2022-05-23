@@ -4,6 +4,8 @@ export const Background = styled.div`
   background: linear-gradient(20deg, #ffffff, #e0d0ff, #fffdff, #f1dcff, #ffffff, #e0d0ff);
   width: 100vw;
   height: 100vh;
+  min-height: 680px;
+  min-width: 1200px;
   padding: 30px 110px;
   .loading {
     position: absolute;

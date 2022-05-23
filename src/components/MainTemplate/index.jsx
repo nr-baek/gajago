@@ -9,7 +9,9 @@ const MainTemplate = ({ children }) => {
   const auth = getAuth();
 
   const onClickLogout = useCallback(() => {
-    signOut(auth);
+    if (window.confirm(`로그아웃 하시겠습니까?`)) {
+      signOut(auth);
+    }
   }, [auth]);
 
   return (

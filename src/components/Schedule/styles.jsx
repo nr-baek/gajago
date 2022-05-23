@@ -128,7 +128,7 @@ export const StyledCalendar = styled.div`
               content: '';
               height: 24px;
               width: 24px;
-              background: #724cec;
+              background: #5e5fb3;
               position: absolute;
               border-radius: 50%;
               top: 50%;
@@ -138,13 +138,6 @@ export const StyledCalendar = styled.div`
               z-index: -1;
             }
           }
-        }
-        .todayPoint {
-          display: inline-block;
-          width: 10px;
-          height: 10px;
-          background: #ff0000;
-          border-radius: 50%;
         }
       }
     }

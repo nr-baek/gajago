@@ -280,7 +280,7 @@ function ReviewForm({ tripInfo, resetTripInfo, closeModal, handleClose, setShowF
             required
             placeholder="60자 이내로 입력해주세요."
             maxLength="60"
-            disabled={!imgFile && tripInfo?.imgUrl && !prevReviewImage}
+            disabled={!imgFile && !prevReviewImage}
             value={photoDesc}
             onChange={onChangePhotoDesc}
           />
